@@ -1,0 +1,56 @@
+{
+  "name": "problem-proposals",
+  "version": "1.0.0",
+  "description": "Problem proposals page for the United States Mathematics Competition Association.",
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.15.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.9",
+    "lodash": "^4.17.4",
+    "materialize-css": "^0.100.1",
+    "mongoose": "^4.11.7",
+    "react-materialize": "^1.0.10",
+    "serve-favicon": "^2.3.0",
+    "socket.io": "^1.7.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "immutable": "^3.8.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jquery": "^3.2.1",
+    "morgan": "^1.8.2",
+    "normalizr": "^3.2.3",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.1.2",
+    "redux": "^3.7.2",
+    "redux-form": "^7.0.3",
+    "redux-thunk": "^2.2.0",
+    "webpack": "^3.4.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "webpack -p",
+    "watch": "webpack -d --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/USMCA/problem-proposals.git"
+  },
+  "author": "Cody Johnson, Taisuke Yasuda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/USMCA/problem-proposals/issues"
+  },
+  "homepage": "https://github.com/USMCA/problem-proposals#readme"
+}

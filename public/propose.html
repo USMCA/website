@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
+    <script src="https://use.fontawesome.com/f2da0bb9e7.js"></script>
+    <link type="text/css" rel="stylesheet" href="assets/css/style-main.css">
+    <script type="text/javascript" src="assets/js/script-main.js"></script>
+    <title>USMCA - Propose</title>
+  </head>
+
+  <body>
+    <header>
+      <nav class="teal darken-4">
+        <a href="#" class="brand-logo">USMCA</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="propose.html">Propose</a></li>
+          <li><a href="database.html">Database</a></li>
+          <li><a href="account.html">Account</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container row">
+        <h2 class="teal-text text-darken-4">Propose a Problem</h2>
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="col s4 input-field">
+                <select>
+                  <option value="" disabled selected>Choose your option</option>
+                  <option value="1">Option 1</option>
+                  <option value="2">Option 2</option>
+                  <option value="3">Option 3</option>
+                </select>
+                <label>Contest</label>
+              </div>
+              <div class="col s4 input-field">
+                <select>
+                  <option value="" disabled selected>Choose your option</option>
+                  <option value="1">Option 1</option>
+                  <option value="2">Option 2</option>
+                  <option value="3">Option 3</option>
+                </select>
+                <label>Subject</label>
+              </div>
+              <div class="col s4 input-field">
+                <select>
+                  <option value="" disabled selected>Choose your option</option>
+                  <option value="1">Option 1</option>
+                  <option value="2">Option 2</option>
+                  <option value="3">Option 3</option>
+                </select>
+                <label>Difficulty</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6 input-field">
+                <textarea id="problem-statement" class="materialize-textarea"></textarea>
+                <label for="problem-statement">Problem</label>
+              </div>
+              <div class="col s6">
+                <!--Problem Preview-->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6 input-field">
+                <input id="first_name" type="text" class="validate">
+                <label for="answer">Answer</label>
+              </div>
+              <div class="col s6">
+                <!--Answer Preview-->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6 input-field">
+                <textarea id="solution" class="materialize-textarea"></textarea>
+                <label for="solution">Solution</label>
+              </div>
+              <div class="col s6">
+                <!--Solution Preview-->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s2 offset-s8">
+                <a class="waves-effect waves-light btn teal darken-3">Preview</a>
+              </div>
+              <div class="col s2">
+                <a class="waves-effect waves-light btn teal darken-3">Submit</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer></footer>
+  </body>
+</html>
