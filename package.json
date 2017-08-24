@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Problem proposals page for the United States Mathematics Competition Association.",
   "dependencies": {
+    "async": "^2.5.0",
     "babel-polyfill": "^6.23.0",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.15.2",
