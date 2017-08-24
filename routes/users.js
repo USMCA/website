@@ -89,4 +89,21 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
   });
 });
 
+/* get competitions of the user for which the user is a director */
+router.get('/director', auth.verifyJWT, (req, res) => {
+  Competition.find({ 
+    directors: req.payload.user_id, 
+    valid: true 
+  }, 'name _id', (err, directorCompetitions) => {
+    if (err) {
+      console.log(err);
+      return handler(false, 'Database failed to search for director competitions.', 503)(req, res);
+    } else {
+      return handler(true, 'Succesfully loaded director competitions.', 200, {
+        competitions: directorCompetitions
+      })(req, res);
+    }
+  });
+});
+
 module.exports = router;

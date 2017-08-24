@@ -2,6 +2,7 @@ import {
   COMP_ERROR,
   COMP_REQ,
   COMP_GET,
+  COMP_FETCH_DIR,
   COMP_FETCH_MINE,
   requestStatuses
 } from '../actions/types';
@@ -12,6 +13,7 @@ const INITIAL_STATE = {
   message: '', 
   requestStatus: IDLE,
   myCompetitions: [],
+  directorCompetitions: [],
   allCompetitions: []
 };
 
@@ -35,6 +37,17 @@ export default function (state = INITIAL_STATE, action) {
             myCompetitions: action.payload.competitions
           };
         default: 
+          return state;
+      }
+    case COMP_FETCH_DIR:
+      switch (action.payload.requestStatus) {
+        case SUCCESS:
+          return {
+            ...state,
+            error: false,
+            directorCompetitions: action.payload.competitions
+          };
+        default:
           return state;
       }
     case COMP_GET:
