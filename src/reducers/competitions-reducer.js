@@ -1,6 +1,7 @@
 import { 
   COMP_ERROR,
   COMP_REQ,
+  COMP_GET,
   COMP_FETCH_MINE,
   requestStatuses
 } from '../actions/types';
@@ -10,7 +11,8 @@ const INITIAL_STATE = {
   error: false, 
   message: '', 
   requestStatus: IDLE,
-  myCompetitions: []
+  myCompetitions: [],
+  allCompetitions: []
 };
 
 export default function (state = INITIAL_STATE, action) {  
@@ -33,6 +35,17 @@ export default function (state = INITIAL_STATE, action) {
             myCompetitions: action.payload.competitions
           };
         default: 
+          return state;
+      }
+    case COMP_GET:
+      switch (action.payload.requestStatus) {
+        case SUCCESS:
+          return {
+            ...state,
+            error: false,
+            allCompetitions: action.payload.competitions
+          };
+        default:
           return state;
       }
     default:

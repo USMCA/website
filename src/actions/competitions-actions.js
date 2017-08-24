@@ -4,11 +4,14 @@ import {
   COMP_ERROR,
   COMP_REQ,
   COMP_RES,
+  COMP_GET,
   COMP_FETCH_MINE,
   requestStatuses
 } from './types';
 import { requestTypes } from '../../constants';
 import auth from '../auth';
+
+const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 /*******************************************************************************
  * Synchronous actions.
@@ -26,7 +29,7 @@ export function requestCompetition({ name, shortName, website }) {
   return dispatch => {
     dispatch({ 
       type: COMP_REQ, 
-      payload: { requestStatus: requestStatuses.PENDING }
+      payload: { requestStatus: PENDING }
     });
 
     const userId = auth.userId();
@@ -54,7 +57,7 @@ export function requestCompetition({ name, shortName, website }) {
             dispatch({ 
               type: COMP_REQ, 
               payload: {
-                requestStatus: requestStatuses.SUBMITTED 
+                requestStatus: SUBMITTED 
               }
             });
           }
@@ -76,7 +79,7 @@ export function fetchMyCompetitions() {
     } else {
       dispatch({
         type: COMP_FETCH_MINE,
-        payload: { requestStatus: requestStatuses.PENDING }
+        payload: { requestStatus: PENDING }
       });
       fetch('/api/users/competitions', {
         method: 'get',
@@ -92,7 +95,7 @@ export function fetchMyCompetitions() {
               dispatch({
                 type: COMP_FETCH_MINE,
                 payload: {
-                  requestStatus: requestStatuses.SUCCESS,
+                  requestStatus: SUCCESS,
                   competitions: data.competitions
                 }
               });
@@ -105,5 +108,39 @@ export function fetchMyCompetitions() {
         }
       );
     }
+  }
+}
+
+export function allCompetitions() {
+  return dispatch => {
+    dispatch({
+      type: COMP_GET,
+      payload: {
+        requestStatus: PENDING
+      }
+    });
+    fetch('/api/competitions', { method: 'get' })
+    .then(
+      response => {
+        return response.json()
+        .then(data => {
+          const { success, message, competitions } = data;
+          if (!success) return compErrorHandler(dispatch, message);
+          else {
+            dispatch({
+              type: COMP_GET,
+              payload: {
+                requestStatus: SUCCESS,
+                competitions: competitions
+              }
+            });
+          }
+        });
+      },
+      error => {
+        errorMessage = error.message || 'Failed to communicate with server.';
+        return compErrorHandler(dispatch, errorMessage);
+      }
+    );
   }
 }

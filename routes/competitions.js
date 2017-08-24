@@ -246,4 +246,16 @@ router.post('/', auth.verifyJWT, (req, res) => {
   }
 });
 
+router.get('/', (req, res) => {
+  Competition.find({ valid: true }, 'name _id', (err, competitions) => {
+    if (err) {
+      handler(false, 'Database failed to load competitions.', 503)(req, res);
+    } else {
+      handler(true, 'Successfully loaded competitions.', 200, {
+        competitions: competitions
+      })(req, res);
+    }
+  });
+});
+
 module.exports = router;
