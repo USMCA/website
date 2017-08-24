@@ -65,10 +65,10 @@
 ```
 {
   competition: Competition,
-  location: {
+  location: [ {
     site: String,
     address: String
-  },
+  } ],
   name: String,
   date: Date,
   tests: [ Tests ],
