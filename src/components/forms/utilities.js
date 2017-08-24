@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 
 import { allCompetitions, directorCompetitions } from "../../actions";
-import Autocomplete from "../react-materialize-custom/Autocomplete";
+import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 
 /*******************************************************************************
  * Autocomplete for competitions.
@@ -16,7 +16,7 @@ const competitionsInputOptions = {
 }
 
 const competitionArrayToObject = a => {
-  return _.reduce(a, (o, comp) => Object.assign(o, { [comp.name]: null }), {});
+  return _.reduce(a, (o, comp) => Object.assign(o, { [comp.name]: comp._id }), {});
 };
 
 class CompetitionsInputDumb extends React.Component {
@@ -44,7 +44,7 @@ class CompetitionsInputDumb extends React.Component {
       ...rest 
     } = this.props;
     return (
-      <Autocomplete
+      <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
         data={ competitionArrayToObject(competitions[type]) } limit={5} />
     );
