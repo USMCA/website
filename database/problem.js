@@ -19,6 +19,10 @@ const problemSchema = new Schema({
 });
 
 problemSchema.pre('validate', function(next) {
+  if (this.difficulty > 5) this.difficulty = 5;
+  if (this.difficulty < 1) this.difficulty = 1;
+  this.difficulty = Math.round(this.difficulty);
+
   const now = new Date();
   if (!this.created) this.created = now;
   if (!this.updated) this.updated = now;
