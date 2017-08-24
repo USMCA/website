@@ -13,6 +13,7 @@ const NotificationList = ({ unread, read, urgent, type }) => {
   /* combine and sort unread, read, and urgent */ 
   let all = _.concat(unread, read, urgent);
   all = _.sortBy(all, "created");
+  all = _(all).reverse().value();
   const notificationOptions = {
           unread, read, urgent, all 
         },
