@@ -1,12 +1,13 @@
 /* import environmental variables */
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const express = require('express'),
       app = express(),
       server = require('http').Server(app),
       path = require('path'),
       bodyParser = require('body-parser'),
-      morgan = require('morgan'),
       mongoose = require('mongoose');
 
 /* declare all models */
@@ -19,7 +20,9 @@ const User = require('./database/user'),
       Problem =  require('./database/problem'),
       Subject =  require('./database/subject');
 
-app.use(morgan('dev'));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(require('morgan')('dev'));
+}
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
