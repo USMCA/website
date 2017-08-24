@@ -6,7 +6,7 @@ import { requestEnum } from "../../../../constants";
 import { Request, LoadMore } from "../../utilities";
 
 const RequestList = ({ requests, type }) => {
-  requests = requests.filter(request => request.type === type),
+  requests = requests.filter(request => request.type === type);
   let noRequestView = <li className="transparent">Error.</li>;
   switch (type) {
     case requestEnum.REQUEST:

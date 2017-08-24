@@ -45,12 +45,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/USMCA/problem-proposals.git"
+    "url": "git+https://github.com/USMCA/website.git"
   },
   "author": "Cody Johnson, Taisuke Yasuda",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/USMCA/problem-proposals/issues"
+    "url": "https://github.com/USMCA/website/issues"
   },
-  "homepage": "https://github.com/USMCA/problem-proposals#readme"
+  "homepage": "https://github.com/USMCA/website#readme"
 }

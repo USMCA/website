@@ -15,7 +15,7 @@ router.get('/', auth.verifyJWT, (req, res) => {
     return handler(false, 'Unauthorized request for user information.', 401)(req, res);
   } else { 
     User.findById(id)
-    .populate('urgent urgent.competition unread unread.competition read read.competition requests')
+    .populate('urgent unread read requests')
     .exec((err, user) => {
       if (err) {
         console.log(err);
@@ -60,6 +60,7 @@ router.get('/problems', auth.verifyJWT, (req, res) => {
 router.get('/competitions', auth.verifyJWT, (req, res) => {
   Competition.find({ directors: req.payload.user_id }, (err, directorCompetitions) => {
     if (err) {
+      console.log(err);
       return handler(false, 'Database failed to search for director competitions.', 503)(req, res);
     } else {
       directorCompetitions = _.map(directorCompetitions, competition => {
@@ -70,6 +71,7 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
       });
       Competition.find({ members: req.payload.user_id }, (err, memberCompetitions) => {
         if (err) {
+          console.log(err);
           return handler(false, 'Database failed to search for member competitions.', 503)(req, res);
         } else {
           memberCompetitions = _.map(memberCompetitions, competition => {
