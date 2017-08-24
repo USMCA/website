@@ -5,20 +5,6 @@ import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
 
 const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers }) => ({
-  "info": {
-    title: "Information",
-    view: (
-      <div className="round-container">
-        <ul>
-          <li>Name: {name}</li>
-          <li>Date: {date}</li>
-          <li>Location(s): {locations.join(", ")}</li>
-          <li>Status: {status} (<a href="#" className="teal-text text-darken-3">{ (status === "Active") ? "Mark as inactive" : "Mark as active" }</a>)</li>
-          <li><a href="/view-database" className="teal-text text-darken-3">View database</a></li>
-        </ul>
-      </div>
-    )
-  },
   "tests": {
     title: "Tests",
     view: (
@@ -96,19 +82,12 @@ const tests = [
 const ContestPreview = ({ name, date, locations, status, tests, czars, testSolvers }) => (
   <Col s={12} className="top-border">
     <h2 className="teal-text text-darken-3">{name}</h2>
-    <VerticalNav tabs={ contestTabs({ name, date, locations, status, tests, czars, testSolvers })} active="info" />
+    <VerticalNav tabs={ contestTabs({ name, date, locations, status, tests, czars, testSolvers })} active="tests" />
   </Col>
 )
 
 const ContestsPage = () => (
   <Row className="container">
-    <h2 className="teal-text text-darken-4">Contests</h2>
-    <RightButtonPanel marginBottom="24px">
-      <a href="/view-database" className="btn teal darken-3">Shared Database</a>
-      <Modal header="Create New Contest" trigger={<Button className="teal darken-3">New Contest</Button>}>
-        <CreateContestForm />
-      </Modal>
-    </RightButtonPanel>
     <ContestPreview name="CMIMC 2018" date="January 28th, 2018" locations={["Carnegie Mellon University", "CMU Qatar Campus"]} status="Active" tests={tests} czars={["Taisuke Yasuda", "Cody Johnson"]} testSolvers={["Taisuke Yasuda", "Cody Johnson"]} />
   </Row>
 );
