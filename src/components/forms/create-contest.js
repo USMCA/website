@@ -5,7 +5,11 @@ import { Input, Row, Button } from "react-materialize";
 
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import { competitionsInputOptions, CompetitionsInput } from "./utilities";
+import { 
+  competitionsInputOptions, 
+  CompetitionsInput, 
+  LocationArrayInput
+} from "./utilities";
 
 const CompetitionInput = ({ input, meta, ...rest }) => (
         <CompetitionsInput type={ competitionsInputOptions.DIRECTOR } { ...input } { ...rest } />
@@ -19,6 +23,7 @@ const CompetitionInput = ({ input, meta, ...rest }) => (
 
 class CreateContestForm extends React.Component { 
   onSubmit = ({ competition_id, name, date }) => {
+    console.log(competition_id, name, date);
   }
 
   render() {
@@ -34,6 +39,9 @@ class CreateContestForm extends React.Component {
           </div>
           <div>
             <Field name="date" component={ DateInput } />
+          </div>
+          <div>
+            <LocationArrayInput />
           </div>
           <RightButtonPanel>
             <Button type="submit" className="teal darken-3">Create</Button>

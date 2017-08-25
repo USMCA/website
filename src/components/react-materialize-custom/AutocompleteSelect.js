@@ -16,7 +16,7 @@ class AutocompleteSelect extends Component {
     super(props);
 
     this.state = {
-      value: 'ailee',
+      value: '',
       display: ''
     };
 
