@@ -2,7 +2,7 @@ import React from "react";
 import { Row } from "react-materialize";
 
 import NotificationsTab from "./account-page/notifications-tab";
-import CompetitionsTab from "./account-page/competitions-tab";
+import CompetitionsTab2 from "./account-page/competitions-tab-2";
 import ProblemsTab from "./account-page/problems-tab";
 import AccountTab from "./account-page/account-tab";
 import { HorizontalNav } from "../utilities";
@@ -20,7 +20,7 @@ const AccountPage = () => {
     },
     "competitions": {
       title: <div><i className="fa fa-trophy" aria-hidden="true"></i> Competitions</div>,
-      view: <CompetitionsTab />
+      view: <CompetitionsTab2 />
     },
     "problems": {
       title: <div><i className="fa fa-pencil-square" aria-hidden="true"></i> Problems</div>,
