@@ -5,13 +5,13 @@ const mongoose = require('mongoose'),
 
 const problemSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  competition: { type: Schema.Types.ObjectId, ref: 'Competition', required: true },
   statement: { type: String, required: true },
   answer: String,
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
-  difficulty: { type: String, enum: _.values(difficultyEnum) },
+  difficulty: { type: Number, required: true, min: 1, max: 5 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
-  downvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   views: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
   created: { type: Date, required: true },
@@ -19,6 +19,10 @@ const problemSchema = new Schema({
 });
 
 problemSchema.pre('validate', function(next) {
+  if (this.difficulty > 5) this.difficulty = 5;
+  if (this.difficulty < 1) this.difficulty = 1;
+  this.difficulty = Math.round(this.difficulty);
+
   const now = new Date();
   if (!this.created) this.created = now;
   if (!this.updated) this.updated = now;

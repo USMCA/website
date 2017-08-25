@@ -6,6 +6,7 @@ import {
   COMP_RES,
   COMP_GET,
   COMP_FETCH_MINE,
+  COMP_FETCH_DIR,
   requestStatuses
 } from './types';
 import { requestTypes } from '../../constants';
@@ -144,3 +145,44 @@ export function allCompetitions() {
     );
   }
 }
+
+export function directorCompetitions() {
+  return dispatch => {
+    const userId = auth.userId();
+    if (!userId) {
+      return compErrorHandler(dispatch, 'User is not logged in.');
+    } else {
+      dispatch({
+        type: COMP_FETCH_DIR,
+        payload: { requestStatus: PENDING }
+      });
+      fetch('/api/users/director', {
+        method: 'get',
+        headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(
+        response => {
+          return response.json()
+          .then(data => {
+            if (!data.success) compErrorHandler(dispatch, data.message);
+            else {
+              dispatch({
+                type: COMP_FETCH_DIR,
+                payload: {
+                  requestStatus: SUCCESS,
+                  competitions: data.competitions
+                }
+              });
+            }
+          });
+        },
+        error => {
+          errorMessage = error.message || 'Failed to communicate with server.';
+          return compErrorHandler(dispatch, errorMessage);
+        }
+      );
+    }
+  }
+}
+
