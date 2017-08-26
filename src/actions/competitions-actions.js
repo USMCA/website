@@ -72,7 +72,7 @@ export function requestCompetition({ name, shortName, website }) {
   }
 }
 
-export function fetchMyCompetitions() {
+export function memberCompetitions() {
   return dispatch => {
     const userId = auth.userId();
     if (!userId) {
