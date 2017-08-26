@@ -28,6 +28,10 @@ export const COMP_ERROR = 'comp_error', // notify a competition error
              COMP_FETCH_MINE = 'comp_fetch_mine', // get user competition info
              COMP_FETCH_DIR = 'comp_fetch_dir'; // get user competition info
 
+/* contests */
+export const CONTEST_ERROR = 'contest_error', // notify a contest error
+             CONTEST_POST = 'contest_post'; // post a contest
+
 /* problem proposals */
 export const PROB_ERROR = 'prob_error', // notify a proposal error
              PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user

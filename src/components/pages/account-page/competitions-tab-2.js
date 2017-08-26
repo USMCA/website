@@ -1,6 +1,8 @@
 import React from "react";
-import {  } from "react-materialize";
+import { Modal } from "react-materialize";
+
 import { RightButtonPanel, VerticalNav } from "../../utilities";
+import CreateContestForm from "../../forms/create-contest";
 
 const tabs = {
   "info": {
@@ -34,7 +36,11 @@ const tabs = {
     title: "Contests",
     view: <div className="round-container">
       <ul>
-        <li>Create contest</li>
+        <li>
+          <Modal trigger={<a>Create contest</a>}>
+            <CreateContestForm />
+          </Modal>
+        </li>
         <li><h3>CMIMC 2018 [edit] [delete]</h3></li>
         <li>View contest</li>
         <li>Date: January 28th, 2018</li>

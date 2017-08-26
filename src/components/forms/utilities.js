@@ -121,19 +121,25 @@ class LocationArrayInput extends React.Component {
     this.addressInput._onChange({
       target: { value: "" }
     }, "");
+ 
+    const { onChange } = this.props; 
+    if (onChange) onChange(this.state.value);
     this.forceUpdate();
   }
 
   handleRemoveClick = locIdx => (
     () => {
       _.remove(this.state.value, (val, idx) => (idx === locIdx));
+
+      const { onChange } = this.props; 
+      if (onChange) onChange(this.state.value);
       this.forceUpdate();
     }
   )
 
   render() {
-    const siteLabel = "Site Name (required)",
-          addressLabel = "Address";
+    const siteLabel = "Site Name",
+          addressLabel = "Address (optional)";
     return (
       <div>
         {

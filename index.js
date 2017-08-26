@@ -36,9 +36,11 @@ mongoose.connect(process.env.DB_URL, {
 /* route endpoints */
 const authRouter = require('./routes/auth'),
       userRouter = require('./routes/users'),
+      contestRouter = require('./routes/contests'),
       compRouter = require('./routes/competitions');
 app.use('/', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/contests', contestRouter);
 app.use('/api/competitions', compRouter);
 
 /* serve home page */

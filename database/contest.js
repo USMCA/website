@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
 
 const contestSchema = new Schema({
   competition: { type: Schema.Types.ObjectId, ref: 'Competition' },
-  location: [ {
+  locations: [ {
     site: { type: String, required: true },
     address: String
   } ],
