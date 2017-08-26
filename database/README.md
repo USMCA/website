@@ -110,13 +110,6 @@
 }
 ```
 
-## Subject
-```
-{
-  name: String
-}
-```
-
 ## Comment
 ```
 {

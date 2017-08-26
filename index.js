@@ -17,8 +17,7 @@ const User = require('./database/user'),
       Request =  require('./database/request'),
       Test =  require('./database/test'),
       Contest =  require('./database/contest'),
-      Problem =  require('./database/problem'),
-      Subject =  require('./database/subject');
+      Problem =  require('./database/problem');
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(require('morgan')('dev'));

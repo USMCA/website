@@ -4,7 +4,12 @@ import { connect } from "react-redux";
 import { Input, Row, Col } from "react-materialize";
 import _ from "lodash";
 
-import { allCompetitions, directorCompetitions } from "../../actions";
+import { 
+  allCompetitions, 
+  memberCompetitions, 
+  directorCompetitions 
+} from "../../actions";
+import Autocomplete from "../react-materialize-custom/Autocomplete";
 import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
@@ -14,18 +19,19 @@ import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 const competitionsInputOptions = {
   ALL: "all",
+  MEMBER: "member",
   DIRECTOR: "director"
 }
 
-const competitionArrayToObject = a => {
-  return _.reduce(a, (o, comp) => Object.assign(o, { [comp.name]: comp._id }), {});
-};
 
 class CompetitionsInputDumb extends React.Component {
   componentWillMount() {
     switch (this.props.type) {
       case (competitionsInputOptions.ALL):
         this.props.allCompetitions(); 
+        break;
+      case (competitionsInputOptions.MEMBER):
+        this.props.memberCompetitions(); 
         break;
       case (competitionsInputOptions.DIRECTOR):
         this.props.directorCompetitions(); 
@@ -35,10 +41,22 @@ class CompetitionsInputDumb extends React.Component {
     }
   }
 
+  competitionObject = () => {
+    const { competitions, type } = this.props;
+    let a = competitions[type]; 
+    if (type === competitionsInputOptions.MEMBER) {
+      a = a.map(competitionInfo => competitionInfo.competition);
+    }
+    return _.reduce(a, (o, comp) => Object.assign(o, { 
+      [comp.short_name]: comp._id 
+    }), {});
+  };
+
   render() {
     const { 
       competitions, 
       allCompetitions,
+      memberCompetitions,
       directorCompetitions,
       type,
       input, 
@@ -48,33 +66,124 @@ class CompetitionsInputDumb extends React.Component {
     return (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
-        data={ competitionArrayToObject(competitions[type]) } limit={5} />
+        data={ this.competitionObject() } limit={5} />
     );
   }
 };
 CompetitionsInputDumb.propTypes = {
   competitions: PropTypes.object.isRequired,
   allCompetitions: PropTypes.func.isRequired,
+  memberCompetitions: PropTypes.func.isRequired,
   directorCompetitions: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired
 };
-const mapStateToProps = state => ({
+const mapStateToPropsCompetitionsInputDumb = state => ({
         competitions: {
           [competitionsInputOptions.ALL]: state.competitions.allCompetitions,
+          [competitionsInputOptions.MEMBER]: state.competitions.memberCompetitions,
           [competitionsInputOptions.DIRECTOR]: state.competitions.directorCompetitions
         }
       }),
-      mapDispatchToProps = dispatch => ({
+      mapDispatchToPropsCompetitionsInputDumb = dispatch => ({
         allCompetitions: () => {
           allCompetitions()(dispatch);
+        },
+        memberCompetitions: () => {
+          memberCompetitions()(dispatch);
         },
         directorCompetitions: () => {
           directorCompetitions()(dispatch);
         }
       });
 const CompetitionsInput = connect(
-  mapStateToProps, mapDispatchToProps
+  mapStateToPropsCompetitionsInputDumb, 
+  mapDispatchToPropsCompetitionsInputDumb
 )(CompetitionsInputDumb);
+
+/*******************************************************************************
+ * Select for competitions
+ ******************************************************************************/
+
+class CompetitionsSelectDumb extends React.Component {
+  componentWillMount() {
+    switch (this.props.type) {
+      case (competitionsInputOptions.ALL):
+        this.props.allCompetitions(); 
+        break;
+      case (competitionsInputOptions.MEMBER):
+        this.props.memberCompetitions(); 
+        break;
+      case (competitionsInputOptions.DIRECTOR):
+        this.props.directorCompetitions(); 
+        break;
+      default:
+        this.props.allCompetitions();
+    }
+  }
+
+  competitionObject = () => {
+    const { competitions, type } = this.props;
+    let a = competitions[type]; 
+    if (type === competitionsInputOptions.MEMBER) {
+      a = a.map(competitionInfo => competitionInfo.competition);
+    }
+    return _.reduce(a, (o, comp) => Object.assign(o, { 
+      [comp.short_name]: comp._id 
+    }), {});
+  };
+
+  render() {
+    const { 
+      competitions, 
+      allCompetitions,
+      memberCompetitions,
+      directorCompetitions,
+      type,
+      input, 
+      meta,
+      ...rest 
+    } = this.props;
+    return (
+      <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
+        <option value="">Select a Competition</option>
+        {
+          _.entries(this.competitionObject()).map(([ short_name, id ], idx) => (
+            <option key={ idx } value={ id }>{ short_name }</option>
+          ))
+        }
+      </Input>
+    );
+  }
+};
+CompetitionsSelectDumb.propTypes = {
+  competitions: PropTypes.object.isRequired,
+  allCompetitions: PropTypes.func.isRequired,
+  memberCompetitions: PropTypes.func.isRequired,
+  directorCompetitions: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired
+};
+const mapStateToPropsCompetitionsSelectDumb = state => ({
+        competitions: {
+          [competitionsInputOptions.ALL]: state.competitions.allCompetitions,
+          [competitionsInputOptions.MEMBER]: state.competitions.memberCompetitions,
+          [competitionsInputOptions.DIRECTOR]: state.competitions.directorCompetitions
+        }
+      }),
+      mapDispatchToPropsCompetitionsSelectDumb = dispatch => ({
+        allCompetitions: () => {
+          allCompetitions()(dispatch);
+        },
+        memberCompetitions: () => {
+          memberCompetitions()(dispatch);
+        },
+        directorCompetitions: () => {
+          directorCompetitions()(dispatch);
+        }
+      });
+const CompetitionsSelect = connect(
+  mapStateToPropsCompetitionsSelectDumb, 
+  mapDispatchToPropsCompetitionsSelectDumb
+)(CompetitionsSelectDumb);
 
 /*******************************************************************************
  * Array of locations input for contests.
@@ -169,8 +278,30 @@ class LocationArrayInput extends React.Component {
   }
 }
 
+/*******************************************************************************
+ * Subjects input.
+ ******************************************************************************/
+
+const subjects = {
+  "Algebra": null,
+  "Combinatorics": null,
+  "Computer Science": null,
+  "Geometry": null,
+  "Number Theory": null
+}
+
+const SubjectsInput = props => {
+  return (
+    <Autocomplete
+      s={12} title="Subject" { ...props }
+      data={ subjects } limit={5} />
+  );
+}
+
 export {
   competitionsInputOptions,
   CompetitionsInput,
-  LocationArrayInput
+  CompetitionsSelect,
+  LocationArrayInput,
+  SubjectsInput
 };

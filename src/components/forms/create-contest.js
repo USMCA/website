@@ -10,6 +10,7 @@ import { RightButtonPanel } from "../utilities";
 import { 
   competitionsInputOptions, 
   CompetitionsInput, 
+  CompetitionsSelect, 
   LocationArrayInput
 } from "./utilities";
 import {
@@ -20,7 +21,7 @@ import {
 import { requestStatuses } from "../../actions/types";
 
 const CompetitionInput = ({ input, meta, ...rest }) => (
-        <CompetitionsInput type={ competitionsInputOptions.DIRECTOR } { ...input } { ...rest } />
+        <CompetitionsSelect type={ competitionsInputOptions.DIRECTOR } { ...input } { ...rest } />
       ),
       NameInput = ({ input, meta, ...rest }) => (
         <Input s={12} label="Name" { ...input } { ...rest } />
