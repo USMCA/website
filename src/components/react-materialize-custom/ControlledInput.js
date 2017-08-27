@@ -149,6 +149,7 @@ class Input extends Component {
             multiple={multiple}
             id={this._id}
             className={cx(className, inputClasses)}
+            value={this.state.value}
             ref={(ref) => (this.selectInput = ref)}
             defaultValue={defaultValue}
           >

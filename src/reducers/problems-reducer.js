@@ -30,13 +30,31 @@ export default function (state = INITIAL_STATE, action) {
             requestStatus: SUCCESS
           };
         default:
-          return state;
+          return {
+            ...state,
+            requestStatus: action.payload.requestStatus
+          };
       }
     case PROB_POST: 
       return {
         ...state,
         requestStatus: action.payload.requestStatus
       };
+    case PROB_GET:
+      switch(action.payload.requestStatus) {
+        case SUCCESS:
+          return {
+            ...state,
+            error: false,
+            proposal: action.payload.problem,
+            requestStatus: SUCCESS
+          };
+        default:
+          return {
+            ...state,
+            requestStatus: action.payload.requestStatus
+          };
+      }
     default:
       return state;
   }

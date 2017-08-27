@@ -56,7 +56,7 @@ CompetitionsTableDumb.propTypes = {
   competitions: PropTypes.array.isRequired
 };
 const mapStateToProps = state => ({
-        competitions: state.competitions.myCompetitions
+        competitions: state.competitions.memberCompetitions
       });
 const CompetitionsTable = connect(mapStateToProps)(CompetitionsTableDumb);
 
