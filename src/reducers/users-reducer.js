@@ -26,7 +26,6 @@ export default function (state = INITIAL_STATE, action) {
     case USER_INFO:
       switch (action.payload.requestStatus) {
         case SUCCESS:
-          console.log(action.payload.user);
           return {
             ...state,
             error: false,
@@ -51,8 +50,6 @@ export default function (state = INITIAL_STATE, action) {
     case USER_COMP_RES:
       switch (action.payload.requestStatus) {
         case SUCCESS:
-          console.log('we have succeeded');
-          console.log(state);
           const newState = {
             ...state,
             error: false,
@@ -63,7 +60,6 @@ export default function (state = INITIAL_STATE, action) {
               ))
             })
           }
-          console.log(newState);
           return newState;
         default:
           return state;

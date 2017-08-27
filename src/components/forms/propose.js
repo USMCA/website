@@ -2,19 +2,64 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Input, Button } from "react-materialize";
 import { connect } from "react-redux";
-import { Field, reduxForm, formValueSelector } from "redux-form";
+import { Field, reduxForm } from "redux-form";
 
 import renderKaTeX from "../../katex";
+import { 
+  probErrorHandler, 
+  resetProposalForm, 
+  postProposal 
+} from "../../actions";
+import { requestStatuses } from "../../actions/types";
+import Spinner from "../spinner";
+import Error from "../error";
+import { 
+  competitionsInputOptions,
+  CompetitionsSelect, 
+  SubjectsInput 
+} from "./utilities";
+import ControlledInput from "../react-materialize-custom/ControlledInput";
 
-const myContests = [
-  {name : "Public database", subjects : ["Algebra", "Combinatorics", "Geometry", "Number Theory", "Other"]},
-  {name : "CMIMC 2017", subjects : ["Algebra", "Combinatorics", "Computer Science", "Geometry", "Number Theory"]}
-]
+const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
+
+const CompetitionField = ({ input, meta, ...rest }) => (
+        <CompetitionsSelect
+          s={4} 
+          type={ competitionsInputOptions.MEMBER } 
+          { ...input } 
+          { ...rest } />
+      ),
+      SubjectField = ({ input, meta, ...rest }) => (
+        <SubjectsInput s={4} { ...input } { ...rest } />),
+      DifficultyField = ({ input, meta, ...rest }) => (
+        <Input type="select" label="Difficulty (optional)" s={4} { ...input } { ...rest }>
+          <option value="">Select a difficulty</option>
+          <option value={1}>1 (Easy)</option>
+          <option value={2}>2 (Easy Medium)</option>
+          <option value={3}>3 (Medium)</option>
+          <option value={4}>4 (Medium Hard)</option>
+          <option value={5}>5 (Hard)</option>
+        </Input>
+      );
 
 class ProposeForm extends React.Component {
+  onSubmit = ({ 
+    competition_id, subject, difficulty, statement, answer, solution
+  }) => {
+    if (!competition_id || !subject || !statement) {
+      console.log('error');
+      return this.props.probErrorHandler('Please fill out required fields.');
+    } else {
+      console.log('success');
+      return this.props.postProposal({
+        competition_id, subject, difficulty, statement, answer, solution
+      });
+    }
+  } 
+
   previewKaTeX = () => {
-    if (this.statementField && this.statementField.value) {
-      this.statementPreview.innerHTML = this.statementField.value;
+    if (this.statementField && this.statementField.state.value) {
+      this.statementPreview.innerHTML = this.statementField.state.value;
       this.statementPreview.className = "katex-preview";
       renderKaTeX(this.statementPreview);
     } else {
@@ -29,8 +74,8 @@ class ProposeForm extends React.Component {
       this.answerPreview.innerHTML = "";
       this.answerPreview.className = "";
     }
-    if (this.solutionField && this.solutionField.value) {
-      this.solutionPreview.innerHTML = this.solutionField.value;
+    if (this.solutionField && this.solutionField.state.value) {
+      this.solutionPreview.innerHTML = this.solutionField.state.value;
       this.solutionPreview.className = "katex-preview";
       renderKaTeX(this.solutionPreview);
     } else {
@@ -40,55 +85,65 @@ class ProposeForm extends React.Component {
   }
 
   render() {
-    return (
-      <form className="col s12">
+    const { handleSubmit, probError, probMessage, requestStatus } = this.props;
+    return (requestStatus === SUCCESS) ? (
+      <div>
+        <p>Problem submitted!</p>
+      </div>
+    ) : (
+      <form className="col s12" onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
-          <Input type="select" label="Contest" s={4}>{
-            myContests.map((contest, key) => (
-              <option value={contest.name} key={key}>{contest.name}</option>
-            ))
-          }</Input>
-          <Input type="select" label="Subject" s={4}>
-            <option value="none">Select a subject</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-          </Input>
-          <Input type="select" label="Difficulty" s={4}>
-            <option value="none">Select a difficulty</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </Input>
+          <div>
+            <Field name="competition_id" component={ CompetitionField } />
+          </div>
+          <div>
+            <Field name="subject" component={ SubjectField } />
+          </div>
+          <div>
+            <Field name="difficulty" component={ DifficultyField } />
+          </div>
         </Row>
         <Row>
-          <Col s={6} className="input-field">
-            <textarea
-              id="statement"
-              className="materialize-textarea"
-              ref={ elem => { this.statementField = elem; } } />
-            <label htmlFor="statement">Problem</label>
-          </Col>
+          <div>
+            <Field 
+              name="statement" 
+              component={ ({ input, meta, ...rest }) => (
+                <ControlledInput 
+                  s={6} type="textarea" label="Problem"
+                  { ...input } { ...rest }
+                  ref={ elem => { this.statementField = elem; } } />
+              ) } />
+          </div>
           <Col s={6}>
             <div ref={ elem => { this.statementPreview = elem; } }></div>
           </Col>
         </Row>
         <Row>
-          <Input
-            s={6} type="text" label="Answer"
-            ref={ elem => { this.answerField = elem; } } />
+          <div>
+            <Field 
+              name="answer" 
+              component={ ({ input, meta, ...rest }) => (
+                <ControlledInput 
+                  s={6} type="text" label="Answer (optional)"
+                  { ...input } { ...rest }
+                  ref={ elem => { this.answerField = elem; } } />
+              ) } />
+          </div>
           <Col s={6}>
             <div ref={ elem => { this.answerPreview = elem; } }></div>
           </Col>
         </Row>
         <Row>
-          <Col s={6} className="input-field">
-            <textarea
-              id="solution"
-              className="materialize-textarea"
-              ref={ elem => { this.solutionField = elem; } }></textarea>
-            <label htmlFor="solution">Solution</label>
-          </Col>
+          <div>
+            <Field 
+              name="solution" 
+              component={ ({ input, meta, ...rest }) => (
+                <ControlledInput 
+                  s={6} type="textarea" label="Solution (optional)"
+                  { ...input } { ...rest }
+                  ref={ elem => { this.solutionField = elem; } } />
+              ) } />
+          </div>
           <Col s={6}>
             <div ref={ elem => { this.solutionPreview = elem; } }></div>
           </Col>
@@ -101,9 +156,53 @@ class ProposeForm extends React.Component {
             <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
           </Col>
         </Row>
+        <Row>
+          <Error error={ probError } message={ probMessage } />
+          { 
+            (
+              requestStatus === requestStatuses.PENDING && !probError
+            ) && <Spinner /> 
+          }
+        </Row>
       </form>
     );
   }
 }
 
-export default ProposeForm;
+ProposeForm.propTypes = {
+  probError: PropTypes.bool.isRequired,
+  probMessage: PropTypes.string,
+  requestStatus: PropTypes.string.isRequired,
+  probErrorHandler: PropTypes.func.isRequired,
+  postProposal: PropTypes.func.isRequired,
+  resetProposalForm: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+        probError: state.problems.error,
+        probMessage: state.problems.message,
+        requestStatus: state.problems.requestStatus
+      }),
+      mapDispatchToProps = dispatch => ({
+        probErrorHandler: errorMessage => {
+          probErrorHandler(dispatch, errorMessage);
+        },
+        postProposal: ({ 
+          competition_id, subject, difficulty, statement, answer, solution 
+        }) => {
+          postProposal({ 
+            competition_id, subject, difficulty, statement, answer, solution 
+          })(dispatch);
+        },
+        resetProposalForm: () => {
+          resetProposalForm(dispatch);
+        }
+      });
+
+export default connect(
+  mapStateToProps, mapDispatchToProps
+)(
+  reduxForm({ 
+    form: 'propose'
+  })(ProposeForm)
+);

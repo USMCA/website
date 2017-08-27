@@ -23,6 +23,13 @@ export function probErrorHandler(dispatch, errorMessage) {
   });
 }
 
+export function resetProposalForm(dispatch) {
+  dispatch({
+    type: PROB_POST,
+    payload: { requestStatus: IDLE }
+  });
+}
+
 /*******************************************************************************
  * Async thunk actions.
  ******************************************************************************/
@@ -35,9 +42,9 @@ export function fetchMyProposals() {
     } else {
       dispatch({ 
         type: PROB_FETCH_MINE, 
-        payload: { status: PENDING }
+        payload: { requestStatus: PENDING }
       });
-      fetch(`/api/users/problems`, {
+      fetch('/api/users/problems', {
         method: 'get',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -47,29 +54,59 @@ export function fetchMyProposals() {
         response => {
           return response.json()
           .then(data => {
-            if (data.error) probErrorHandler(dispatch, data.message);
+            if (data.error) return probErrorHandler(dispatch, data.message);
             else {
               dispatch({ 
                 type: PROB_FETCH_MINE,
-                payload: { status: SUCCESS, problems: data.problems }
+                payload: { requestStatus: SUCCESS, problems: data.problems }
               });
             }
           });
         }, 
         error => {
           errorMessage = error.message || 'Failed to communicate with server.';
-          probErrorHandler(dispatch, errorMessage);
+          return probErrorHandler(dispatch, errorMessage);
         }
       );
     }
   }
 }
 
-export function postProposal(proposal) {
+export function postProposal({
+    competition_id, subject, difficulty, statement, answer, solution
+  }) {
   return dispatch => {
     dispatch({
       type: PROB_POST,
-      payload: { status: PENDING }
+      payload: { requestStatus: PENDING }
     });
+    fetch('/api/users/problems', {
+      method: 'post',
+      body: JSON.stringify({
+        competition_id, subject, difficulty, statement, answer, solution
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(
+      response => {
+        return response.json()
+        .then(data => {
+          if (!data.success) return probErrorHandler(dispatch, data.message);
+          else {
+            dispatch({ 
+              type: PROB_POST,
+              payload: { requestStatus: SUCCESS }
+            });
+          }
+        });
+      },
+      error => {
+        errorMessage = error.message || 'Failed to communicate with server.';
+        return probErrorHandler(dispatch, errorMessage);
+      }
+    );
   }
 }

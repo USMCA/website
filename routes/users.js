@@ -4,7 +4,8 @@ const router = require('express').Router(),
       handler = require('../utils/handler');
 
 const User = require('../database/user'),
-      Problem = require('../database/problem')
+      Problem = require('../database/problem'),
+      Solution = require('../database/solution'),
       Competition = require('../database/competition');
 
 router.get('/', auth.verifyJWT, (req, res) => {
@@ -43,18 +44,74 @@ router.get('/admin', (req, res) => {
   });
 });
 
+/*******************************************************************************
+ * Problems
+ ******************************************************************************/
+
 /* get problems of the user */
 router.get('/problems', auth.verifyJWT, (req, res) => {
-  Problem.find({ user: req.payload.user_id }, (err, problems) => {
+  Problem.find({ author: req.user._id }, (err, problems) => {
     if (err) {
       return handler(false, 'Database failed to load user\'s problems.', 503)(req, res);
     } else {
-      return handler(true, 'Successfully loaded admins info.', 200, {
+      return handler(true, 'Successfully user\'s problems info.', 200, {
         problems: problems
       })(req, res);
     }
   });
 });
+
+/* post a new problem */
+router.post('/problems', auth.verifyJWT, (req, res) => {
+  const { 
+    competition_id, 
+    subject, 
+    difficulty, 
+    statement,
+    answer,
+    solution
+  } = req.body;
+  Competition.findById(competition_id, (err, competition) => {
+    if (err) {
+      console.log(err);
+      return handler(false, 'Database failed to load the associated competition.', 503)(req, res);
+    } else {
+      const official_soln = solution ? Object.assign(new Solution(), {
+              author: req.user._id,
+              body: solution
+            }) : null;
+            problem = Object.assign(new Problem(), {
+              author: req.user._id,
+              competition: competition._id,
+              subject,
+              difficulty,
+              statement, 
+              answer,
+              official_soln: official_soln ? [ official_soln._id ] : []
+            });
+      problem.save(err => {
+        if (err) {
+          console.log(err);
+          return handler(false, 'Database failed to save problem.', 503)(req, res);
+        } else if (official_soln) {
+          official_soln.save(err => {
+            if (err) {
+              return handler(false, 'Database failed to save solution.', 503)(req, res);
+            } else {
+              return handler(true, 'Successfully posted problem.', 200)(req, res);
+            }
+          });
+        } else {
+          return handler(true, 'Successfully posted problem.', 200)(req, res);
+        }
+      });
+    }
+  });
+});
+
+/*******************************************************************************
+ * Competitions
+ ******************************************************************************/
 
 /* get competitions of the user */
 router.get('/competitions', auth.verifyJWT, (req, res) => {
@@ -94,7 +151,7 @@ router.get('/director', auth.verifyJWT, (req, res) => {
   Competition.find({ 
     directors: req.payload.user_id, 
     valid: true 
-  }, 'name _id', (err, directorCompetitions) => {
+  }, 'short_name name _id', (err, directorCompetitions) => {
     if (err) {
       console.log(err);
       return handler(false, 'Database failed to search for director competitions.', 503)(req, res);

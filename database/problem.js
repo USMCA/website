@@ -10,6 +10,7 @@ const problemSchema = new Schema({
   answer: String,
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
+  subject: { type: String, required: true },
   difficulty: { type: Number, required: true, min: 1, max: 5 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   views: [ { type: Schema.Types.ObjectId, ref: 'User' } ],

@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import $ from 'jquery';
 
 import auth from '../auth';
-import { fetchMyCompetitions } from './competitions-actions';
+import { memberCompetitions } from './competitions-actions';
 import {
   requestStatuses,
   USER_ERROR,
@@ -33,7 +33,7 @@ export function userInfo() {
     });
     const userId = auth.userId();
     if (userId) {
-      fetchMyCompetitions()(dispatch);
+      memberCompetitions()(dispatch);
       fetch(`/api/users?${$.param({ id: userId })}`, { 
         method: 'get',
         headers: {

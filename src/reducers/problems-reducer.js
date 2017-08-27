@@ -2,14 +2,16 @@ import {
   PROB_ERROR,
   PROB_FETCH_MINE,
   PROB_POST,
-  PROB_GET
+  PROB_GET,
+  requestStatuses
 } from '../actions/types';
+
+const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 const INITIAL_STATE = { 
   error: false, 
   message: '', 
-  proposalsLoading: false,
-  proposalSubmitting: false,
+  requestStatus: IDLE,
   myProposals: [], 
   proposal: {}
 };
@@ -17,8 +19,23 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {  
   switch(action.type) {
     case PROB_ERROR:
+      return { ...state, error: true, message: action.payload };
     case PROB_FETCH_MINE:
+      switch(action.payload.requestStatus) {
+        case SUCCESS:
+          return {
+            ...state,
+            error: false,
+            myProposals: action.payload.problems
+          };
+        default:
+          return state;
+      }
     case PROB_POST: 
+      return {
+        ...state,
+        requestStatus: action.payload.requestStatus
+      };
     default:
       return state;
   }
