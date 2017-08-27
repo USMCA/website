@@ -6,11 +6,21 @@ import { Field, reduxForm } from "redux-form";
 
 import renderKaTeX from "../../katex";
 import { 
+  probErrorHandler, 
+  resetProposalForm, 
+  postProposal 
+} from "../../actions";
+import { requestStatuses } from "../../actions/types";
+import Spinner from "../spinner";
+import Error from "../error";
+import { 
   competitionsInputOptions,
   CompetitionsSelect, 
   SubjectsInput 
 } from "./utilities";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
+
+const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 const CompetitionField = ({ input, meta, ...rest }) => (
         <CompetitionsSelect
@@ -20,10 +30,9 @@ const CompetitionField = ({ input, meta, ...rest }) => (
           { ...rest } />
       ),
       SubjectField = ({ input, meta, ...rest }) => (
-        <SubjectsInput s={4} { ...input } { ...rest } />
-      ),
+        <SubjectsInput s={4} { ...input } { ...rest } />),
       DifficultyField = ({ input, meta, ...rest }) => (
-        <Input type="select" label="Difficulty" s={4} { ...input } { ...rest }>
+        <Input type="select" label="Difficulty (optional)" s={4} { ...input } { ...rest }>
           <option value="">Select a difficulty</option>
           <option value={1}>1 (Easy)</option>
           <option value={2}>2 (Easy Medium)</option>
@@ -34,9 +43,19 @@ const CompetitionField = ({ input, meta, ...rest }) => (
       );
 
 class ProposeForm extends React.Component {
-  onSubmit = value => {
-    console.log(value);
-  }
+  onSubmit = ({ 
+    competition_id, subject, difficulty, statement, answer, solution
+  }) => {
+    if (!competition_id || !subject || !statement) {
+      console.log('error');
+      return this.props.probErrorHandler('Please fill out required fields.');
+    } else {
+      console.log('success');
+      return this.props.postProposal({
+        competition_id, subject, difficulty, statement, answer, solution
+      });
+    }
+  } 
 
   previewKaTeX = () => {
     if (this.statementField && this.statementField.state.value) {
@@ -66,8 +85,12 @@ class ProposeForm extends React.Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
-    return (
+    const { handleSubmit, probError, probMessage, requestStatus } = this.props;
+    return (requestStatus === SUCCESS) ? (
+      <div>
+        <p>Problem submitted!</p>
+      </div>
+    ) : (
       <form className="col s12" onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
           <div>
@@ -101,7 +124,7 @@ class ProposeForm extends React.Component {
               name="answer" 
               component={ ({ input, meta, ...rest }) => (
                 <ControlledInput 
-                  s={6} type="text" label="Answer"
+                  s={6} type="text" label="Answer (optional)"
                   { ...input } { ...rest }
                   ref={ elem => { this.answerField = elem; } } />
               ) } />
@@ -116,7 +139,7 @@ class ProposeForm extends React.Component {
               name="solution" 
               component={ ({ input, meta, ...rest }) => (
                 <ControlledInput 
-                  s={6} type="textarea" label="Solution"
+                  s={6} type="textarea" label="Solution (optional)"
                   { ...input } { ...rest }
                   ref={ elem => { this.solutionField = elem; } } />
               ) } />
@@ -133,11 +156,53 @@ class ProposeForm extends React.Component {
             <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
           </Col>
         </Row>
+        <Row>
+          <Error error={ probError } message={ probMessage } />
+          { 
+            (
+              requestStatus === requestStatuses.PENDING && !probError
+            ) && <Spinner /> 
+          }
+        </Row>
       </form>
     );
   }
 }
 
-export default reduxForm({ 
-  form: 'propose'
-})(ProposeForm);
+ProposeForm.propTypes = {
+  probError: PropTypes.bool.isRequired,
+  probMessage: PropTypes.string,
+  requestStatus: PropTypes.string.isRequired,
+  probErrorHandler: PropTypes.func.isRequired,
+  postProposal: PropTypes.func.isRequired,
+  resetProposalForm: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+        probError: state.problems.error,
+        probMessage: state.problems.message,
+        requestStatus: state.problems.requestStatus
+      }),
+      mapDispatchToProps = dispatch => ({
+        probErrorHandler: errorMessage => {
+          probErrorHandler(dispatch, errorMessage);
+        },
+        postProposal: ({ 
+          competition_id, subject, difficulty, statement, answer, solution 
+        }) => {
+          postProposal({ 
+            competition_id, subject, difficulty, statement, answer, solution 
+          })(dispatch);
+        },
+        resetProposalForm: () => {
+          resetProposalForm(dispatch);
+        }
+      });
+
+export default connect(
+  mapStateToProps, mapDispatchToProps
+)(
+  reduxForm({ 
+    form: 'propose'
+  })(ProposeForm)
+);

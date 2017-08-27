@@ -119,3 +119,15 @@
   updated: Date
 }
 ```
+
+## Solution
+```
+{
+  author: User,
+  body: String,
+  comments: [ Comment ],
+  created: Date,
+  updated: Date
+}
+```
+

@@ -5,6 +5,7 @@ const router = require('express').Router(),
 
 const User = require('../database/user'),
       Problem = require('../database/problem'),
+      Solution = require('../database/solution'),
       Competition = require('../database/competition');
 
 router.get('/', auth.verifyJWT, (req, res) => {
@@ -49,11 +50,10 @@ router.get('/admin', (req, res) => {
 
 /* get problems of the user */
 router.get('/problems', auth.verifyJWT, (req, res) => {
-  Problem.find({ user: req.user._id }, (err, problems) => {
+  Problem.find({ author: req.user._id }, (err, problems) => {
     if (err) {
       return handler(false, 'Database failed to load user\'s problems.', 503)(req, res);
     } else {
-      console.log('aileeeeeee', problems);
       return handler(true, 'Successfully user\'s problems info.', 200, {
         problems: problems
       })(req, res);
@@ -76,19 +76,31 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
       console.log(err);
       return handler(false, 'Database failed to load the associated competition.', 503)(req, res);
     } else {
-      const problem = Object.assign(new Problem(), {
-        author: req.user._id,
-        competition: competition._id,
-        subject,
-        difficulty,
-        statement, 
-        answer,
-        official_soln: solution ? [ solution ] : []
-      });
+      const official_soln = solution ? Object.assign(new Solution(), {
+              author: req.user._id,
+              body: solution
+            }) : null;
+            problem = Object.assign(new Problem(), {
+              author: req.user._id,
+              competition: competition._id,
+              subject,
+              difficulty,
+              statement, 
+              answer,
+              official_soln: official_soln ? [ official_soln._id ] : []
+            });
       problem.save(err => {
         if (err) {
           console.log(err);
           return handler(false, 'Database failed to save problem.', 503)(req, res);
+        } else if (official_soln) {
+          official_soln.save(err => {
+            if (err) {
+              return handler(false, 'Database failed to save solution.', 503)(req, res);
+            } else {
+              return handler(true, 'Successfully posted problem.', 200)(req, res);
+            }
+          });
         } else {
           return handler(true, 'Successfully posted problem.', 200)(req, res);
         }

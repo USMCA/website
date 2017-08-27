@@ -23,6 +23,13 @@ export function probErrorHandler(dispatch, errorMessage) {
   });
 }
 
+export function resetProposalForm(dispatch) {
+  dispatch({
+    type: PROB_POST,
+    payload: { requestStatus: IDLE }
+  });
+}
+
 /*******************************************************************************
  * Async thunk actions.
  ******************************************************************************/
@@ -65,7 +72,9 @@ export function fetchMyProposals() {
   }
 }
 
-export function postProposal(proposal) {
+export function postProposal({
+    competition_id, subject, difficulty, statement, answer, solution
+  }) {
   return dispatch => {
     dispatch({
       type: PROB_POST,
@@ -73,6 +82,9 @@ export function postProposal(proposal) {
     });
     fetch('/api/users/problems', {
       method: 'post',
+      body: JSON.stringify({
+        competition_id, subject, difficulty, statement, answer, solution
+      }),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`

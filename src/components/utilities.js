@@ -96,13 +96,13 @@ const ProblemPreview = ({ children, problem }) => (
     <Col s={3}>
       <Row style={{marginBottom: "0"}}>
         <Col s={4}>
-          <span className="count">{ problem.votes }</span><br />votes
+          <span className="count">{ problem.upvotes.length }</span><br />votes
         </Col>
         <Col s={4}>
-          <span className="count">{ problem.solves }</span><br />solves
+          <span className="count">{ problem.alternate_soln.length }</span><br />solves
         </Col>
         <Col s={4}>
-          <span className="count">{ problem.views }</span><br />views
+          <span className="count">{ problem.views.length }</span><br />views
         </Col>
       </Row>
       <Row style={{marginBottom: "24px"}}>
@@ -128,7 +128,7 @@ class HorizontalNav extends React.Component {
     const { tabs, active } = this.state;
     if (!tabs) return (<div></div>);
     if (tabs[active] === undefined) {
-      console.log('Active tab is not in the tabs.');
+      console.log('Error: Active tab is not in the tabs.');
       return (<div></div>);
     }
     return (

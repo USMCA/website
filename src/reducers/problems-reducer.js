@@ -19,10 +19,10 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {  
   switch(action.type) {
     case PROB_ERROR:
+      return { ...state, error: true, message: action.payload };
     case PROB_FETCH_MINE:
       switch(action.payload.requestStatus) {
         case SUCCESS:
-          console.log('ailee received', action.payload.problems);
           return {
             ...state,
             error: false,
@@ -32,6 +32,10 @@ export default function (state = INITIAL_STATE, action) {
           return state;
       }
     case PROB_POST: 
+      return {
+        ...state,
+        requestStatus: action.payload.requestStatus
+      };
     default:
       return state;
   }
