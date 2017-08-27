@@ -271,3 +271,7 @@ li.urgent-announcement {
 .downvote, .downvote a  {
   color: #d50000;
 }
+
+.roster, .roster input[type="text"] {
+  font-size: 12px;
+}

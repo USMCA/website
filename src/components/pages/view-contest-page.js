@@ -86,10 +86,10 @@ const ContestPreview = ({ name, date, locations, status, tests, czars, testSolve
   </Col>
 )
 
-const ContestsPage = () => (
+const ViewContestPage = () => (
   <Row className="container">
     <ContestPreview name="CMIMC 2018" date="January 28th, 2018" locations={["Carnegie Mellon University", "CMU Qatar Campus"]} status="Active" tests={tests} czars={["Taisuke Yasuda", "Cody Johnson"]} testSolvers={["Taisuke Yasuda", "Cody Johnson"]} />
   </Row>
 );
 
-export default ContestsPage;
+export default ViewContestPage;
