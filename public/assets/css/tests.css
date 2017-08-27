@@ -1,0 +1,13 @@
+.test-table {
+  border: 1px solid #cfd8dc;
+  border-bottom: none;
+}
+
+.test-table tr td:first-child {
+  width: 48px;
+  border-right: 1px solid #cfd8dc;
+}
+
+.test-table tr  {
+  border-bottom: 1px solid #cfd8dc;
+}

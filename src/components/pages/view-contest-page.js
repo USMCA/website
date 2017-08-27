@@ -37,15 +37,31 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
     title: "Czars",
     view: (
       <div className="round-container">
-        <ul>
-          {
-            czars.map((czar, key) => (
-              <li key={key}>{czar}<a href="#" className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
-            ))
-          }
-        </ul>
+        <Button className="teal darken-3">Add</Button>
+        <h3>Czars</h3>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th className="center-align">Remove</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {
+              czars.map((czar, key) => (
+                <tr key={key}>
+                  <td>{czar}</td>
+                  <td>ctj@math.cmu.edu</td>
+                  <td className="center-align"><a href="#" className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </Table><br />
         <RightButtonPanel>
-          <a href="#" className="teal-text text-darken-3">Add czars</a> <a href="#" className="teal-text text-darken-3">Leave as czar</a>
+          <a href="#" className="btn teal darken-3">Leave as czar</a>
         </RightButtonPanel>
       </div>
     )
@@ -54,16 +70,29 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
     title: "Test Solvers",
     view: (
       <div className="round-container">
-        <ul>
-          {
-            testSolvers.map((testSolver, key) => (
-              <li key={key}>{testSolver}<a href="#" className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
-            ))
-          }
-        </ul>
-        <RightButtonPanel>
-          <a href="#" className="teal-text text-darken-3">Add test solvers</a>
-        </RightButtonPanel>
+        <Button className="teal darken-3">Add</Button> <Button className="teal darken-3">Request</Button>
+        <h3>Test Solvers</h3>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th className="center-align">Remove</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {
+              testSolvers.map((czar, key) => (
+                <tr key={key}>
+                  <td>{czar}</td>
+                  <td>ctj@math.cmu.edu</td>
+                  <td className="center-align"><a href="#" className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </Table>
       </div>
     )
   }
@@ -80,7 +109,7 @@ const tests = [
 ]
 
 const ContestPreview = ({ name, date, locations, status, tests, czars, testSolvers }) => (
-  <Col s={12} className="top-border">
+  <Col s={12}>
     <h2 className="teal-text text-darken-3">{name}</h2>
     <VerticalNav tabs={ contestTabs({ name, date, locations, status, tests, czars, testSolvers })} active="tests" />
   </Col>
