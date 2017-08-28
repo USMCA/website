@@ -26,9 +26,9 @@ const Feedback = ({feedbackType, author, message}) => (
 const Vote = ({ type, netVotes }) => (
   <div>
     <ul className={"clear-top center-align " + type}>
-      <li><a href="#"><i className="fa fa-arrow-up" aria-hidden="true"></i></a></li>
+      <li><a href="#"><i className="fa fa-arrow-up" aria-hidden="true" /></a></li>
       <li>{netVotes}</li>
-      <li><a href="#"><i className="fa fa-arrow-down" aria-hidden="true"></i></a></li>
+      <li><a href="#"><i className="fa fa-arrow-down" aria-hidden="true" /></a></li>
     </ul>
   </div>
 );
@@ -43,36 +43,6 @@ class ViewProbPage extends React.Component {
     const { proposal: { content, message } } = this.props,
           problem = content;
     return ({
-      "respond": {
-        title: "Respond",
-        view: (
-          <form className="row">
-            <Col s={12}>
-              <ul className="inline-list">
-                <li>This is a:</li>
-                <li>
-                  <Input name="feedback-type" type="radio" label="comment" defaultChecked="checked" />
-                </li>
-                <li>
-                  <Input name="feedback-type" type="radio" label="alternate solution" />
-                </li>
-              </ul>
-            </Col>
-            <Col s={6} className="input-field">
-              <textarea id="feedback" className="materialize-textarea"></textarea>
-              <label htmlFor="feedback">Comment</label>
-            </Col>
-            <Col s={6}>
-            </Col>
-            <Col s={2} className="offset-s8">
-              <Button waves="light" className="teal darken-3">Preview</Button>
-            </Col>
-            <Col s={2}>
-              <Button waves="light" className="teal darken-3">Submit</Button>
-            </Col>
-          </form>
-        )
-      },
       "answer": {
         title: "Answer",
         view: <p>{ problem.answer || 'No answer provided.' }</p>
@@ -104,7 +74,7 @@ class ViewProbPage extends React.Component {
           </ul>
         ) : ( <p>No solutions.</p> )
       },
-      "test_solves": {
+      "test-solves": {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
         view: problem.alternate_soln.length > 0 ? (
           <ul>
@@ -168,7 +138,7 @@ class ViewProbPage extends React.Component {
                 <a onClick={ this.toggleDiscussion }>
                   <i className="fa fa-caret-up" aria-hidden="true" /> Hide Discussion
                 </a>
-                <HorizontalNav tabs={ this.problemTabs() } active="respond" /> 
+                <HorizontalNav tabs={ this.problemTabs() } active="test-solves" /> 
               </div>
             ) : (
               <div>

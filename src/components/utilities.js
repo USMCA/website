@@ -132,7 +132,7 @@ class HorizontalNav extends React.Component {
     const { tabs, active } = this.state;
     if (!tabs) return (<div></div>);
     if (tabs[active] === undefined) {
-      console.log('Error: Active tab is not in the tabs.');
+      throw 'Specified active tab is not in the tabs object.';
       return (<div></div>);
     }
     return (
