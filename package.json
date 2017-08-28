@@ -14,6 +14,7 @@
     "materialize-css": "^0.100.1",
     "mongoose": "^4.11.7",
     "react-materialize": "^1.0.10",
+    "react-sortable-hoc": "^0.6.7",
     "serve-favicon": "^2.3.0",
     "socket.io": "^1.7.4"
   },

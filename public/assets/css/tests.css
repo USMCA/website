@@ -1,13 +1,12 @@
-.test-table {
-  border: 1px solid #cfd8dc;
-  border-bottom: none;
+.test-list, .test-list-item  {
+  list-style-type: none;
+  padding: 0;
 }
 
-.test-table tr td:first-child {
-  width: 48px;
-  border-right: 1px solid #cfd8dc;
+.test-list li {
+  padding-bottom: 8px;
 }
 
-.test-table tr  {
-  border-bottom: 1px solid #cfd8dc;
+.katex-preview .row  {
+  margin-bottom: 0;
 }
