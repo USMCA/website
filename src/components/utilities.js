@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import renderKaTeX from "../katex";
 import { respondCompetition } from "../actions";
@@ -88,9 +89,12 @@ const ProblemPreview = ({ children, problem }) => (
   <Row className="problem-preview">
     <Col s={9}>
       <div className="katex-preview" style={{marginBottom: "24px"}}>
-        <a href="view-problem" className="black-text underline-hover" ref={ renderKaTeX }>
+        <Link 
+          to={ "/view-problem/" + problem._id.toString() } 
+          className="black-text underline-hover" 
+          ref={ renderKaTeX }>
           { problem.statement }
-        </a>
+        </Link>
       </div>
     </Col>
     <Col s={3}>

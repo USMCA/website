@@ -64,7 +64,7 @@ export function fetchMyProposals() {
           });
         }, 
         error => {
-          errorMessage = error.message || 'Failed to communicate with server.';
+          const errorMessage = error.message || 'Failed to communicate with server.';
           return probErrorHandler(dispatch, errorMessage);
         }
       );
@@ -104,9 +104,48 @@ export function postProposal({
         });
       },
       error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
+        const errorMessage = error.message || 'Failed to communicate with server.';
         return probErrorHandler(dispatch, errorMessage);
       }
     );
   }
 }
+
+export function getProposal(id) {
+  return dispatch => {
+    const userId = auth.userId();
+    if (!userId) {
+      return probErrorHandler(dispatch, 'User is not logged in.');
+    } else {
+      dispatch({ 
+        type: PROB_GET, 
+        payload: { requestStatus: PENDING }
+      });
+      fetch(`/api/problems?${$.param({ id: id })}`, {
+        method: 'get',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(
+        response => {
+          return response.json()
+          .then(data => {
+            if (data.error) return probErrorHandler(dispatch, data.message);
+            else {
+              dispatch({ 
+                type: PROB_GET,
+                payload: { requestStatus: SUCCESS, problem: data.problem }
+              });
+            }
+          });
+        }, 
+        error => {
+          const errorMessage = error.message || 'Failed to communicate with server.';
+          return probErrorHandler(dispatch, errorMessage);
+        }
+      );
+    }
+  }
+}
+

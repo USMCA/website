@@ -4,7 +4,7 @@ export const INIT_ERROR = 'init_error', // notify initialization error
              INIT_APP = 'init_app'; // fetch initialization data from server
 
 export const requestStatuses = {
-  SUCESS: 'success',
+  SUCCESS: 'success',
   PENDING: 'pending',
   SUBMITTED: 'submitted',
   IDLE: 'idle'
@@ -36,4 +36,4 @@ export const CONTEST_ERROR = 'contest_error', // notify a contest error
 export const PROB_ERROR = 'prob_error', // notify a proposal error
              PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
              PROB_POST = 'prob_post', // post a proposal
-             PROB_GET = 'prob_get';
+             PROB_GET = 'prob_get'; // get a proposal by id

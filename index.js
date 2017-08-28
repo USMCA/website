@@ -18,6 +18,7 @@ const User = require('./database/user'),
       Test =  require('./database/test'),
       Contest =  require('./database/contest'),
       Problem =  require('./database/problem'),
+      Comment =  require('./database/comment'),
       Solution = require('./database/solution');
 
 if (process.env.NODE_ENV !== 'production') {
@@ -37,11 +38,13 @@ mongoose.connect(process.env.DB_URL, {
 const authRouter = require('./routes/auth'),
       userRouter = require('./routes/users'),
       contestRouter = require('./routes/contests'),
-      compRouter = require('./routes/competitions');
+      compRouter = require('./routes/competitions'),
+      probRouter = require('./routes/problems');
 app.use('/', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/contests', contestRouter);
 app.use('/api/competitions', compRouter);
+app.use('/api/problems', probRouter);
 
 /* serve home page */
 app.get('/*', (req, res) => {

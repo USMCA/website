@@ -11,7 +11,7 @@ const problemSchema = new Schema({
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   subject: { type: String, required: true },
-  difficulty: { type: Number, required: true, min: 1, max: 5 },
+  difficulty: { type: Number, min: 1, max: 5 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   views: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
@@ -20,9 +20,11 @@ const problemSchema = new Schema({
 });
 
 problemSchema.pre('validate', function(next) {
-  if (this.difficulty > 5) this.difficulty = 5;
-  if (this.difficulty < 1) this.difficulty = 1;
-  this.difficulty = Math.round(this.difficulty);
+  if (this.difficulty) {
+    if (this.difficulty > 5) this.difficulty = 5;
+    if (this.difficulty < 1) this.difficulty = 1;
+    this.difficulty = Math.round(this.difficulty);
+  }
 
   const now = new Date();
   if (!this.created) this.created = now;

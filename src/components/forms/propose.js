@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Input, Button } from "react-materialize";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
+import { Link } from "react-router-dom";
 
 import renderKaTeX from "../../katex";
 import { 
@@ -47,15 +48,17 @@ class ProposeForm extends React.Component {
     competition_id, subject, difficulty, statement, answer, solution
   }) => {
     if (!competition_id || !subject || !statement) {
-      console.log('error');
       return this.props.probErrorHandler('Please fill out required fields.');
     } else {
-      console.log('success');
       return this.props.postProposal({
         competition_id, subject, difficulty, statement, answer, solution
       });
     }
   } 
+
+  resetForm = () => {
+    this.props.resetProposalForm();
+  }
 
   previewKaTeX = () => {
     if (this.statementField && this.statementField.state.value) {
@@ -88,7 +91,7 @@ class ProposeForm extends React.Component {
     const { handleSubmit, probError, probMessage, requestStatus } = this.props;
     return (requestStatus === SUCCESS) ? (
       <div>
-        <p>Problem submitted!</p>
+        <p>Problem submitted! Click <Link to="/propose" onClick={ this.resetForm }>here</Link> to propose another problem.</p>
       </div>
     ) : (
       <form className="col s12" onSubmit={ handleSubmit(this.onSubmit) }>
@@ -108,7 +111,7 @@ class ProposeForm extends React.Component {
             <Field 
               name="statement" 
               component={ ({ input, meta, ...rest }) => (
-                <ControlledInput 
+                <Input 
                   s={6} type="textarea" label="Problem"
                   { ...input } { ...rest }
                   ref={ elem => { this.statementField = elem; } } />
@@ -123,7 +126,7 @@ class ProposeForm extends React.Component {
             <Field 
               name="answer" 
               component={ ({ input, meta, ...rest }) => (
-                <ControlledInput 
+                <Input 
                   s={6} type="text" label="Answer (optional)"
                   { ...input } { ...rest }
                   ref={ elem => { this.answerField = elem; } } />
@@ -138,7 +141,7 @@ class ProposeForm extends React.Component {
             <Field 
               name="solution" 
               component={ ({ input, meta, ...rest }) => (
-                <ControlledInput 
+                <Input 
                   s={6} type="textarea" label="Solution (optional)"
                   { ...input } { ...rest }
                   ref={ elem => { this.solutionField = elem; } } />
@@ -160,7 +163,7 @@ class ProposeForm extends React.Component {
           <Error error={ probError } message={ probMessage } />
           { 
             (
-              requestStatus === requestStatuses.PENDING && !probError
+              requestStatus === PENDING && !probError
             ) && <Spinner /> 
           }
         </Row>

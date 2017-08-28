@@ -1,9 +1,9 @@
 import { 
+  requestStatuses,
   PROB_ERROR,
   PROB_FETCH_MINE,
   PROB_POST,
-  PROB_GET,
-  requestStatuses
+  PROB_GET
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
@@ -26,16 +26,35 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...state,
             error: false,
-            myProposals: action.payload.problems
+            myProposals: action.payload.problems,
+            requestStatus: SUCCESS
           };
         default:
-          return state;
+          return {
+            ...state,
+            requestStatus: action.payload.requestStatus
+          };
       }
     case PROB_POST: 
       return {
         ...state,
         requestStatus: action.payload.requestStatus
       };
+    case PROB_GET:
+      switch(action.payload.requestStatus) {
+        case SUCCESS:
+          return {
+            ...state,
+            error: false,
+            proposal: action.payload.problem,
+            requestStatus: SUCCESS
+          };
+        default:
+          return {
+            ...state,
+            requestStatus: action.payload.requestStatus
+          };
+      }
     default:
       return state;
   }

@@ -50,7 +50,9 @@ router.get('/admin', (req, res) => {
 
 /* get problems of the user */
 router.get('/problems', auth.verifyJWT, (req, res) => {
-  Problem.find({ author: req.user._id }, (err, problems) => {
+  Problem.find({ author: req.user._id }, null, { 
+    sort: { updated: -1 } 
+  }, (err, problems) => {
     if (err) {
       return handler(false, 'Database failed to load user\'s problems.', 503)(req, res);
     } else {

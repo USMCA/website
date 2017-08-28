@@ -14,7 +14,6 @@ class ProblemsTab extends React.Component {
 
   render() {
     const { proposals } = this.props;
-    console.log(proposals);
     return (proposals.length > 0) ? (
       <Col s={12}>
         {
