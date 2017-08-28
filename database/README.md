@@ -127,6 +127,7 @@
   author: User,
   body: String,
   comments: [ Comment ],
+  difficulty: Enum(1, 2, 3, 4, 5),
   created: Date,
   updated: Date
 }
