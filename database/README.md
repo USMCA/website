@@ -115,6 +115,7 @@
 {
   author: User,
   body: String,
+  issue: Boolean,
   created: Date,
   updated: Date
 }
