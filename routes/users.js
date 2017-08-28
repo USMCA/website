@@ -139,8 +139,9 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
               competition: competition
             };
           });
+          const competitions = _.concat(directorCompetitions, memberCompetitions);
           return handler(true, 'Succesfully loaded member competitions.', 200, {
-            competitions: _.concat(directorCompetitions, memberCompetitions)
+            competitions
           })(req, res);
         }
       });

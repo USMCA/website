@@ -90,21 +90,22 @@ export function memberCompetitions() {
       }).then(
         response => {
           return response.json()
-          .then(data => {
-            if (!data.success) compErrorHandler(dispatch, data.message);
+          .then(({ success, message, competitions }) => {
+            if (!success) compErrorHandler(dispatch, message);
             else {
+              console.log(competitions);
               dispatch({
                 type: COMP_FETCH_MINE,
                 payload: {
                   requestStatus: SUCCESS,
-                  competitions: data.competitions
+                  competitions
                 }
               });
             }
           });
         },
         error => {
-          errorMessage = error.message || 'Failed to communicate with server.';
+          const errorMessage = error.message || 'Failed to communicate with server.';
           return compErrorHandler(dispatch, errorMessage);
         }
       );
@@ -164,21 +165,21 @@ export function directorCompetitions() {
       }).then(
         response => {
           return response.json()
-          .then(data => {
-            if (!data.success) compErrorHandler(dispatch, data.message);
+          .then(({ success, message, competitions }) => {
+            if (!success) compErrorHandler(dispatch, message);
             else {
               dispatch({
                 type: COMP_FETCH_DIR,
                 payload: {
                   requestStatus: SUCCESS,
-                  competitions: data.competitions
+                  competitions
                 }
               });
             }
           });
         },
         error => {
-          errorMessage = error.message || 'Failed to communicate with server.';
+          const errorMessage = error.message || 'Failed to communicate with server.';
           return compErrorHandler(dispatch, errorMessage);
         }
       );

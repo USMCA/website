@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Input, Row, Col } from "react-materialize";
+import { Input, Row, Col, Button } from "react-materialize";
 import _ from "lodash";
 
 import { 
@@ -22,7 +22,6 @@ const competitionsInputOptions = {
   MEMBER: "member",
   DIRECTOR: "director"
 }
-
 
 class CompetitionsInputDumb extends React.Component {
   componentWillMount() {
@@ -143,6 +142,7 @@ class CompetitionsSelectDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
+    console.log(competitions, type);
     return (
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
         <option value="">Select a Competition</option>
@@ -298,10 +298,38 @@ const SubjectsInput = props => {
   );
 }
 
+/*******************************************************************************
+ * KaTeX input fields.
+ ******************************************************************************/
+
+class KaTeXInput extends React.Component {
+  render() {
+    const { type, label } = this.props;
+    return (
+      <form className="row">
+        <Input s={6} type={ type } label={ label } />
+        <Col s={6}>
+          <div></div>
+        </Col>
+        <Col s={2} className="offset-s8">
+          <Button waves="light" className="teal darken-3">Preview</Button>
+        </Col>
+        <Col s={2}>
+          <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
+        </Col>
+      </form>
+    );
+  }
+}
+
+KaTeXInput.propTypes = {
+};
+
 export {
   competitionsInputOptions,
   CompetitionsInput,
   CompetitionsSelect,
   LocationArrayInput,
-  SubjectsInput
+  SubjectsInput,
+  KaTeXInput
 };

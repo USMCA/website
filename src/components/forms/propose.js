@@ -19,9 +19,8 @@ import {
   CompetitionsSelect, 
   SubjectsInput 
 } from "./utilities";
-import ControlledInput from "../react-materialize-custom/ControlledInput";
 
-const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const CompetitionField = ({ input, meta, ...rest }) => (
         <CompetitionsSelect
@@ -88,7 +87,7 @@ class ProposeForm extends React.Component {
   }
 
   render() {
-    const { handleSubmit, probError, probMessage, requestStatus } = this.props;
+    const { handleSubmit, probStatus: { message, requestStatus } } = this.props;
     return (requestStatus === SUCCESS) ? (
       <div>
         <p>Problem submitted! Click <Link to="/propose" onClick={ this.resetForm }>here</Link> to propose another problem.</p>
@@ -160,12 +159,8 @@ class ProposeForm extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Error error={ probError } message={ probMessage } />
-          { 
-            (
-              requestStatus === PENDING && !probError
-            ) && <Spinner /> 
-          }
+          <Error error={ requestStatus === ERROR } message={ message } />
+          { requestStatus === PENDING && <Spinner /> }
         </Row>
       </form>
     );
@@ -173,23 +168,15 @@ class ProposeForm extends React.Component {
 }
 
 ProposeForm.propTypes = {
-  probError: PropTypes.bool.isRequired,
-  probMessage: PropTypes.string,
-  requestStatus: PropTypes.string.isRequired,
-  probErrorHandler: PropTypes.func.isRequired,
+  probStatus: PropTypes.object.isRequired,
   postProposal: PropTypes.func.isRequired,
-  resetProposalForm: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-        probError: state.problems.error,
-        probMessage: state.problems.message,
-        requestStatus: state.problems.requestStatus
+        probStatus: state.problems.postProposal,
       }),
       mapDispatchToProps = dispatch => ({
-        probErrorHandler: errorMessage => {
-          probErrorHandler(dispatch, errorMessage);
-        },
         postProposal: ({ 
           competition_id, subject, difficulty, statement, answer, solution 
         }) => {
@@ -197,9 +184,6 @@ const mapStateToProps = state => ({
             competition_id, subject, difficulty, statement, answer, solution 
           })(dispatch);
         },
-        resetProposalForm: () => {
-          resetProposalForm(dispatch);
-        }
       });
 
 export default connect(

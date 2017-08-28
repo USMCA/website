@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   error: false, 
   message: '', 
   requestStatus: IDLE,
-  myCompetitions: [],
+  memberCompetitions: [],
   directorCompetitions: [],
   allCompetitions: []
 };
@@ -34,7 +34,7 @@ export default function (state = INITIAL_STATE, action) {
           return {
             ...state,
             error: false,
-            myCompetitions: action.payload.competitions
+            memberCompetitions: action.payload.competitions
           };
         default: 
           return state;
