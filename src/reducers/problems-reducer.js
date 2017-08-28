@@ -1,60 +1,26 @@
 import { 
   requestStatuses,
-  PROB_ERROR,
   PROB_FETCH_MINE,
   PROB_POST,
   PROB_GET
 } from '../actions/types';
 
-const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const INITIAL_STATE = { 
-  error: false, 
-  message: '', 
-  requestStatus: IDLE,
-  myProposals: [], 
-  proposal: {}
+  postProposal: { requestStatus: IDLE, message: '' },
+  myProposals: { content: [], requestStatus: IDLE, message: '' }, 
+  proposal: { content: null, requestStatus: IDLE, message: '' }
 };
 
-export default function (state = INITIAL_STATE, action) {  
-  switch(action.type) {
-    case PROB_ERROR:
-      return { ...state, error: true, message: action.payload };
+export default function (state = INITIAL_STATE, { type, payload }) {  
+  switch(type) {
     case PROB_FETCH_MINE:
-      switch(action.payload.requestStatus) {
-        case SUCCESS:
-          return {
-            ...state,
-            error: false,
-            myProposals: action.payload.problems,
-            requestStatus: SUCCESS
-          };
-        default:
-          return {
-            ...state,
-            requestStatus: action.payload.requestStatus
-          };
-      }
+      return { ...state, myProposals: payload };
     case PROB_POST: 
-      return {
-        ...state,
-        requestStatus: action.payload.requestStatus
-      };
+      return { ...state, postProposal: payload };
     case PROB_GET:
-      switch(action.payload.requestStatus) {
-        case SUCCESS:
-          return {
-            ...state,
-            error: false,
-            proposal: action.payload.problem,
-            requestStatus: SUCCESS
-          };
-        default:
-          return {
-            ...state,
-            requestStatus: action.payload.requestStatus
-          };
-      }
+      return { ...state, proposal: payload };
     default:
       return state;
   }

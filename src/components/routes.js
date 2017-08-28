@@ -15,46 +15,30 @@ import ViewProblemPage from "./pages/view-problem-page";
 import NotFoundPage from "./pages/not-found-page";
 import requireAuth from "./auth/require-auth";
 
-import { resetProposeForm } from "../actions";
-
-const Routes = ({ authenticated, resetProposeForm }) => (
+const Routes = ({ authenticated }) => (
   <Switch>
     <Route exact path="/" component={ authenticated ? AccountPage : IndexPage } />
     <Route exact path="/login" component={ LoginPage }/>
-    <Route 
-      exact 
-      path="/propose" 
-      onEnter={ resetProposeForm }
-      component={ requireAuth(ProposePage) }/>
+    <Route exact path="/propose" component={ requireAuth(ProposePage) }/>
     <Route exact path="/test-solve" component={ requireAuth(TestSolvePage) }/>
     <Route exact path="/view-contest" component={ requireAuth(ViewContestPage) }/>
     <Route exact path="/view-database" component={ requireAuth(ViewDatabasePage) }/>
     <Route exact path="/view-test" component={ requireAuth(ViewTestPage) }/>
-    <Route 
-      path="/view-problem/:id" 
-      onEnter={ resetProposeForm }
-      component={ requireAuth(ViewProblemPage) }/>
+    <Route path="/view-problem/:id" component={ requireAuth(ViewProblemPage) }/>
     <Route path="*" component={ NotFoundPage } />
   </Switch>
 );
 
 Routes.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
-  resetProposeForm: PropTypes.func.isRequired
+  authenticated: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
         authenticated: state.auth.authenticated
-      }),
-      mapDispatchToProps = dispatch => ({
-        resetProposeForm: () => {
-          resetProposeForm()(dispatch);
-        }
       });
 
 export default withRouter(
   connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
   )(Routes)
 );

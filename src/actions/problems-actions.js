@@ -2,48 +2,32 @@ import fetch from 'isomorphic-fetch';
 import $ from 'jquery';
 
 import {
-  requestStatuses,
-  PROB_ERROR,
+  requestPayloads,
   PROB_FETCH_MINE,
   PROB_POST,
   PROB_GET
 } from './types';
 import auth from '../auth';
 
-const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
-
-/*******************************************************************************
- * Synchronous actions.
- ******************************************************************************/
-
-export function probErrorHandler(dispatch, errorMessage) {
-  dispatch({
-    type: PROB_ERROR,
-    payload: errorMessage
-  });
-}
-
-export function resetProposalForm(dispatch) {
-  dispatch({
-    type: PROB_POST,
-    payload: { requestStatus: IDLE }
-  });
-}
+const { 
+  errorPayload, 
+  pendingPayload,
+  idlePayload,
+  successPayload
+} = requestPayloads;
 
 /*******************************************************************************
  * Async thunk actions.
  ******************************************************************************/
 
 export function fetchMyProposals() {
+  let action = { type: PROB_FETCH_MINE };
   return dispatch => {
     const userId = auth.userId();
     if (!userId) {
-      return probErrorHandler(dispatch, 'User is not logged in.');
+      dispatch(Object.assign(action, errorPayload('User is not logged in')));
     } else {
-      dispatch({ 
-        type: PROB_FETCH_MINE, 
-        payload: { requestStatus: PENDING }
-      });
+      dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/users/problems', {
         method: 'get',
         headers: {
@@ -53,19 +37,17 @@ export function fetchMyProposals() {
       .then(
         response => {
           return response.json()
-          .then(data => {
-            if (data.error) return probErrorHandler(dispatch, data.message);
-            else {
-              dispatch({ 
-                type: PROB_FETCH_MINE,
-                payload: { requestStatus: SUCCESS, problems: data.problems }
-              });
-            }
+          .then(({ success, message, problems }) => {
+            if (!success) dispatch(Object.assign(action, errorPayload(message)));
+            else dispatch(Object.assign(action, successPayload({ 
+              content: problems 
+            })));
           });
         }, 
         error => {
-          const errorMessage = error.message || 'Failed to communicate with server.';
-          return probErrorHandler(dispatch, errorMessage);
+          dispatch(Object.assign(action, errorPayload(
+            error.message || 'Failed to communicate with server.'
+          )));
         }
       );
     }
@@ -75,11 +57,9 @@ export function fetchMyProposals() {
 export function postProposal({
     competition_id, subject, difficulty, statement, answer, solution
   }) {
+  let action = { type: PROB_POST };
   return dispatch => {
-    dispatch({
-      type: PROB_POST,
-      payload: { requestStatus: PENDING }
-    });
+    dispatch(Object.assign(action, pendingPayload()));
     fetch('/api/users/problems', {
       method: 'post',
       body: JSON.stringify({
@@ -93,34 +73,28 @@ export function postProposal({
     .then(
       response => {
         return response.json()
-        .then(data => {
-          if (!data.success) return probErrorHandler(dispatch, data.message);
-          else {
-            dispatch({ 
-              type: PROB_POST,
-              payload: { requestStatus: SUCCESS }
-            });
-          }
+        .then(({ success, message }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload()));
         });
       },
       error => {
-        const errorMessage = error.message || 'Failed to communicate with server.';
-        return probErrorHandler(dispatch, errorMessage);
+        dispatch(Object.assign(action, errorPayload(
+          error.message || 'Failed to communicate with server.'
+        )));
       }
     );
   }
 }
 
 export function getProposal(id) {
+  let action = { type: PROB_GET };
   return dispatch => {
     const userId = auth.userId();
     if (!userId) {
-      return probErrorHandler(dispatch, 'User is not logged in.');
+      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
     } else {
-      dispatch({ 
-        type: PROB_GET, 
-        payload: { requestStatus: PENDING }
-      });
+      dispatch(Object.assign(action, pendingPayload()));
       fetch(`/api/problems?${$.param({ id: id })}`, {
         method: 'get',
         headers: {
@@ -130,19 +104,20 @@ export function getProposal(id) {
       .then(
         response => {
           return response.json()
-          .then(data => {
-            if (data.error) return probErrorHandler(dispatch, data.message);
-            else {
-              dispatch({ 
-                type: PROB_GET,
-                payload: { requestStatus: SUCCESS, problem: data.problem }
-              });
+          .then(({ success, message, problem }) => {
+            if (!success) {
+              dispatch(Object.assign(action, errorPayload(message)));
+            } else {
+              dispatch(Object.assign(action, successPayload({ 
+                content: problem 
+              })));
             }
           });
         }, 
         error => {
-          const errorMessage = error.message || 'Failed to communicate with server.';
-          return probErrorHandler(dispatch, errorMessage);
+          dispatch(Object.assign(action, errorPayload(
+            error.message || 'Failed to communicate with server.'
+          )));
         }
       );
     }
