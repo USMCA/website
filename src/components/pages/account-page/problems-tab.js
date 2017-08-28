@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Col } from "react-materialize";
 
-import { probErrorHandler, fetchMyProposals } from "../../../actions";
+import { fetchMyProposals } from "../../../actions";
 import { ProblemPreview, LoadMore } from "../../utilities";
 
 class ProblemsTab extends React.Component {
@@ -13,11 +13,11 @@ class ProblemsTab extends React.Component {
   }
 
   render() {
-    const { proposals } = this.props;
-    return (proposals.length > 0) ? (
+    const { proposals: { content, error, message } } = this.props;
+    return (content && content.length > 0) ? (
       <Col s={12}>
         {
-          proposals.map((proposal, key) => (
+          content.map((proposal, key) => (
             <ProblemPreview problem={proposal} key={key} />
           ))
         }
@@ -32,20 +32,14 @@ class ProblemsTab extends React.Component {
 }
 
 ProblemsTab.propTypes = {
-  proposals: PropTypes.array.isRequired,
-  probErrorHandler: PropTypes.func.isRequired,
+  proposals: PropTypes.object.isRequired,
   fetchMyProposals: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-        probError: state.problems.error,
-        probMessage: state.problems.message,
         proposals: state.problems.myProposals
       }),
       mapDispatchToProps = dispatch => ({
-        probErrorHandler: errorMessage => {
-          probErrorHandler(dispatch, errorMessage);
-        },
         fetchMyProposals: () => {
           fetchMyProposals()(dispatch);
         }

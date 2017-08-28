@@ -7,7 +7,33 @@ export const requestStatuses = {
   SUCCESS: 'success',
   PENDING: 'pending',
   SUBMITTED: 'submitted',
-  IDLE: 'idle'
+  IDLE: 'idle',
+  ERROR: 'error'
+};
+
+export const requestPayloads = {
+  errorPayload: errorMessage => ({
+    payload: {
+      requestStatus: requestStatuses.ERROR,
+      message: errorMessage
+    }
+  }),
+  pendingPayload: () => ({
+    payload: {
+      requestStatus: requestStatuses.PENDING
+    }
+  }),
+  idlePayload: () => ({
+    payload: {
+      requestStatus: requestStatuses.IDLE
+    }
+  }),
+  successPayload: (state = {}) => ({
+    payload: {
+      requestStatus: requestStatuses.SUCCESS,
+      ...state
+    }
+  })
 };
 
 /* authorization */
@@ -33,7 +59,6 @@ export const CONTEST_ERROR = 'contest_error', // notify a contest error
              CONTEST_POST = 'contest_post'; // post a contest
 
 /* problem proposals */
-export const PROB_ERROR = 'prob_error', // notify a proposal error
-             PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
+export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
              PROB_POST = 'prob_post', // post a proposal
              PROB_GET = 'prob_get'; // get a proposal by id
