@@ -9,6 +9,7 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
     title: "Tests",
     view: (
       <div className="round-container">
+        <Button className="teal darken-3">Add</Button>
         <Table>
           <thead>
             <tr>
