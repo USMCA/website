@@ -4,10 +4,10 @@ import { LoadMore } from "../utilities";
 
 const TestSolvePage = () => (
   <Row className="container">
-    <Col m={7} s={12}>
-      <h2 className="teal-text text-darken-4">CMIMC 2018 Geo</h2>
+    <Col m={7} s={12} style={{marginTop: "36px"}}>
+      <p>No test selected.</p>
     </Col>
-    <Col m={5} s={12} style={{marginTop: "48px"}}>
+    <Col m={5} s={12} style={{marginTop: "36px"}}>
       <div className="notifications-container">
         <ul className="notifications-list">
           <li className="transparent">No notifications found.</li>
@@ -27,6 +27,7 @@ const TestSolvePage = () => (
         </ul>
       </div>
       <h3>Contests</h3>
+
     </Col>
   </Row>
 );
