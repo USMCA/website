@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
-import { Row, Col } from "react-materialize";
+import { Row, Col, Modal } from "react-materialize";
 import {  } from "../utilities";
 
 function removeProblem(key, removeElem) {
@@ -18,8 +18,11 @@ const SortableProblem = SortableElement(({ problem, myKey, removeElem }) => (
         <Col s={1}>
           <DragHandle />
         </Col>
-        <Col s={10}>
+        <Col s={8}>
           { problem }
+        </Col>
+        <Col s={2}>
+          Stats!
         </Col>
         <Col s={1}>
           <a className="grey-text text-darken-1 right" onClick={() => removeProblem(myKey, removeElem)}><i className="fa fa-times" aria-hidden="true"></i></a>
@@ -32,9 +35,11 @@ const SortableProblem = SortableElement(({ problem, myKey, removeElem }) => (
 const SortableProblemList = SortableContainer(({ problems, removeElem }) => {
   return (
     <ol className="test-list">
-      {problems.map((problem, key) => (
-        <SortableProblem problem={problem} key={key} myKey={key} index={key} removeElem={removeElem} />
-      ))}
+      {
+        problems.map((problem, key) => (
+          <SortableProblem problem={problem} key={key} myKey={key} index={key} removeElem={removeElem} />
+        ))
+      }
     </ol>
   );
 });
@@ -80,7 +85,12 @@ class TestProblems extends Component {
   render() {
     let {problems} = this.state;
 
-    return <div><SortableProblemList problems={problems} removeElem={this.removeElem} onSortEnd={this.onSortEnd} useDragHandle={true} /><a onClick={() => this.addElem("hello")}>+</a></div>;
+    return <div>
+      <SortableProblemList problems={problems} removeElem={this.removeElem} onSortEnd={this.onSortEnd} useDragHandle={true} />
+      <Modal header='Add Problem' trigger={<a className="teal-text text-darken-3"><i className="fa fa-plus" aria-hidden="true"></i></a>}>
+      	<a onClick={() => this.addElem("hello")}>Click me, u wont</a>
+      </Modal>
+    </div>;
   }
 }
 

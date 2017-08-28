@@ -138,6 +138,7 @@ nav {
   padding: 6px 10px;
   border-bottom: 1px solid #cfd8dc;
   background-color: white;
+  color: #00695c;
 }
 
 .notifications-list li:last-child {
@@ -148,7 +149,7 @@ nav {
   color: #00695c;
 }
 
-li.urgent-announcement a  {
+li.urgent-announcement, li.urgent-announcement a  {
   color: #c62828;
 }
 
