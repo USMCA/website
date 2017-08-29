@@ -33,6 +33,12 @@ export const requestPayloads = {
       requestStatus: requestStatuses.SUCCESS,
       ...state
     }
+  }),
+  submittedPayload: (state = {}) => ({
+    payload: {
+      requestStatus: requestStatuses.SUBMITTED,
+      ...state
+    }
   })
 };
 
@@ -48,8 +54,7 @@ export const USER_ERROR = 'user_error', // notifiy user data error
              USER_COMP_RES = 'comp_res'; // respond to create competition
 
 /* competitions */
-export const COMP_ERROR = 'comp_error', // notify a competition error
-             COMP_REQ = 'comp_req', // request to create competition
+export const COMP_REQ = 'comp_req', // request to create competition
              COMP_GET = 'comp_get', // get all competitions
              COMP_FETCH_MINE = 'comp_fetch_mine', // get user competition info
              COMP_FETCH_DIR = 'comp_fetch_dir'; // get user competition info

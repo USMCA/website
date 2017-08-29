@@ -9,9 +9,14 @@ import {
   memberCompetitions, 
   directorCompetitions 
 } from "../../actions";
+import { requestStatuses } from "../../actions/types";
+import Spinner from "../spinner";
+import Error from "../error";
 import Autocomplete from "../react-materialize-custom/Autocomplete";
 import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
+
+const { SUCCESS, ERROR, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 /*******************************************************************************
  * Autocomplete for competitions.
@@ -42,7 +47,7 @@ class CompetitionsInputDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type]; 
+    let a = competitions[type].content; 
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
@@ -62,10 +67,14 @@ class CompetitionsInputDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    return (
+    return competition[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
         data={ this.competitionObject() } limit={5} />
+    ) : (
+      <AutocompleteSelect
+        s={12} title="Competition" { ...input } { ...rest } 
+        data={ { "Loading competitions..." : null } } />
     );
   }
 };
@@ -122,7 +131,7 @@ class CompetitionsSelectDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type]; 
+    let a = competitions[type].content; 
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
@@ -142,8 +151,7 @@ class CompetitionsSelectDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    console.log(competitions, type);
-    return (
+    return competitions[type].requestStatus === SUCCESS ? (
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
         <option value="">Select a Competition</option>
         {
@@ -151,6 +159,11 @@ class CompetitionsSelectDumb extends React.Component {
             <option key={ idx } value={ id }>{ short_name }</option>
           ))
         }
+      </Input>
+    ) : ( 
+      <Input s={12} type="select" label="Competition" { ...input } { ...rest }> 
+        <option value="">Select a Competition</option>
+        <option value="">Loading competitions...</option>
       </Input>
     );
   }
