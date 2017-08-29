@@ -44,8 +44,7 @@ export const requestPayloads = {
 
 /* authorization */
 export const AUTH_USER = 'auth_user', // set user to be authenticated
-             UNAUTH_USER = 'unauth_user', // set user to be unauthenticated
-             AUTH_ERROR = 'auth_error'; // notify an authentication error
+             UNAUTH_USER = 'unauth_user'; // set user to be unauthenticated
 
 /* authorization */
 export const USER_ERROR = 'user_error', // notifiy user data error

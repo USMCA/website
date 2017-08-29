@@ -34,7 +34,7 @@ Routes.propTypes = {
 };
 
 const mapStateToProps = state => ({
-        authenticated: state.auth.authenticated
+        authenticated: !!state.auth.authenticated.content
       });
 
 export default withRouter(

@@ -1,29 +1,20 @@
 import { 
+  requestStatuses,
   AUTH_USER,
-  UNAUTH_USER,
-  AUTH_ERROR
+  UNAUTH_USER
 } from '../actions/types';
 
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
+
 const INITIAL_STATE = { 
-  error: false, 
-  message: '', 
-  authenticated: false,
-  user: {}
+  authenticated: { content: null, requestStatus: IDLE, message: '' }
 };
 
-export default function (state = INITIAL_STATE, action) {  
-  switch(action.type) {
+export default function (state = INITIAL_STATE, { type, payload }) {  
+  switch(type) {
     case AUTH_USER:
-      return { 
-        ...state, 
-        error: false, 
-        message: '', 
-        authenticated: true
-      };
     case UNAUTH_USER:
-      return { ...state, error: false, authenticated: false };
-    case AUTH_ERROR:
-      return { ...state, error: true, message: action.payload };
+      return { ...state, authenticated: payload };
     default:
       return state;
   }

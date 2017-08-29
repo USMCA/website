@@ -1,80 +1,74 @@
 import fetch from 'isomorphic-fetch';
 
 import { userInfo } from './users-actions';
-import { AUTH_USER,  
-         AUTH_ERROR, 
-         UNAUTH_USER } from './types';
+import { 
+  AUTH_USER,  
+  UNAUTH_USER, 
+  requestPayloads
+} from './types';
 
-/*******************************************************************************
- * Synchronous actions.
- ******************************************************************************/
-
-export function authErrorHandler(dispatch, errorMessage) {
-  dispatch({ type: AUTH_ERROR, payload: errorMessage });
-}
+const { 
+  errorPayload, 
+  pendingPayload,
+  idlePayload,
+  successPayload
+} = requestPayloads;
 
 export function logoutUser(dispatch) {
   localStorage.removeItem('token');
-  dispatch({ type: UNAUTH_USER });
+  dispatch({ 
+    type: UNAUTH_USER, 
+      payload: { 
+      content: null, 
+      requestStatus: SUCCESS 
+    } 
+  });
 }
 
-/*******************************************************************************
- * Async thunk actions.
- ******************************************************************************/
+const handleAuth = (action, dispatch) => {
+  return response => {
+    return response.json()
+    .then(({ success, message, token, user }) => {
+      if (!success) dispatch(Object.assign(action, errorPayload(message)));
+      else {
+        const content = user || {}; // ensure that user is defined
+        localStorage.setItem('token', token);
+        dispatch(Object.assign(action, successPayload({ content })));
+        userInfo()(dispatch);
+      }
+    });
+  }
+}
 
 export function loginUser({ email, password }) {
+  let action = { type: AUTH_USER };
   return dispatch => {
     fetch('/login', {
       method: 'post',
       body: JSON.stringify({ email, password }),
       headers: { 'Content-Type': 'application/json' }
     })
-    .then(
-      response => {
-        return response.json()
-        .then(data => {
-          if (!data.success) authErrorHandler(dispatch, data.message);
-          else {
-            const { token, user } = data;
-            localStorage.setItem('token', token);
-            dispatch({ type: AUTH_USER, payload: user });
-            userInfo()(dispatch);
-          }
-        });
-      }, 
-      error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        authErrorHandler(dispatch, errorMessage);
-      }
-    );
+    .then(handleAuth(action, dispatch), ({ message }) => {
+      dispatch(Object.assign(action, errorPayload(
+        message || 'Failed to communicate with server.'
+      )));
+    });
   }
 }
 
 export function signupUser({ name, email, password, university }) {
+  let action = { type: AUTH_USER };
   return dispatch => {
     fetch('/signup', {
       method: 'post',
       body: JSON.stringify({ name, email, password, university }),
       headers: { 'Content-Type': 'application/json' }
     })
-    .then(
-      response => {
-        return response.json()
-        .then(data => {
-          if (!data.success) authErrorHandler(dispatch, data.message);
-          else {
-            const { token, user } = data;
-            localStorage.setItem('token', token);
-            dispatch({ type: AUTH_USER, payload: user });
-            userInfo()(dispatch);
-          }
-        });
-      },
-      error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        authErrorHandler(dispatch, errorMessage);
-      }
-    );
+    .then(handleAuth(action, dispatch), ({ message }) => {
+      dispatch(Object.assign(action, errorPayload(
+        message || 'Failed to communicate with server.'
+      )));
+    });
   }
 }
 

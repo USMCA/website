@@ -14,11 +14,11 @@ export default function(ClassifiedComponent) {
   );
 
   AuthenticatedComponent.propTypes = {
-    authenticated: PropTypes.bool.isRequired
+    authenticated: PropTypes.object.isRequired
   };
 
   const mapStateToProps = state => ({
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated.content
   });
   
   return connect(mapStateToProps)(AuthenticatedComponent);

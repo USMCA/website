@@ -6,7 +6,9 @@ import { connect } from 'react-redux';
 
 import Error from "../error";
 import Autocomplete from "../react-materialize-custom/Autocomplete";
-import { authErrorHandler, signupUser } from "../../actions";
+import { signupUser } from "../../actions";
+import { AUTH_USER, requestStatuses } from "../../actions/types";
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const universities = {
   "Carnegie Mellon University": null,
@@ -17,36 +19,40 @@ const universities = {
 }
 
 const NameInput = ({ input, meta, ...rest }) => (
-        <Input type="text" placeholder="Name" s={12} { ...input } { ...rest } />
+        <Input type="text" label="Name" s={12} { ...input } { ...rest } />
       ),
       EmailInput = ({ input, meta, ...rest }) => (
-        <Input type="email" placeholder="Email" s={12} { ...input } { ...rest } />
+        <Input type="email" label="Email" s={12} { ...input } { ...rest } />
       ),
       PasswordInput = ({ input, meta, ...rest }) => (
-        <Input type="password" placeholder="Password" s={12} { ...input } { ...rest } />
+        <Input type="password" label="Password" s={12} { ...input } { ...rest } />
       ),
       PasswordConfirmInput = ({ input, meta, ...rest }) => (
-        <Input type="password" placeholder="Password (confirm)" s={12} { ...input } { ...rest } />
+        <Input type="password" label="Password (confirm)" s={12} { ...input } { ...rest } />
       ),
       UniversityInput = ({ input, meta, ...rest }) => (
         <Autocomplete
-          s={12} placeholder="University" { ...input } { ...rest } 
+          s={12} title="University" { ...input } { ...rest } 
           data={ universities } limit={5} />
       );
 
 class SignupForm extends React.Component {
   onSubmit = ({ name, email, password, passwordConfirm, university }) => {
+    const { errorHandler, signupUser } = this.props;
     if (!name || !email || !password || !passwordConfirm || !university) {
-      this.props.authErrorHandler("Please fill out all fields.");
+      errorHandler("Please fill out all fields.");
     } else if (password !== passwordConfirm) {
-      this.props.authErrorHandler("Passwords do not match.");
+      errorHandler("Passwords do not match.");
     } else {
-      this.props.signupUser({ name, email, password, university });
+      signupUser({ name, email, password, university });
     }
   }
 
   render() { 
-    const { handleSubmit, authError, authMessage } = this.props;
+    const { 
+      handleSubmit, 
+      authenticated: { content, requestStatus, message } 
+    } = this.props;
     return (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <Row className="placeholder-form">
@@ -69,30 +75,28 @@ class SignupForm extends React.Component {
             <Button waves="light" className="teal darken-4 right">Sign Up</Button>
           </Col>
         </Row>
-        <Error s={12} error={ authError } message={ authMessage } />
+        <Error s={12} error={ requestStatus === ERROR } message={ message } />
       </form>
     );
   }
 }
 
 SignupForm.propTypes = {
-  authError: PropTypes.bool.isRequired,
-  authMssage: PropTypes.string,
-  authErrorHandler: PropTypes.func.isRequired,
-  signupUser: PropTypes.func.isRequired
+  authenticated: PropTypes.object.isRequired,
+  signupUser: PropTypes.func.isRequired,
+  errorHandler: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  authError: state.auth.error,
-  authMessage: state.auth.message
+  authenticated: state.auth.authenticated
 });
 
 const mapDispatchToProps = dispatch => ({
-  authErrorHandler: message => {
-    authErrorHandler(dispatch, message);
+  errorHandler: message => {
+    dispatch({ type: AUTH_USER, payload: { requestStatus: ERROR, message } });
   },
-  signupUser: values => {
-    signupUser(values)(dispatch);
+  signupUser: ({ name, email, password, university }) => {
+    signupUser({ name, email, password, university })(dispatch);
   }
 });
 

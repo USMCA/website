@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Row, Col, Card } from "react-materialize";
 
 import SignupForm from "../forms/signup";
 
-const IndexPage = ({ authError, authMessage }) => (
+const IndexPage = () => (
   <Row className="container">
     <Col m={5} s={12} style={{marginTop: "24px"}}>
       <h1 className="teal-text text-darken-4">USMCA</h1>
@@ -20,14 +19,4 @@ const IndexPage = ({ authError, authMessage }) => (
   </Row>
 );
 
-IndexPage.propTypes = {
-  authError: PropTypes.bool.isRequired,
-  authMessage: PropTypes.string
-};
-
-const mapStateToProps = state => ({
-  authError: state.auth.error,
-  authMessage: state.auth.message
-});
-
-export default connect(mapStateToProps)(IndexPage);
+export default IndexPage;

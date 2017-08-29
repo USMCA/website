@@ -5,14 +5,17 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import configureStore from '../configureStore';
 import { initApp } from '../actions';
-import { AUTH_USER } from '../actions/types';
+import { AUTH_USER, requestStatuses } from '../actions/types';
 
 import auth from '../auth';
 
 const store = configureStore();
 
 if (auth.isLoggedIn()) {
-  store.dispatch({ type: AUTH_USER });
+  store.dispatch({ 
+    type: AUTH_USER, 
+    payload: { content: {}, requestStatus: requestStatuses.SUCCESS } 
+  });
 }
 initApp()(store.dispatch);
 

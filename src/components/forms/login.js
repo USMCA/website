@@ -6,7 +6,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import Error from "../error";
-import { authErrorHandler, loginUser } from "../../actions";
+import { loginUser } from "../../actions";
+import { AUTH_USER, requestStatuses } from "../../actions/types";
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const EmailInput = ({ input, meta, ...rest }) => (
         <Input type="email" placeholder="Email" s={12} { ...input } { ...rest } />
@@ -17,23 +19,26 @@ const EmailInput = ({ input, meta, ...rest }) => (
 
 class LoginForm extends React.Component {
   componentWillMount = () => {
-    if (this.props.authenticated) this.props.history.push('/');
+    /* go to home if logged in */
+    if (this.props.authenticated.content) this.props.history.push('/');
   }
 
   componentWillUpdate = (nextProps) => {
-    if (nextProps.authenticated) this.props.history.push('/');
+    /* go to home if logged in */
+    if (nextProps.authenticated.content) this.props.history.push('/');
   }
 
   onSubmit = ({ email, password }) => {
-    if (!email || !password) {
-      this.props.authErrorHandler("Please fill out all fields.");
-    } else {
-      this.props.loginUser({ email, password });
-    }
+    const { errorHandler, loginUser } = this.props;
+    if (!email || !password) errorHandler("Please fill out all fields.");
+    else loginUser({ email, password });
   };
 
   render() {
-    const { handleSubmit, authenticated, authError, authMessage } = this.props;
+    const { 
+      handleSubmit, 
+      authenticated: { content, message, requestStatus } 
+    } = this.props;
     return (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <Row className="placeholder-form">
@@ -44,39 +49,34 @@ class LoginForm extends React.Component {
             <Field name="password" component={ PasswordInput } />
           </div>
           <Col s={12}>
-            <Button waves="light" className="teal darken-4 right" disabled={ authenticated }>
+            <Button waves="light" className="teal darken-4 right" disabled={ content }>
               Log In
             </Button>
           </Col>
         </Row>
-        <Error s={12} error={ authenticated } message="You are already logged in." />
-        <Error s={12} error={ authError } message={ authMessage } />
+        <Error s={12} error={ !!content } message="You are already logged in." />
+        <Error s={12} error={ requestStatus === ERROR } message={ message } />
       </form>
     );
   }
 }
 
 LoginForm.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
-  authError: PropTypes.bool.isRequired,
-  authMessage: PropTypes.string,
-  authErrorHandler: PropTypes.func.isRequired,
+  authenticated: PropTypes.object.isRequired,
   loginUser: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   authenticated: state.auth.authenticated,
-  authError: state.auth.error,
-  authMessage: state.auth.message
 });
 
 const mapDispatchToProps = dispatch => ({
-  authErrorHandler: message => {
-    authErrorHandler(dispatch, message);
+  errorHandler: message => {
+    dispatch({ type: AUTH_USER, payload: { requestStatus: ERROR, message } });
   },
-  loginUser: values => {
-    loginUser(values)(dispatch);
+  loginUser: ({ email, password }) => {
+    loginUser({ email, password })(dispatch);
   }
 });
 
