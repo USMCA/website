@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import renderKaTeX from "../../katex";
 import { probErrorHandler, getProposal } from "../../actions";
 import { HorizontalNav, Counter } from "../utilities";
+import TestSolveForm from "../forms/test-solve";
 import Spinner from "../spinner";
 
 const Feedback = ({feedbackType, author, message}) => (
@@ -43,10 +44,6 @@ class ViewProbPage extends React.Component {
     const { proposal: { content, message } } = this.props,
           problem = content;
     return ({
-      "answer": {
-        title: "Answer",
-        view: <p>{ problem.answer || 'No answer provided.' }</p>
-      },
       "info": {
         title: "Information",
         view: (
@@ -57,6 +54,10 @@ class ViewProbPage extends React.Component {
             <li>Difficulty: { problem.author.difficulty || 'N/A' }</li>
           </ul>
         )
+      },
+      "answer": {
+        title: "Answer",
+        view: <p>{ problem.answer || 'No answer provided.' }</p>
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
@@ -76,19 +77,28 @@ class ViewProbPage extends React.Component {
       },
       "test-solves": {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
-        view: problem.alternate_soln.length > 0 ? (
-          <ul>
+        view: (
+          <div>
+            <div>
+              <TestSolveForm />
+            </div>
             {
-              problem.alternate_soln.map((soln, key) => (
-                <Feedback 
-                  feedbackType="Solution" 
-                  message={soln.body} 
-                  author={soln.author.name} 
-                  key={key} />
-              ))
+              problem.alternate_soln.length > 0 ? (
+              <ul>
+                {
+                  problem.alternate_soln.map((soln, key) => (
+                    <Feedback 
+                      feedbackType="Solution" 
+                      message={soln.body} 
+                      author={soln.author.name} 
+                      key={key} />
+                  ))
+                }
+              </ul>
+              ) : ( <p>No test solves.</p> )
             }
-          </ul>
-        ) : ( <p>No test solves.</p> )
+         </div>
+        )
       },
       "comments": {
         title: <div>Comments<Counter count={ problem.comments.length } /></div>,
@@ -138,7 +148,7 @@ class ViewProbPage extends React.Component {
                 <a onClick={ this.toggleDiscussion }>
                   <i className="fa fa-caret-up" aria-hidden="true" /> Hide Discussion
                 </a>
-                <HorizontalNav tabs={ this.problemTabs() } active="test-solves" /> 
+                <HorizontalNav tabs={ this.problemTabs() } active="info" /> 
               </div>
             ) : (
               <div>

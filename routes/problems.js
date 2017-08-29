@@ -14,9 +14,9 @@ router.get('/', auth.verifyJWT, (req, res) => {
     Problem.findById(req.query.id)
     .populate('author', 'name _id') 
     .populate('competition', 'short_name _id') 
-    .populate('official_soln', 'author.name body') 
-    .populate('alternate_soln', 'author.name body') 
-    .populate('comments', 'author.name body') 
+    .populate('official_soln', 'author body')
+    .populate('alternate_soln', 'author body') 
+    .populate('comments', 'author body') 
     .exec((err, problem) => {
       if (err) {
         console.log(err);
@@ -24,9 +24,18 @@ router.get('/', auth.verifyJWT, (req, res) => {
       } else if (!problem) {
         return handler(false, 'Problem was not found.', 400)(req, res);
       } else {
-        return handler(true, 'Successfully loaded problem.', 200, {
-          problem: problem
-        })(req, res);
+        User.populate(problem, {
+          path: 'official_soln.author alternate_soln.author comments.author',
+          select: 'name'
+        }, (err, problem) => {
+          if (err) {
+            console.log(err);
+            return handler(false, 'Database failed to load solution author.', 503)(req, res);
+          } else {
+            console.log(problem);
+            return handler(true, 'Successfully loaded problem.', 200, { problem })(req, res);
+          }
+        });
       }
     });
   } else {
