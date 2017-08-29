@@ -89,11 +89,10 @@ const ProblemPreview = ({ children, problem }) => (
   <Row className="problem-preview">
     <Col s={9}>
       <div className="katex-preview" style={{marginBottom: "24px"}}>
-        <Link 
+        <Link
           to={ "/view-problem/" + problem._id.toString() } 
-          className="black-text underline-hover" 
-          ref={ renderKaTeX }>
-          { problem.statement }
+          className="black-text underline-hover">
+          <div ref={ renderKaTeX }>{ problem.statement }</div>
         </Link>
       </div>
     </Col>

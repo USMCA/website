@@ -9,7 +9,9 @@ import Error from "../error";
 import {
   compErrorHandler, requestCompetition
 } from "../../actions";
-import { requestStatuses } from "../../actions/types";
+import { COMP_REQ, requestStatuses } from "../../actions/types";
+
+const { SUCCESS, PENDING, ERROR, SUBMITTED, ERROR } = requestStatuses;
 
 const NameInput = ({ input, meta, ...rest }) => (
         <Input 
@@ -29,12 +31,14 @@ const NameInput = ({ input, meta, ...rest }) => (
 
 class CreateCompetitionForm extends React.Component {
   onSubmit = ({ name, shortName, website }) => {
-    this.props.requestCompetition({ name, shortName, website });
+    const { requestCompetition, errorHandler } = this.props;
+    if (!name) errorHanlder('Name is required.');
+    else requestCompetition({ name, shortName, website });
   }
 
   render() {
-    const { handleSubmit } = this.props;
-    if (this.props.requestStatus === requestStatuses.SUBMITTED) {
+    const { handleSubmit, data: { requestStatus, message } } = this.props;
+    if (requestStatus === SUBMITTED) {
       return (
         <div>
           <p>Request submitted! The admins will review your request.</p>
@@ -56,12 +60,9 @@ class CreateCompetitionForm extends React.Component {
           Your request to create a competition will be reviewed by an admin. <Button type="submit" className="right teal darken-3">Create</Button>
           <br className="clear-float" />
         </p>
-        <Error error={ this.props.compError } message={ this.props.compMessage } />
+        <Error error={ requestStatus === ERROR } message={ message } />
         { 
-          (
-           this.props.requestStatus === requestStatuses.PENDING && 
-           !this.props.compError
-          ) && <Spinner /> 
+          (requestStatus === PENDING) && <Spinner /> 
         }
       </form> 
     );
@@ -70,25 +71,21 @@ class CreateCompetitionForm extends React.Component {
 
 CreateCompetitionForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  compError: PropTypes.bool.isRequired,
-  compMessage: PropTypes.string,
-  requestStatus: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
   requestCompetition: PropTypes.func.isRequired,
-  compErrorHandler: PropTypes.func.isRequired
+  errorHandler: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  compError: state.competitions.error,
-  compMessage: state.competitions.message,
-  requestStatus: state.competitions.requestStatus
+  data: state.competitions.requestCompetition
 });
 
 const mapDispatchToProps = dispatch => ({
   requestCompetition: ({ name, shortName, website }) => {
     requestCompetition({ name, shortName, website })(dispatch);
   },
-  compErrorHandler: (errMessage) => {
-    compErrorHandler(dispatch, errMessage);
+  errorHandler: message => {
+    dispatch({ type: COMP_REQ, payload: { requestStatus: ERROR, message } });
   },
 });
 

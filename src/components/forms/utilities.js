@@ -4,14 +4,20 @@ import { connect } from "react-redux";
 import { Input, Row, Col, Button } from "react-materialize";
 import _ from "lodash";
 
+import renderKaTeX from "../../katex.js";
 import { 
   allCompetitions, 
   memberCompetitions, 
   directorCompetitions 
 } from "../../actions";
+import { requestStatuses } from "../../actions/types";
+import Spinner from "../spinner";
+import Error from "../error";
 import Autocomplete from "../react-materialize-custom/Autocomplete";
 import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
+
+const { SUCCESS, ERROR, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 /*******************************************************************************
  * Autocomplete for competitions.
@@ -42,7 +48,7 @@ class CompetitionsInputDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type]; 
+    let a = competitions[type].content; 
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
@@ -62,10 +68,14 @@ class CompetitionsInputDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    return (
+    return competition[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
         data={ this.competitionObject() } limit={5} />
+    ) : (
+      <AutocompleteSelect
+        s={12} title="Competition" { ...input } { ...rest } 
+        data={ { "Loading competitions..." : null } } />
     );
   }
 };
@@ -122,7 +132,7 @@ class CompetitionsSelectDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type]; 
+    let a = competitions[type].content; 
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
@@ -142,8 +152,7 @@ class CompetitionsSelectDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    console.log(competitions, type);
-    return (
+    return competitions[type].requestStatus === SUCCESS ? (
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
         <option value="">Select a Competition</option>
         {
@@ -151,6 +160,11 @@ class CompetitionsSelectDumb extends React.Component {
             <option key={ idx } value={ id }>{ short_name }</option>
           ))
         }
+      </Input>
+    ) : ( 
+      <Input s={12} type="select" label="Competition" { ...input } { ...rest }> 
+        <option value="">Select a Competition</option>
+        <option value="">Loading competitions...</option>
       </Input>
     );
   }
@@ -303,26 +317,60 @@ const SubjectsInput = props => {
  ******************************************************************************/
 
 class KaTeXInput extends React.Component {
+  previewKaTeX = () => {
+    if (this.inputField && this.inputField.state.value) {
+      this.renderField.innerHTML = this.inputField.state.value;
+      this.renderField.className = "katex-preview";
+      renderKaTeX(this.renderField);
+    } else {
+      this.renderField.innerHTML = "";
+      this.renderField.className = "";
+    }
+  }
+
   render() {
-    const { type, label } = this.props;
+    const { type, label, includeSubmit } = this.props;
     return (
-      <form className="row">
-        <Input s={6} type={ type } label={ label } />
+      <Row>
+        <Input 
+          ref={ elem => { this.inputField = elem; } }
+          s={6} type={ type } label={ label } />
         <Col s={6}>
-          <div></div>
+          <div ref={ elem => { this.renderField = elem; } }></div>
         </Col>
-        <Col s={2} className="offset-s8">
-          <Button waves="light" className="teal darken-3">Preview</Button>
-        </Col>
-        <Col s={2}>
-          <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
-        </Col>
-      </form>
+        {
+          includeSubmit ? (
+            <div>
+              <Col s={2} className="offset-s8">
+                <a
+                  className="waves-effect waves-light btn teal darken-3"
+                  onClick={ this.previewKaTeX }>
+                  Preview
+                </a>
+              </Col>
+              <Col s={2}>
+                <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
+              </Col>
+            </div>
+          ) : (
+            <Col s={2} className="offset-s10">
+              <a
+                className="waves-effect waves-light btn teal darken-3"
+                onClick={ this.previewKaTeX }>
+                Preview
+              </a>
+            </Col>
+          )
+        }
+      </Row>
     );
   }
 }
 
 KaTeXInput.propTypes = {
+  type: PropTypes.string,
+  label: PropTypes.string,
+  includeSubmit: PropTypes.bool
 };
 
 export {

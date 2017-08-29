@@ -1,7 +1,8 @@
 import fetch from 'isomorphic-fetch';
+import $ from 'jquery';
 
 import { 
-  COMP_ERROR,
+  requestPayloads,
   COMP_REQ,
   COMP_RES,
   COMP_GET,
@@ -12,7 +13,14 @@ import {
 import { requestTypes } from '../../constants';
 import auth from '../auth';
 
-const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
+const {
+  successPayload,
+  pendingPayload,
+  errorPayload,
+  idlePayload,
+  submittedPayload
+} = requestPayloads;
 
 /*******************************************************************************
  * Synchronous actions.
@@ -27,61 +35,53 @@ export function compErrorHandler(dispatch, errorMessage) {
  ******************************************************************************/
 
 export function requestCompetition({ name, shortName, website }) {
+  let action = { type: COMP_REQ };
   return dispatch => {
-    dispatch({ 
-      type: COMP_REQ, 
-      payload: { requestStatus: PENDING }
-    });
-
     const userId = auth.userId();
-    if (!userId) return compErrorHandler(dispatch, 'User not logged in.');
-    fetch('/api/competitions', {
-      method: 'post',
-      body: JSON.stringify({ 
-        type: requestTypes.REQUEST, 
-        competition: {
-          name, shortName, website 
-        },
-        userId: userId
-      }),
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then(
-      response => {
-        return response.json()
-        .then(data => {
-          if (!data.success) compErrorHandler(dispatch, data.message);
-          else {
-            dispatch({ 
-              type: COMP_REQ, 
-              payload: {
-                requestStatus: SUBMITTED 
-              }
-            });
-          }
-        });
-      }, 
-      error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        return compErrorHandler(dispatch, errorMessage);
-      }
-    );
+    if (!userId) {
+      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
+    } else {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch('/api/competitions', {
+        method: 'post',
+        body: JSON.stringify({ 
+          type: requestTypes.REQUEST, 
+          competition: {
+            name, shortName, website 
+          },
+          userId: userId //@TODO remove this
+        }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(
+        response => {
+          return response.json()
+          .then(({ success, message }) => {
+            if (!success) dispatch(Object.assign(action, errorPayload(message)));
+            else dispatch(Object.assign(action, submittedPayload()));
+          });
+        }, 
+        error => {
+          dispatch(Object.assign(action, errorPayload(
+            error.message || 'Failed to communicate with server'
+          )));
+        }
+      );
+    }
   }
 }
 
 export function memberCompetitions() {
+  let action = { type: COMP_FETCH_MINE };
   return dispatch => {
     const userId = auth.userId();
     if (!userId) {
-      return compErrorHandler(dispatch, 'User is not logged in.');
+      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
     } else {
-      dispatch({
-        type: COMP_FETCH_MINE,
-        payload: { requestStatus: PENDING }
-      });
+      dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/users/competitions', {
         method: 'get',
         headers: { 
@@ -91,22 +91,16 @@ export function memberCompetitions() {
         response => {
           return response.json()
           .then(({ success, message, competitions }) => {
-            if (!success) compErrorHandler(dispatch, message);
-            else {
-              console.log(competitions);
-              dispatch({
-                type: COMP_FETCH_MINE,
-                payload: {
-                  requestStatus: SUCCESS,
-                  competitions
-                }
-              });
-            }
+            if (!success) dispatch(Object.assign(action, errorPayload(message)));
+            else dispatch(Object.assign(action, successPayload({ 
+              content: competitions 
+            })));
           });
         },
         error => {
-          const errorMessage = error.message || 'Failed to communicate with server.';
-          return compErrorHandler(dispatch, errorMessage);
+          dispatch(Object.assign(action, errorPayload(
+            error.message || 'Failed to communicate with server'
+          )));
         }
       );
     }
@@ -114,49 +108,37 @@ export function memberCompetitions() {
 }
 
 export function allCompetitions() {
+  let action = { type: COMP_GET };
   return dispatch => {
-    dispatch({
-      type: COMP_GET,
-      payload: {
-        requestStatus: PENDING
-      }
-    });
+    dispatch(Object.assign(action, pendingPayload()));
     fetch('/api/competitions', { method: 'get' })
     .then(
       response => {
         return response.json()
-        .then(data => {
-          const { success, message, competitions } = data;
-          if (!success) return compErrorHandler(dispatch, message);
-          else {
-            dispatch({
-              type: COMP_GET,
-              payload: {
-                requestStatus: SUCCESS,
-                competitions: competitions
-              }
-            });
-          }
+        .then(({ success, message, copmetitions }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ 
+            content: competitions 
+          })));
         });
       },
       error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        return compErrorHandler(dispatch, errorMessage);
+        dispatch(Object.assign(action, errorPayload(
+          error.message || 'Failed to communicate with server'
+        )));
       }
     );
   }
 }
 
 export function directorCompetitions() {
+  let action = { type: COMP_FETCH_DIR };
   return dispatch => {
     const userId = auth.userId();
     if (!userId) {
-      return compErrorHandler(dispatch, 'User is not logged in.');
+      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
     } else {
-      dispatch({
-        type: COMP_FETCH_DIR,
-        payload: { requestStatus: PENDING }
-      });
+      dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/users/director', {
         method: 'get',
         headers: { 
@@ -166,24 +148,18 @@ export function directorCompetitions() {
         response => {
           return response.json()
           .then(({ success, message, competitions }) => {
-            if (!success) compErrorHandler(dispatch, message);
-            else {
-              dispatch({
-                type: COMP_FETCH_DIR,
-                payload: {
-                  requestStatus: SUCCESS,
-                  competitions
-                }
-              });
-            }
+            if (!success) dispatch(Object.assign(action, errorPayload(message)));
+            else dispatch(Object.assign(action, successPayload({ 
+              content: competitions 
+            })));
           });
         },
         error => {
-          const errorMessage = error.message || 'Failed to communicate with server.';
-          return compErrorHandler(dispatch, errorMessage);
+          dispatch(Object.assign(action, errorPayload(
+            error.message || 'Failed to communicate with server'
+          )));
         }
       );
     }
   }
 }
-
