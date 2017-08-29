@@ -15,10 +15,10 @@ const Feedback = ({feedbackType, author, message}) => (
         <Vote type="novote" netVotes="4" />
       </Col>
       <Col s={8} className="katex-preview">
-        <p>{message}</p>
+        <p ref={ renderKaTeX }>{ message }</p>
       </Col>
       <Col s={3}>
-        Author: {author}
+        Author: { author }
       </Col>
     </Row>
   </li>
@@ -57,7 +57,7 @@ class ViewProbPage extends React.Component {
       },
       "answer": {
         title: "Answer",
-        view: <p>{ problem.answer || 'No answer provided.' }</p>
+        view: <p ref={ renderKaTeX }>{ problem.answer || 'No answer provided.' }</p>
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
@@ -94,8 +94,7 @@ class ViewProbPage extends React.Component {
                       key={key} />
                   ))
                 }
-              </ul>
-              ) : ( <p>No test solves.</p> )
+              </ul>) : ( <p>No test solves.</p> )
             }
          </div>
         )
