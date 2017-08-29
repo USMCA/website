@@ -276,3 +276,15 @@ li.urgent-announcement {
 .roster, .roster input[type="text"] {
   font-size: 12px;
 }
+
+.contests-list li {
+  margin-bottom: 6px;
+}
+
+.contests-list li ul li {
+  margin-bottom: 0;
+}
+
+.contests-list li ul {
+  margin-left: 16px;
+}
