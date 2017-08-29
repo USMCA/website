@@ -6,12 +6,10 @@ import { connect } from "react-redux";
 
 import Spinner from "../spinner";
 import Error from "../error";
-import {
-  compErrorHandler, requestCompetition
-} from "../../actions";
+import { requestCompetition } from "../../actions";
 import { COMP_REQ, requestStatuses } from "../../actions/types";
 
-const { SUCCESS, PENDING, ERROR, SUBMITTED, ERROR } = requestStatuses;
+const { SUCCESS, PENDING, ERROR, SUBMITTED, IDLE } = requestStatuses;
 
 const NameInput = ({ input, meta, ...rest }) => (
         <Input 
@@ -20,7 +18,7 @@ const NameInput = ({ input, meta, ...rest }) => (
       ),
       ShortNameInput = ({ input, meta, ...rest }) => (
         <Input 
-          label="Short name (e.g. CMIMC)" 
+          label="Short name (e.g. CMIMC) (optional)" 
           className="clear-top" { ...input } { ...rest } />
       ),
       WebsiteInput = ({ input, meta, ...rest }) => (
@@ -32,7 +30,7 @@ const NameInput = ({ input, meta, ...rest }) => (
 class CreateCompetitionForm extends React.Component {
   onSubmit = ({ name, shortName, website }) => {
     const { requestCompetition, errorHandler } = this.props;
-    if (!name) errorHanlder('Name is required.');
+    if (!name) errorHandler('The name field is required.');
     else requestCompetition({ name, shortName, website });
   }
 

@@ -1,7 +1,9 @@
 import React from "react";
-import { Button, Table, Input } from "react-materialize";
+import { Button, Table, Input, Modal } from "react-materialize";
+
 import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
+import CreateCompetitionForm from "../../forms/create-competition";
 
 const tabs = {
   "info": {
@@ -62,7 +64,9 @@ const tabs = {
   "contests": {
     title: "Contests",
     view: <div className="round-container">
-      <Button className="teal darken-3">Create contest</Button>
+      <Modal trigger={ <Button className="teal darken-3">Create contest</Button> }>
+        <CreateContestForm /> 
+      </Modal>
       <div style={{borderBottom: "1px solid #cfd8dc"}}>
         <h3>CMIMC 2018<a href="#" className="right black-text"><i className="fa fa-times" aria-hidden="true"></i></a><a href="#" className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></h3>
         <ul>
@@ -94,7 +98,11 @@ const CompetitionsTab2 = () => (
       <h2 className="teal-text text-darken-3">CMIMC</h2>
       <VerticalNav tabs={ tabs } active="info" />
     </div><br />
-    <RightButtonPanel>Does your competition want to join USMCA? <a className="teal-text text-darken-3">Register your competition</a>.</RightButtonPanel>
+    <RightButtonPanel>
+      Does your competition want to join USMCA? <Modal header="Form a Competition" trigger={<a href className="teal-text text-darken-3">Register your competition.</a>}>
+        <CreateCompetitionForm />
+      </Modal>
+    </RightButtonPanel>
   </div>
 );
 
