@@ -5,7 +5,11 @@ import { Link } from "react-router-dom";
 import { Col } from "react-materialize";
 
 import { fetchMyProposals } from "../../../actions";
+import { requestStatuses } from "../../../actions/types";
 import { ProblemPreview, LoadMore } from "../../utilities";
+import Spinner from "../../spinner";
+
+const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
 class ProblemsTab extends React.Component {
   componentWillMount = () => {
@@ -13,7 +17,8 @@ class ProblemsTab extends React.Component {
   }
 
   render() {
-    const { proposals: { content, error, message } } = this.props;
+    const { proposals: { content, requestStatus, message } } = this.props;
+    if (requestStatus === PENDING) return <Col s={12}><Spinner /></Col>
     return (content && content.length > 0) ? (
       <Col s={12}>
         {
