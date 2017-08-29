@@ -116,6 +116,7 @@
   author: User,
   body: String,
   issue: Boolean,
+  upvotes: [ User ],
   created: Date,
   updated: Date
 }

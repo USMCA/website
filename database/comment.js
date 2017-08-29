@@ -5,6 +5,7 @@ const commentSchema = new Schema({
   body: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   issue: { type: Boolean, required: true, default: false },
+  upvotes: [ { type: Schema.Types.ObjectId, ref: 'User', required: true } ],
   created: { type: Date, required: true },
   updated: { type: Date, required: true }
 });
