@@ -19,7 +19,7 @@ const tabs = {
         <li><a href="#" className="teal-text text-darken-3">Step down as director</a></li>
         <li><a href="#" className="teal-text text-darken-3">Leave competition</a></li>
         <li><h3>Database</h3></li>
-        <li><a href="#" className="btn teal darken-3">View database</a></li>
+        <li><a href="/view-database" className="btn teal darken-3">View database</a></li>
       </ul>
     </div>
   },
@@ -65,7 +65,7 @@ const tabs = {
     title: "Contests",
     view: <div className="round-container">
       <Modal trigger={ <Button className="teal darken-3">Create contest</Button> }>
-        <CreateContestForm /> 
+        <CreateContestForm />
       </Modal>
       <div style={{borderBottom: "1px solid #cfd8dc"}}>
         <h3>CMIMC 2018<a href="#" className="right black-text"><i className="fa fa-times" aria-hidden="true"></i></a><a href="#" className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></h3>

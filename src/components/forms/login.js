@@ -49,7 +49,7 @@ class LoginForm extends React.Component {
             <Field name="password" component={ PasswordInput } />
           </div>
           <Col s={12}>
-            <Button waves="light" className="teal darken-4 right" disabled={ content }>
+            <Button waves="light" className="teal darken-4 right" disabled={ !!content }>
               Log In
             </Button>
           </Col>
