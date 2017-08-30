@@ -262,15 +262,11 @@ li.urgent-announcement {
 }
 
 .upvote, .upvote a  {
-  color: #00c853;
+  color: #4caf50;
 }
 
 .novote, .novote a  {
   color: #9e9e9e;
-}
-
-.downvote, .downvote a  {
-  color: #d50000;
 }
 
 .roster, .roster input[type="text"] {

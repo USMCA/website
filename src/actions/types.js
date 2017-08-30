@@ -51,7 +51,8 @@ export const AUTH_USER = 'auth_user', // set user to be authenticated
 export const USER_ERROR = 'user_error', // notifiy user data error
              USER_INFO = 'user_info', // get user info
              USER_ADMIN = 'user_admin', // get admins
-             USER_COMP_RES = 'comp_res'; // respond to create competition
+             USER_COMP_RES = 'comp_res', // respond to create competition
+             USER_NOTIF_TOGGLE = 'notif_toggle'; // toggle between unread, read, and urgent
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
@@ -66,4 +67,5 @@ export const CONTEST_ERROR = 'contest_error', // notify a contest error
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
              PROB_POST = 'prob_post', // post a proposal
-             PROB_GET = 'prob_get'; // get a proposal by id
+             PROB_GET = 'prob_get', // get a proposal by id
+             PROB_UPVOTE = 'prob_upvote'; // upvote a problem
