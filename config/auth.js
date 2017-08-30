@@ -16,7 +16,7 @@ module.exports = {
    **************************************************************************/
   verifyJWT: (req, res, next) => {
     if (!req.headers.authorization) {
-      handler(false, 'No authorization provided.', 403)(req, res);
+      return handler(false, 'No authorization provided.', 403)(req, res);
     }
     let token = req.headers.authorization.substr('Bearer '.length);
     token = token || req.body.token || req.query.token;
@@ -74,9 +74,15 @@ module.exports = {
           message: 'Email not found.'
         });
       } else {
-        return user.correctPassword(password) ? 
-          callback({ success: true, user: user }) : 
-          callback({ success: false, message: 'Incorrect password' });
+        return user.checkPassword(password, (err, result) => {
+          if (err) {
+            callback({ success: false, message: 'Failed to compute hash.' });
+          } else if (result.authenticated) {
+            callback({ success: true, user: user });
+          } else {
+            callback({ success: false, message: 'Incorrect password.' });
+          }
+        });
       }
     });
   }

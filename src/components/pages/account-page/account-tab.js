@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Col, Input, Modal, Button } from "react-materialize";
 
 import { RightButtonPanel } from "../../utilities";
+import ChangePasswordForm from "../../forms/change-password";
 
 class AccountTab extends React.Component {
   render() {
@@ -28,12 +29,7 @@ class AccountTab extends React.Component {
           <li>Email: {email}</li>
           <li>University: {university}</li>
           <li><Modal header="Change Password" trigger={<a href className="teal-text text-darken-3">Change password</a>}>
-            <form className="row">
-              <Input s={12} type="password" placeholder="Current password" />
-              <Input s={12} type="password" placeholder="New password" />
-              <Input s={12} type="password" placeholder="New password (confirm)" />
-              <RightButtonPanel><Button className="teal darken-3">Confirm</Button></RightButtonPanel>
-            </form>
+            <ChangePasswordForm />
           </Modal></li>
         </ul>
 

@@ -60,4 +60,27 @@ router.post('/login', (req, res) => {
   }
 });
 
+router.post('/password', auth.verifyJWT, (req, res) => {
+  const { currPass, newPass } = req.body;
+  console.log(currPass, newPass);
+  req.user.checkPassword(currPass, (err, result) => {
+    if (err) {
+      handler(false, 'Database failed to authenticate.', 503)(req, res);
+    } else if (result.authenticated) {
+      req.user.password = newPass;
+      req.user.save(err => {
+        if (err) 
+          handler(false, 'Database failed to save new password.', 503)(req, res);
+        else {
+          handler(true, 'Successfully updated password.', 200, {
+            token: auth.signJWT(req.user.email, req.user._id, req.user.admin)
+          })(req, res);
+        }
+      }); 
+    } else {
+      handler(false, 'Failed to authenticate user.', 401)(req, res);
+    }
+  });
+});
+
 module.exports = router;

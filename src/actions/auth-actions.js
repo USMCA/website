@@ -4,6 +4,7 @@ import { userInfo } from './users-actions';
 import { 
   AUTH_USER,  
   UNAUTH_USER, 
+  CHANGE_PASS, 
   requestPayloads
 } from './types';
 
@@ -31,6 +32,7 @@ const handleAuth = (action, dispatch) => {
     .then(({ success, message, token, user }) => {
       if (!success) dispatch(Object.assign(action, errorPayload(message)));
       else {
+        console.log('ailee', message);
         const content = user || {}; // ensure that user is defined
         localStorage.setItem('token', token);
         dispatch(Object.assign(action, successPayload({ content })));
@@ -72,4 +74,23 @@ export function signupUser({ name, email, password, university }) {
   }
 }
 
-
+export function changePass({ currPass, newPass }) {
+  let action = { type: CHANGE_PASS };
+  return dispatch => {
+    fetch('/password', {
+      method: 'post',
+      body: JSON.stringify({ currPass, newPass }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(
+      handleAuth(action, dispatch), ({ message }) => {
+        dispatch(Object.assign(action, errorPayload(
+          message || 'Failed to communicate with server.'
+        )));
+      }
+    );
+  }
+}
