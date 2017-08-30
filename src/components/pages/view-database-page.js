@@ -14,23 +14,29 @@ const DatabasePage = () => (
       <Row>
         <form className="col s12">
           <Row>
-            <Input s={4} type="select" label="Contest" multiple>
+            <Input l={3} m={6} s={12} type="select" label="Contest" multiple>
                 <option value="" disabled>Choose your option</option>
                 <option value="1">Option 1</option>
                 <option value="2">Option 2</option>
                 <option value="3">Option 3</option>
             </Input>
-            <Input s={4} type="select" label="Subject" multiple>
+            <Input l={3} m={6} s={12} type="select" label="Subject" multiple>
                 <option value="">Choose your option</option>
                 <option value="1">Option 1</option>
                 <option value="2">Option 2</option>
                 <option value="3">Option 3</option>
             </Input>
-            <Input s={4} type="select" label="Sort by" multiple>
+            <Input l={3} m={6} s={12} type="select" label="Sort by" multiple>
                 <option value="">Choose your option</option>
                 <option value="1">Option 1</option>
                 <option value="2">Option 2</option>
                 <option value="3">Option 3</option>
+            </Input>
+            <Input l={3} m={6} s={12} type="select" label="Difficulty" multiple>
+                <option value="">Choose your option</option>
+                <option value="1">Easy</option>
+                <option value="2">Medium</option>
+                <option value="3">Hard</option>
             </Input>
             <Col s={12}>
               <ul className="inline-list">
@@ -39,15 +45,6 @@ const DatabasePage = () => (
                 </li>
                 <li>
                   <Input type="checkbox" label="borrowed problems" />
-                </li>
-                <li>
-                  <Input type="checkbox" label="easy" defaultChecked="checked" />
-                </li>
-                <li>
-                  <Input type="checkbox" label="medium" defaultChecked="checked" />
-                </li>
-                <li>
-                  <Input type="checkbox" label="hard" defaultChecked="checked" />
                 </li>
               </ul>
             </Col>
