@@ -13,12 +13,10 @@ import {
   CompetitionsSelect, 
   LocationArrayInput
 } from "./utilities";
-import {
-  contestErrorHandler, 
-  resetCreateContestForm,
-  postContest
-} from "../../actions";
-import { requestStatuses } from "../../actions/types";
+import { postContest } from "../../actions";
+import { CONTEST_POST, requestStatuses } from "../../actions/types";
+
+const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
 const CompetitionInput = ({ input, meta, ...rest }) => (
         <CompetitionsSelect type={ competitionsInputOptions.DIRECTOR } { ...input } { ...rest } />
@@ -36,24 +34,19 @@ const CompetitionInput = ({ input, meta, ...rest }) => (
 class CreateContestForm extends React.Component { 
   onSubmit = ({ competition_id, name, date, locations }) => {
     if (!competition_id || !name || !date || !locations) {
-      return this.props.contestErrorHandler('Please fill out all fields.');
+      return this.props.errorHandler('Please fill out all fields.');
     }
     this.props.postContest({ competition_id, name, date, locations });
   }
 
   resetForm = () => {
-    this.props.resetCreateContestForm();
+    //@TODO clear form inputs
+    this.props.resetContestForm();
   }
 
   render() {
-    const { 
-      handleSubmit, 
-      contestError, 
-      contestMessage, 
-      resetForm,
-      requestStatus 
-    } = this.props;
-    return requestStatus === requestStatuses.SUCCESS ? (
+    const { handleSubmit, data: { requestStatus, message } } = this.props;
+    return requestStatus === SUCCESS ? (
       <div>
         <p>Contest created! Click <a onClick={ this.resetForm }>here</a> to make another contest.</p>
       </div>
@@ -75,11 +68,9 @@ class CreateContestForm extends React.Component {
           <RightButtonPanel>
             <Button type="submit" className="teal darken-3">Create</Button>
           </RightButtonPanel>
-          <Error error={ contestError } message={ contestMessage } />
+          <Error error={ requestStatus === ERROR } message={ message } />
           { 
-            (
-              requestStatus === requestStatuses.PENDING && !contestError
-            ) && <Spinner /> 
+            (requestStatus === PENDING) && <Spinner /> 
           }
         </Row>
       </form>
@@ -88,28 +79,33 @@ class CreateContestForm extends React.Component {
 }
 
 CreateContestForm.propTypes = {
-  contestError: PropTypes.bool.isRequired,
-  contestMessage: PropTypes.string,
-  requestStatus: PropTypes.string.isRequired,
-  contestErrorHandler: PropTypes.func.isRequired,
   postContest: PropTypes.func.isRequired,
-  resetCreateContestForm: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-        contestError: state.contests.error,
-        contestMessage: state.contests.message,
-        requestStatus: state.contests.requestStatus
+        data: state.contests.createContest
       }),
       mapDispatchToProps = dispatch => ({
-        contestErrorHandler: errorMessage => {
-          contestErrorHandler(dispatch, errorMessage);
+        errorHandler: message => {
+          dispatch({ 
+            type: CONTEST_POST, 
+            payload: {
+              requestStatus: ERROR,
+              message
+            }
+          });
+        },
+        resetContestForm: () => {
+          dispatch({
+            type: CONTEST_POST,
+            payload: {
+              requestStatus: IDLE,
+            }
+          });
         },
         postContest: ({ competition_id, name, date, locations }) => {
           postContest({ competition_id, name, date, locations})(dispatch);
-        },
-        resetCreateContestForm: () => {
-          resetCreateContestForm(dispatch);
         }
       });
 

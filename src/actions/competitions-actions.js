@@ -8,10 +8,12 @@ import {
   COMP_GET,
   COMP_FETCH_MINE,
   COMP_FETCH_DIR,
+  COMP_REQ_JOIN,
   requestStatuses
 } from './types';
 import { requestTypes } from '../../constants';
 import auth from '../auth';
+import { authenticate } from './utilities';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const {
@@ -105,18 +107,17 @@ export function allCompetitions() {
     dispatch(Object.assign(action, pendingPayload()));
     fetch('/api/competitions', { method: 'get' })
     .then(
-      response => {
-        return response.json()
-        .then(({ success, message, copmetitions }) => {
+      res => {
+        return res.json().then(({ success, message, competitions }) => {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, successPayload({ 
             content: competitions 
           })));
         });
       },
-      error => {
+      err => {
         dispatch(Object.assign(action, errorPayload(
-          error.message || 'Failed to communicate with server'
+          err.message || 'Failed to communicate with server'
         )));
       }
     );
@@ -137,21 +138,41 @@ export function directorCompetitions() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }).then(
-        response => {
-          return response.json()
-          .then(({ success, message, competitions }) => {
-            if (!success) dispatch(Object.assign(action, errorPayload(message)));
-            else dispatch(Object.assign(action, successPayload({ 
-              content: competitions 
-            })));
-          });
-        },
-        error => {
-          dispatch(Object.assign(action, errorPayload(
-            error.message || 'Failed to communicate with server'
-          )));
-        }
+        res => res.json().then(({ success, message, competitions }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ 
+            content: competitions 
+          })));
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          err.message || 'Failed to communicate with server.'
+        )))
       );
     }
+  }
+}
+
+export function joinCompetition(competition_id) {
+  let action = { type: COMP_REQ_JOIN };
+  return dispatch => {
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch('/api/competitions/join', {
+        method: 'post',
+        body: JSON.stringify({ type: requestTypes.REQUEST, competition_id }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(
+        response => response.json().then(({ success, message }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload()));
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          err.message || 'Failed to communicate with server.'
+        )))
+      );
+    });    
   }
 }

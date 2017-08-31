@@ -47,7 +47,8 @@ class ProposeForm extends React.Component {
     competition_id, subject, difficulty, statement, answer, solution
   }) => {
     if (!competition_id || !subject || !statement) {
-      return this.props.probErrorHandler('Please fill out required fields.');
+      return;
+      return this.props.probErrorHandler('Please fill out required fields.'); //@TODO fix this
     } else {
       return this.props.postProposal({
         competition_id, subject, difficulty, statement, answer, solution

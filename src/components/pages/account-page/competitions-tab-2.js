@@ -4,6 +4,7 @@ import { Button, Table, Input, Modal } from "react-materialize";
 import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
 import CreateCompetitionForm from "../../forms/create-competition";
+import JoinCompetitionForm from "../../forms/join-competition";
 
 const tabs = {
   "info": {
@@ -93,7 +94,11 @@ const tabs = {
 
 const CompetitionsTab2 = () => (
   <div>
-    <Button className="teal darken-3">Join a competition</Button>
+    <Modal 
+      header="Request to Join a Competition" 
+      trigger={ <Button className="teal darken-3">Join a competition</Button> }>
+      <JoinCompetitionForm />
+    </Modal>
     <div style={{borderBottom: "1px solid #cfd8dc"}}>
       <h2 className="teal-text text-darken-3">CMIMC</h2>
       <VerticalNav tabs={ tabs } active="info" />
