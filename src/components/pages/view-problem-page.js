@@ -8,6 +8,8 @@ import renderKaTeX from "../../katex";
 import { getProposal, upvoteProblem } from "../../actions";
 import { HorizontalNav, Counter } from "../utilities";
 import TestSolveForm from "../forms/test-solve";
+import SolutionForm from "../forms/solution";
+import CommentForm from "../forms/comment";
 import Spinner from "../spinner";
 
 const Feedback = ({feedbackType, author, message}) => (
@@ -69,19 +71,30 @@ class ViewProbPage extends React.Component {
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: problem.official_soln.length > 0 ? (
-          <ul>
-            {
-              problem.official_soln.map((soln, key) => (
-                <Feedback
-                  feedbackType="Solution"
-                  message={soln.body}
-                  author={soln.author.name}
-                  key={key} />
-              ))
-            }
-          </ul>
-        ) : ( <p>No solutions.</p> )
+        view: ( 
+          <div>
+            <div>
+              <SolutionForm />
+            </div>
+            <div>
+              { 
+                problem.official_soln.length > 0 ? (
+                  <ul>
+                    {
+                      problem.official_soln.map((soln, key) => (
+                        <Feedback
+                          feedbackType="Solution"
+                          message={soln.body}
+                          author={soln.author.name}
+                          key={key} />
+                      ))
+                    }
+                  </ul>
+                ) : ( <p>No solutions.</p> )
+              }
+            </div>
+          </div>
+        )
       },
       "test-solves": {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
@@ -109,19 +122,30 @@ class ViewProbPage extends React.Component {
       },
       "comments": {
         title: <div>Comments<Counter count={ problem.comments.length } /></div>,
-        view: problem.comments.length > 0 ? (
-          <ul>
-            {
-              problem.comments.map((cmt, key) => (
-                <Feedback
-                  feedbackType="Comment"
-                  message={cmt.comment}
-                  author={cmt.author.name}
-                  key={key} />
-              ))
-            }
-          </ul>
-        ) : ( <p>No comments.</p> )
+        view: (
+          <div>
+            <div>
+              <CommentForm id={ problem._id } />
+            </div>
+            <div>
+              {
+                problem.comments.length > 0 ? (
+                  <ul>
+                    {
+                      problem.comments.map((cmt, key) => (
+                        <Feedback
+                          feedbackType="Comment"
+                          message={cmt.comment}
+                          author={cmt.author.name}
+                          key={key} />
+                      ))
+                    }
+                  </ul>
+                ) : ( <p>No comments.</p> )
+              }
+            </div>
+          </div>
+        )
       }
     })
   }

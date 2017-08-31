@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { 
   requestStatuses,
-  USER_ERROR,
   USER_INFO,
   USER_ADMIN,
   USER_COMP_RES
@@ -9,61 +8,21 @@ import {
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
 const INITIAL_STATE = { 
-  error: false, 
-  message: '', 
-  user: {
-    unread: [],
-    read: [],
-    urgent: [],
-    requests: []
-  },
-  admins: [],
-  requestStatus: IDLE
+  user: { content: null, message: '', requestStatus: IDLE },
+  admins: { content: [], message: '', requestStatus: IDLE }
 };
 
-export default function (state = INITIAL_STATE, action) {  
-  switch(action.type) {
+export default function (state = INITIAL_STATE, { type, payload }) {  
+  switch(type) {
     case USER_INFO:
-      switch (action.payload.requestStatus) {
-        case SUCCESS:
-          return {
-            ...state,
-            error: false,
-            message: '',
-            user: action.payload.user
-          }
-        default:
-          return state;
-      }
+      return { ...state, user: payload };
     case USER_ADMIN:
-      switch (action.payload.requestStatus) {
-        case SUCCESS:
-          return {
-            ...state,
-            error: false,
-            message: '',
-            admins: action.payload.admins
-          };
-        default:
-          return state;
-      }
+      return { ...state, admins: payload };
     case USER_COMP_RES:
-      switch (action.payload.requestStatus) {
-        case SUCCESS:
-          const newState = {
-            ...state,
-            error: false,
-            message: '',
-            user: Object.assign(state.user, {
-              requests: _.remove(state.user.requests, request => (
-                request._id !== action.payload.requestId
-              ))
-            })
-          }
-          return newState;
-        default:
-          return state;
-      }
+      const requests = _.filter(state.user.content.requests, request => (
+        request._id !== payload.requestId
+      ));
+      return { ...state, user: Object.assign(state.user.content, { requests }) }
     default:
       return state;
   }

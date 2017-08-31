@@ -8,8 +8,9 @@ import ChangePasswordForm from "../../forms/change-password";
 
 class AccountTab extends React.Component {
   render() {
-    const { user, admins } = this.props,
-          { name, email, university } = user;
+    const { user, admins } = this.props;
+    if (!user.content || !admins.content) return <div></div>;
+    const { name, email, university } = user.content;
     return (
       <Col s={12}>
         <h2 className="teal-text text-darken-4" style={{marginTop: "36px"}}>Account
@@ -39,8 +40,8 @@ class AccountTab extends React.Component {
         <p>If you have any problems, these are the contacts of the admins of USMCA:</p>
         <ul>
         {
-          admins.map((admin, key) =>
-            <li key={key}>{admin.name} ({admin.email})<a className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
+          admins.content.map((admin, key) =>
+            <li key={key}>{admin.name} ({admin.email})<a className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true" /></a></li>
           )
         }
         </ul>
@@ -52,7 +53,7 @@ class AccountTab extends React.Component {
 
 AccountTab.propTypes = {
   user: PropTypes.object.isRequired,
-  admins: PropTypes.array.isRequired
+  admins: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

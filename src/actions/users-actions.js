@@ -4,144 +4,95 @@ import $ from 'jquery';
 import auth from '../auth';
 import { memberCompetitions } from './competitions-actions';
 import {
+  requestPayloads,
   requestStatuses,
-  USER_ERROR,
   USER_INFO,
   USER_ADMIN,
   USER_COMP_RES
 } from './types';
 import { requestTypes } from '../../constants';
+import { authenticate } from './utilities';
 
-/*******************************************************************************
- * Synchronous actions.
- ******************************************************************************/
+const {
+  successPayload,
+  errorPayload,
+  pendingPayload,
+  idlePayload
+} = requestPayloads;
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
-export function userErrorHandler(dispatch, errorMessage) {
-  dispatch({ type: USER_ERROR, payload: errorMessage});
-}
-
-/*******************************************************************************
- * Async thunk actions.
- ******************************************************************************/
+/* fetch user info */
 export function userInfo() {
+  let action = { type: USER_INFO };
   return dispatch => {
-    dispatch({ 
-      type: USER_INFO, 
-      payload: { 
-        requestStatus: requestStatuses.PENDING
-      }
-    });
-    const userId = auth.userId();
-    if (userId) {
-      memberCompetitions()(dispatch);
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
       fetch(`/api/users?${$.param({ id: userId })}`, { 
         method: 'get',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-      })
-      .then(
-        response => {
-          return response.json()
-          .then(data => {
-            const { error, message, user } = data;
-            if (error) userErrorHandler(dispatch, message);
-            else {
-              dispatch({
-                type: USER_INFO,
-                payload: {
-                  requestStatus: requestStatuses.SUCCESS,
-                  user: user
-                }
-              });
-            }
-          });
-        }, 
-        error => {
-          errorMessage = error.message || 'Failed to communicate with server.';
-          userErrorHandler(dispatch, errorMessage);
+      }).then(
+        res => res.json().then(({ success, message, user }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ content: user })));
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          err.message || 'Failed to communicate with server.'
+        )))
+      );
+    });
+  }
+}
+
+/* fetch admin info */
+export function adminInfo() {
+  let action = { type: USER_ADMIN };
+  return dispatch => {
+    dispatch(Object.assign(action, pendingPayload()));
+    fetch('/api/users/admin', { method: 'get' }).then(
+      res => res.json().then(({ success, message, admins }) => {
+        if (!success) dispatch(Object.assign(action, errorPayload(message)));
+        else dispatch(Object.assign(action, successPayload({ content: admins })));
+      }),
+      err => dispatch(Object.assign(action, errorPayload(
+        err.message || 'Failed to communicate with server.'
+      )))
+    );
+  }
+}
+
+/* respond to a competition request */
+export function respondCompetition(request, adminResponse) {
+  let action = { type: USER_COMP_RES };
+  return dispatch => {
+    if (!auth.isAdmin()) {
+      dispatch(Object.assign(action, errorPayload('User is not an admin.')));
+    } else if ( adminResponse !== requestTypes.ACCEPT && 
+                adminResponse !== requestTypes.REJECT ) {
+      dispatch(Object.assign(action, errorPayload('Invalid response to request.')));
+    } else {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch('/api/competitions', {
+        method: 'post',
+        body: JSON.stringify({
+          requestId: request._id,
+          type: adminResponse
+        }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
+      }).then(
+        res => res.json().then(({ success, message }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload(requestId: request._id)));
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          err.message || 'Failed to communicate with server.'
+        )))
       );
     }
-  }
-}
-
-export function adminInfo() {
-  return dispatch => {
-    dispatch({ 
-      type: USER_ADMIN, 
-      payload: { 
-        requestStatus: requestStatuses.PENDING
-      }
-    });
-    fetch('/api/users/admin', { method: 'get' })
-    .then(
-      response => {
-        return response.json()
-        .then(data => {
-          const { error, message, admins } = data;
-          if (error) userErrorHandler(dispatch, message);
-          else {
-            dispatch({
-              type: USER_ADMIN,
-              payload: {
-                requestStatus: requestStatuses.SUCCESS,
-                admins: admins
-              }
-            });
-          }
-        });
-      }, 
-      error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        userErrorHandler(dispatch, errorMessage);
-      }
-    );
-  }
-}
-
-export function respondCompetition(request, adminResponse) {
-  return dispatch => {
-    if (!auth.isAdmin()) userErrorHandler(dispatch, 'User is not an admin.');
-    if (adminResponse !== requestTypes.ACCEPT && 
-        adminResponse !== requestTypes.REJECT) {
-      userErrorHandler(dispatch, 'Invalid response to request.');
-    }
-    dispatch({ 
-      type: USER_COMP_RES, 
-      payload: { requestStatus: requestStatuses.PENDING }
-    });
-    fetch('/api/competitions', {
-      method: 'post',
-      body: JSON.stringify({
-        requestId: request._id,
-        type: adminResponse
-      }),
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(
-      response => {
-        return response.json()
-        .then(data => {
-          if (!data.success) userErrorHandler(dispatch, data.message);
-          else {
-            dispatch({ 
-              type: USER_COMP_RES, 
-              payload: {
-                requestId: request._id,
-                requestStatus: requestStatuses.SUCCESS
-              }
-            });
-          }
-        });
-      },
-      error => {
-        errorMessage = error.message || 'Failed to communicate with server.';
-        userErrorHandler(dispatch, errorMessage);
-      }
-    );
   }
 }
 

@@ -68,7 +68,6 @@ class CompetitionsInputDumb extends React.Component {
       meta,
       ...rest
     } = this.props;
-    console.log(this.competitionObject());
     return competitions[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest }
@@ -326,12 +325,13 @@ class KaTeXInput extends React.Component {
   }
 
   render() {
-    const { type, label, includeSubmit } = this.props;
+    const { type, label, includeSubmit, onChange } = this.props;
     return (
       <Row>
         <Input
           ref={ elem => { this.inputField = elem; } }
-          s={6} type={ type } label={ label } />
+          s={6} type={ type } label={ label }
+          onChange={ onChange } />
         <Col s={6}>
           <div ref={ elem => { this.renderField = elem; } }></div>
         </Col>
