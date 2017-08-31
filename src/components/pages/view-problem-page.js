@@ -139,7 +139,7 @@ class ViewProbPage extends React.Component {
   upvoted = () => {
     const { proposal: { content } } = this.props,
           problem = content;
-    return !!(_.find(problem.upvotes, id => (id === auth.userId())));
+    return !!(_.find(problem.upvotes, id => id === auth.userId()));
   }
 
   render() {
