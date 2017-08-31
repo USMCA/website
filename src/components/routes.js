@@ -18,6 +18,7 @@ import requireAuth from "./auth/require-auth";
 const Routes = ({ authenticated }) => (
   <Switch>
     <Route exact path="/" component={ authenticated ? AccountPage : IndexPage } />
+    <Route path="/tabs/:tab" component={ authenticated ? AccountPage : IndexPage } />
     <Route exact path="/login" component={ LoginPage }/>
     <Route exact path="/propose" component={ requireAuth(ProposePage) }/>
     <Route exact path="/test-solve" component={ requireAuth(TestSolvePage) }/>
