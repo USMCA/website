@@ -55,6 +55,7 @@
   body: String,
   type: Enum(REQUEST, INVITE), 
   competition: Competition,
+  contest, Contest,
   user_type: Enum(ADMIN, DIRECTOR, CZAR, MEMBER, TEST_SOLVER),
   created: Date,
   updated: Date
@@ -73,6 +74,7 @@
   date: Date,
   tests: [ Tests ],
   test_solvers: [ User ],
+  test_solve_deadline: Date,
   czars: [ User ],
   created: Date,
   updated: Date
