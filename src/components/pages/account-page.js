@@ -8,9 +8,10 @@ import CompetitionsTab2 from "./account-page/competitions-tab-2";
 import ProblemsTab from "./account-page/problems-tab";
 import AccountTab from "./account-page/account-tab";
 import { HorizontalNav } from "../utilities";
+import auth from "../../auth";
 
 const AccountPage = ({ match }) => {
-  const accountTabs = {
+  let accountTabs = {
     "notifications": {
       title: (
         <div>
@@ -52,6 +53,19 @@ const AccountPage = ({ match }) => {
       view: <AccountTab />
     }
   };
+
+  if (auth.isAdmin()) {
+    accountTabs.admin = {
+      title: (
+        <div>
+          <Link to="/tabs/account">
+            <i className="fa fa-lock" aria-hidden="true"></i> Admin
+          </Link>
+        </div>
+      ),
+      view: <h1>Admin</h1>
+    }
+  }
  
   let active = match.params.tab || "notifications";
   if (!(_.find(_.keys(accountTabs), tab => tab === active))) {
