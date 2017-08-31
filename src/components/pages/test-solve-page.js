@@ -13,16 +13,16 @@ const TestSolvePage = () => (
         <ul className="notifications-list">
           <li className="transparent">No test solve requests found.</li>
           <li className="new-announcement">
-            <a href="#"><span className="select-circle"></span></a>
-            <span className="bold-text">CMIMC</span> requests <span className="bold-text">5</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a href className="underline-hover">Apply</a>
+            <a><span className="select-circle"></span></a>
+            <span className="bold-text">CMIMC</span> requests <span className="bold-text">5</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a className="underline-hover">Apply</a>
           </li>
           <li>
-            <a href="#"><span className="select-circle"></span></a>
-            <span className="bold-text">PUMaC</span> requests <span className="bold-text">8</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a href className="underline-hover">Apply</a>
+            <a><span className="select-circle"></span></a>
+            <span className="bold-text">PUMaC</span> requests <span className="bold-text">8</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a className="underline-hover">Apply</a>
           </li>
           <li>
-            <a href="#"><span className="select-circle"></span></a>
-            <span className="bold-text">HMMT</span> requests <span className="bold-text">20</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a href className="underline-hover">Apply</a>
+            <a><span className="select-circle"></span></a>
+            <span className="bold-text">HMMT</span> requests <span className="bold-text">20</span> test solvers. Their deadline is <span className="bold-text">January 20th, 2018</span>. <a className="underline-hover">Apply</a>
           </li>
           <li className="transparent center-align"><LoadMore /></li>
         </ul>

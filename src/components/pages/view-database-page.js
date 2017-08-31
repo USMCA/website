@@ -57,7 +57,7 @@ const DatabasePage = () => (
           <ProblemPreview problem={proposal} key={key}>sup</ProblemPreview>
         ))
       }
-      <a href="#" className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
+      <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
     </Col>
   </Row>
 );

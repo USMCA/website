@@ -147,7 +147,7 @@ class ViewProbPage extends React.Component {
           problem = content;
     return problem ? (
       <Row className="container">
-        <h2 className="col s12 teal-text text-darken-4">View Problem<a href="#" className="teal-text text-darken-4 right"><i className="fa fa-trash" aria-hidden="true"></i></a><a href={"edit-problem/" + problem._id} className="teal-text text-darken-4 right right-space"><i className="fa fa-pencil" aria-hidden="true"></i></a></h2>
+        <h2 className="col s12 teal-text text-darken-4">View Problem<a className="teal-text text-darken-4 right"><i className="fa fa-trash" aria-hidden="true"></i></a><a href={"edit-problem/" + problem._id} className="teal-text text-darken-4 right right-space"><i className="fa fa-pencil" aria-hidden="true"></i></a></h2>
         <Col s={1}>
           <Vote type="novote" netVotes={ problem.upvotes.length } onClick={ () => upvote(problem._id) } type={ this.upvoted() ? "upvote" : "novote" } />
         </Col>

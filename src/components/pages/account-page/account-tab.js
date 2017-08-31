@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Col, Input, Modal, Button } from "react-materialize";
+import { Row, Col, Input, Modal, Button } from "react-materialize";
 
 import { RightButtonPanel } from "../../utilities";
 import ChangePasswordForm from "../../forms/change-password";
@@ -13,23 +13,25 @@ class AccountTab extends React.Component {
     const { name, email, university } = user.content;
     return (
       <Col s={12}>
-        <h2 className="teal-text text-darken-4" style={{marginTop: "0"}}>Account
-          <Modal header="Edit Account" trigger={<a href="#" className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
-            <form>
-              <Input s={12} label="Name" value={name} />
-              <Input s={12} label="Email" value={email} />
-              <Input s={12} label="University" value={university} />
-              <RightButtonPanel>
-                <Button className="teal darken-3">Save</Button>
-              </RightButtonPanel>
-            </form>
+        <h2 className="teal-text text-darken-4" style={{marginTop: "36px"}}>Account
+          <Modal header="Edit Account" trigger={<a className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
+            <Row>
+              <form s={12}>
+                <Input s={12} label="Name" defaultValue={name} />
+                <Input s={12} label="Email" defaultValue={email} />
+                <Input s={12} label="University" defaultValue={university} />
+                <RightButtonPanel>
+                  <Button className="teal darken-3">Save</Button>
+                </RightButtonPanel>
+              </form>
+            </Row>
           </Modal>
           </h2>
         <ul>
           <li>Name: {name}</li>
           <li>Email: {email}</li>
           <li>University: {university}</li>
-          <li><Modal header="Change Password" trigger={<a href className="teal-text text-darken-3">Change password</a>}>
+          <li><Modal header="Change Password" trigger={<a className="teal-text text-darken-3">Change password</a>}>
             <ChangePasswordForm />
           </Modal></li>
         </ul>
@@ -39,7 +41,7 @@ class AccountTab extends React.Component {
         <ul>
         {
           admins.content.map((admin, key) =>
-            <li key={key}>{admin.name} ({admin.email})<a href="#" className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
+            <li key={key}>{admin.name} ({admin.email})<a className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true" /></a></li>
           )
         }
         </ul>

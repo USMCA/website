@@ -9,7 +9,7 @@ function removeProblem(key, removeElem) {
   console.log(key);
 }
 
-const DragHandle = SortableHandle(() => <a href className="grey-text text-darken-1"><i className="fa fa-bars" aria-hidden="true"></i></a>); // This can be any component you want
+const DragHandle = SortableHandle(() => <a className="grey-text text-darken-1"><i className="fa fa-bars" aria-hidden="true"></i></a>); // This can be any component you want
 
 const SortableProblem = SortableElement(({ problem, myKey, removeElem }) => (
   <li id={"problem" + myKey} className="test-list-item">

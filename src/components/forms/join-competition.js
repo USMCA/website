@@ -7,10 +7,10 @@ import { Input, Row, Button } from "react-materialize";
 import Spinner from "../spinner";
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import { 
-  competitionsInputOptions, 
-  CompetitionsInput, 
-  CompetitionsSelect, 
+import {
+  competitionsInputOptions,
+  CompetitionsInput,
+  CompetitionsSelect,
   LocationArrayInput
 } from "./utilities";
 import {
@@ -24,7 +24,7 @@ const CompetitionField = ({ input, meta, ...rest }) => (
         <CompetitionsInput type={ competitionsInputOptions.ALL } { ...input } { ...rest } />
       );
 
-class JoinCompetitionForm extends React.Component { 
+class JoinCompetitionForm extends React.Component {
   onSubmit = ({ competition_id }) => {
     if (!competition_id) {
       return this.props.errorHandler('Please fill out all fields.');
@@ -50,10 +50,10 @@ class JoinCompetitionForm extends React.Component {
           </div>
           <RightButtonPanel>
             <Button type="submit" className="teal darken-3">Join</Button>
-          </RightButtonPanel>
+          </RightButtonPanel><br />
           <Error error={ requestStatus === ERROR } message={ message } />
-          { 
-            requestStatus === PENDING && <Spinner /> 
+          {
+            requestStatus === PENDING && <Spinner />
           }
         </Row>
       </form>
@@ -74,9 +74,9 @@ const mapStateToProps = state => ({
           joinCompetition(competition_id)(dispatch);
         },
         errorHandler: message => {
-          dispatch({ 
-            type: COMP_REQ_JOIN, 
-            payload: { 
+          dispatch({
+            type: COMP_REQ_JOIN,
+            payload: {
               requestStatus: ERROR,
               message
             }

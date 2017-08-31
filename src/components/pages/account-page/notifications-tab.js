@@ -116,7 +116,6 @@ class NotificationsTab extends React.Component {
     );
   }
 
-
   notificationsTabs = ({ content }) => { 
     if (!content) return null; 
     const { unread, read, urgent, requests } = content;
@@ -149,7 +148,11 @@ class NotificationsTab extends React.Component {
     const { userData } = this.props;
     this.notificationsTabsViews = this.notificationsTabs(userData);
     if (!this.notificationsTabsViews) return <div></div>;
-    return <VerticalNav tabs={ this.notificationsTabsViews } active="all" />;
+    return (
+      <div style={{marginTop: "36px"}}>
+        <VerticalNav tabs={ this.notificationsTabsViews } active="all" />
+      </div>
+    );
   }
 };
 
