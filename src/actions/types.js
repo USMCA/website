@@ -48,8 +48,7 @@ export const AUTH_USER = 'auth_user', // set user to be authenticated
              CHANGE_PASS = 'change_pass'; // change user password
 
 /* authorization */
-export const USER_ERROR = 'user_error', // notifiy user data error
-             USER_INFO = 'user_info', // get user info
+export const USER_INFO = 'user_info', // get user info
              USER_ADMIN = 'user_admin', // get admins
              USER_COMP_RES = 'comp_res', // respond to create competition
              USER_NOTIF_TOGGLE = 'notif_toggle'; // toggle between unread, read, and urgent

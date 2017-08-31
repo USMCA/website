@@ -32,7 +32,6 @@ const handleAuth = (action, dispatch) => {
     .then(({ success, message, token, user }) => {
       if (!success) dispatch(Object.assign(action, errorPayload(message)));
       else {
-        console.log('ailee', message);
         const content = user || {}; // ensure that user is defined
         localStorage.setItem('token', token);
         dispatch(Object.assign(action, successPayload({ content })));

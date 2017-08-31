@@ -58,7 +58,7 @@ const AccountPage = ({ match }) => {
     accountTabs.admin = {
       title: (
         <div>
-          <Link to="/tabs/account">
+          <Link to="/tabs/admin">
             <i className="fa fa-lock" aria-hidden="true"></i> Admin
           </Link>
         </div>
@@ -72,10 +72,10 @@ const AccountPage = ({ match }) => {
     active = "notifications";
   }
   return (
-  <Row className="container">
-    <HorizontalNav tabs={ accountTabs } active={ active } />
-  </Row>
-  )
+    <Row className="container">
+      <HorizontalNav tabs={ accountTabs } active={ active } />
+    </Row>
+  );
 };
 
 export default AccountPage;

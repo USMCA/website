@@ -68,7 +68,6 @@ class CompetitionsInputDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    console.log(this.competitionObject());
     return competitions[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
