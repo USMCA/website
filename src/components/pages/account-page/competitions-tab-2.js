@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Table, Input, Modal } from "react-materialize";
+import { Link } from "react-router-dom";
 
 import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
@@ -20,7 +21,7 @@ const tabs = {
         <li><a className="teal-text text-darken-3">Step down as director</a></li>
         <li><a className="teal-text text-darken-3">Leave competition</a></li>
         <li><h3>Database</h3></li>
-        <li><a href="/view-database" className="btn teal darken-3">View database</a></li>
+        <li><Link to="/view-database" className="btn teal darken-3">View database</Link></li>
       </ul>
     </div>
   },
