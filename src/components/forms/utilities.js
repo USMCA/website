@@ -53,7 +53,7 @@ class CompetitionsInputDumb extends React.Component {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
     return _.reduce(a, (o, comp) => Object.assign(o, { 
-      [comp.short_name]: comp._id 
+      [comp.name]: comp._id 
     }), {});
   };
 
@@ -68,7 +68,8 @@ class CompetitionsInputDumb extends React.Component {
       meta,
       ...rest 
     } = this.props;
-    return competition[type].requestStatus === SUCCESS ? (
+    console.log(this.competitionObject());
+    return competitions[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
         s={12} title="Competition" { ...input } { ...rest } 
         data={ this.competitionObject() } limit={5} />

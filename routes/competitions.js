@@ -252,10 +252,62 @@ router.get('/', (req, res) => {
       handler(false, 'Database failed to load competitions.', 503)(req, res);
     } else {
       handler(true, 'Successfully loaded competitions.', 200, {
-        competitions: competitions
+        competitions
       })(req, res);
     }
   });
+});
+
+router.post('/join', auth.verifyJWT, (req, res) => {
+  const { type, competition_id } = req.body;
+  console.log('ailee', competition_id);
+  switch(type) {
+    case REQUEST:
+      Competition.findById(competition_id)
+      .populate('directors members')
+      .exec((err, competition) => {
+        if (err) {
+          console.log(err);
+          handler(false, 'Database failed to load competition.', 503)(req, res);
+        } else {
+          if (competition.members.indexOf(req.user._id > -1)) {
+            handler(false, 'User is already a member of the competition.', 400)(req, res);
+          } else {
+            const request = Object.assign(new Request(), {
+              author: req.user._id,
+              body: `${req.user.name} requests to join your competition ${competition.name}`,
+              type: requestEnum.REQUEST,
+              competition: competition._id
+            });
+            request.save(err => {
+              if (err) {
+                handler(false, 'Database failed to save request.', 503)(req, res);
+              } else {
+                const tasks = competition.directors.map(director => {
+                  return callback => {
+                    director.requests.push(request);
+                    director.save(err => {
+                      if (err) callback(err, null);
+                      else callback(null, null);
+                    });
+                  }
+                });
+                async.parallel(tasks, (err, results) => {
+                  if (err) {
+                    handler(false, 'Database failed to send request to directors.', 503)(req, res);
+                  } else {
+                    handler(true, 'Succesfully requested joining of competition.', 200)(req, res);
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+      break;
+    default:
+      handler(false, 'Invalid join competition post.', 400)(req, res);
+  }
 });
 
 module.exports = router;

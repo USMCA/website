@@ -57,7 +57,8 @@ export const USER_ERROR = 'user_error', // notifiy user data error
 export const COMP_REQ = 'comp_req', // request to create competition
              COMP_GET = 'comp_get', // get all competitions
              COMP_FETCH_MINE = 'comp_fetch_mine', // get user competition info
-             COMP_FETCH_DIR = 'comp_fetch_dir'; // get user competition info
+             COMP_FETCH_DIR = 'comp_fetch_dir', // get user competition info
+             COMP_REQ_JOIN = 'comp_req_join'; // request to join competition
 
 /* contests */
 export const CONTEST_ERROR = 'contest_error', // notify a contest error
