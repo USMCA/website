@@ -8,10 +8,9 @@ import { Link } from "react-router-dom";
 import renderKaTeX from "../../katex";
 import { 
   probErrorHandler, 
-  resetProposalForm, 
   postProposal 
 } from "../../actions";
-import { requestStatuses } from "../../actions/types";
+import { PROB_POST, requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
 import Error from "../error";
 import { 
@@ -19,6 +18,7 @@ import {
   CompetitionsSelect, 
   SubjectsInput 
 } from "./utilities";
+import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
@@ -46,11 +46,11 @@ class ProposeForm extends React.Component {
   onSubmit = ({ 
     competition_id, subject, difficulty, statement, answer, solution
   }) => {
+    const { errorHandler, postProposal } = this.props;
     if (!competition_id || !subject || !statement) {
-      return;
-      return this.props.probErrorHandler('Please fill out required fields.'); //@TODO fix this
+      errorHandler('Please fill out required fields.');
     } else {
-      return this.props.postProposal({
+      postProposal({
         competition_id, subject, difficulty, statement, answer, solution
       });
     }
@@ -87,6 +87,27 @@ class ProposeForm extends React.Component {
     }
   }
 
+  statementInput = ({ input, meta, ...rest }) => (
+    <ControlledInput 
+      s={6} type="textarea" label="Problem"
+      { ...input } { ...rest }
+      ref={ elem => { this.statementField = elem; } } />
+  );
+  
+  answerInput = ({ input, meta, ...rest }) => (
+    <ControlledInput 
+      s={6} type="text" label="Answer (optional)"
+      { ...input } { ...rest }
+      ref={ elem => { this.answerField = elem; } } />
+  );
+
+  solutionInput = ({ input, meta, ...rest }) => (
+    <ControlledInput 
+      s={6} type="textarea" label="Solution (optional)"
+      { ...input } { ...rest }
+      ref={ elem => { this.solutionField = elem; } } />
+  );
+
   render() {
     const { handleSubmit, probStatus: { message, requestStatus } } = this.props;
     return (requestStatus === SUCCESS) ? (
@@ -110,12 +131,7 @@ class ProposeForm extends React.Component {
           <div>
             <Field 
               name="statement" 
-              component={ ({ input, meta, ...rest }) => (
-                <Input 
-                  s={6} type="textarea" label="Problem"
-                  { ...input } { ...rest }
-                  ref={ elem => { this.statementField = elem; } } />
-              ) } />
+              component={ this.statementInput } />
           </div>
           <Col s={6}>
             <div ref={ elem => { this.statementPreview = elem; } }></div>
@@ -125,12 +141,7 @@ class ProposeForm extends React.Component {
           <div>
             <Field 
               name="answer" 
-              component={ ({ input, meta, ...rest }) => (
-                <Input 
-                  s={6} type="text" label="Answer (optional)"
-                  { ...input } { ...rest }
-                  ref={ elem => { this.answerField = elem; } } />
-              ) } />
+              component={ this.answerInput } />
           </div>
           <Col s={6}>
             <div ref={ elem => { this.answerPreview = elem; } }></div>
@@ -140,12 +151,7 @@ class ProposeForm extends React.Component {
           <div>
             <Field 
               name="solution" 
-              component={ ({ input, meta, ...rest }) => (
-                <Input 
-                  s={6} type="textarea" label="Solution (optional)"
-                  { ...input } { ...rest }
-                  ref={ elem => { this.solutionField = elem; } } />
-              ) } />
+              component={ this.solutionInput } />
           </div>
           <Col s={6}>
             <div ref={ elem => { this.solutionPreview = elem; } }></div>
@@ -171,6 +177,8 @@ class ProposeForm extends React.Component {
 ProposeForm.propTypes = {
   probStatus: PropTypes.object.isRequired,
   postProposal: PropTypes.func.isRequired,
+  resetProposalForm: PropTypes.func.isRequired,
+  errorHandler: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
 
@@ -185,6 +193,15 @@ const mapStateToProps = state => ({
             competition_id, subject, difficulty, statement, answer, solution 
           })(dispatch);
         },
+        resetProposalForm: () => {
+          dispatch({ type: PROB_POST, payload: { requestStatus: IDLE } });
+        },
+        errorHandler: message => {
+          dispatch({ 
+            type: PROB_POST, 
+            payload: { requestStatus: ERROR, message } 
+          });
+        }
       });
 
 export default connect(
