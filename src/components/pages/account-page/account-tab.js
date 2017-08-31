@@ -13,7 +13,7 @@ class AccountTab extends React.Component {
     return (
       <Col s={12}>
         <h2 className="teal-text text-darken-4" style={{marginTop: "36px"}}>Account
-          <Modal header="Edit Account" trigger={<a href="#" className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
+          <Modal header="Edit Account" trigger={<a className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
             <Row>
               <form s={12}>
                 <Input s={12} label="Name" defaultValue={name} />
@@ -30,7 +30,7 @@ class AccountTab extends React.Component {
           <li>Name: {name}</li>
           <li>Email: {email}</li>
           <li>University: {university}</li>
-          <li><Modal header="Change Password" trigger={<a href className="teal-text text-darken-3">Change password</a>}>
+          <li><Modal header="Change Password" trigger={<a className="teal-text text-darken-3">Change password</a>}>
             <ChangePasswordForm />
           </Modal></li>
         </ul>
@@ -40,7 +40,7 @@ class AccountTab extends React.Component {
         <ul>
         {
           admins.map((admin, key) =>
-            <li key={key}>{admin.name} ({admin.email})<a href="#" className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
+            <li key={key}>{admin.name} ({admin.email})<a className="teal-text text-darken-3 right"><i className="fa fa-times" aria-hidden="true"></i></a></li>
           )
         }
         </ul>

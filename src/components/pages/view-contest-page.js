@@ -55,14 +55,14 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
                 <tr key={key}>
                   <td>{czar}</td>
                   <td>ctj@math.cmu.edu</td>
-                  <td className="center-align"><a href="#" className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
                 </tr>
               ))
             }
           </tbody>
         </Table><br />
         <RightButtonPanel>
-          <a href="#" className="btn teal darken-3">Leave as czar</a>
+          <a className="btn teal darken-3">Leave as czar</a>
         </RightButtonPanel>
       </div>
     )
@@ -88,7 +88,7 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
                 <tr key={key}>
                   <td>{czar}</td>
                   <td>ctj@math.cmu.edu</td>
-                  <td className="center-align"><a href="#" className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
                 </tr>
               ))
             }

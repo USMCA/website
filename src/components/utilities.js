@@ -9,7 +9,7 @@ import { respondCompetition } from "../actions";
 import { requestTypes } from "../../constants";
 
 const LoadMore = () => (
-  <a href="#" className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
+  <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
 );
 
 const Counter = ({ count }) => (
@@ -27,9 +27,9 @@ const RightButtonPanel = ({ children, marginBottom }) => (
 
 const Notification = ({ className, label, author, title, message }) => {
   return <li className={className}>
-        <a href="#"><span className="select-circle"></span></a>
+        <a><span className="select-circle"></span></a>
         <Modal header={author + ": " + title} trigger={
-          <a href className="underline-hover"><span className="bold-text">{ author }</span>: { title }</a>
+          <a className="underline-hover"><span className="bold-text">{ author }</span>: { title }</a>
         }>{message}</Modal>
       </li>;
 };
@@ -53,14 +53,14 @@ const RequestDumb = ({ request, respondCompetition }) => {
           { request.body }
         </Col>
         <Col s={2}>
-          <Modal header="Confirm Reject" trigger={<a href="#" className="right"><i className="fa fa-times" aria-hidden="true"></i></a>} actions={<div>
+          <Modal header="Confirm Reject" trigger={<a className="right"><i className="fa fa-times" aria-hidden="true"></i></a>} actions={<div>
             <Button flat modal="close" waves="light">Cancel</Button>
             <Button flat modal="close" waves="light"
               onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
           </div>}>
             Are you sure you want to reject this request?
           </Modal>
-          <Modal header="Confirm Accept" trigger={<a href="#" className="right right-space"><i className="fa fa-check" aria-hidden="true"></i></a>}actions={<div>
+          <Modal header="Confirm Accept" trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true"></i></a>}actions={<div>
             <Button flat modal="close" waves="light">Cancel</Button>
             <Button flat modal="close" waves="light"
               onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>

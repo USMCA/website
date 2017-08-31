@@ -8,17 +8,17 @@ import CreateCompetitionForm from "../../forms/create-competition";
 
 const CompetitionsTableDumb = ({ competitions }) => { 
   const statusOptions = {
-    "Member": <div><li><a href="#" className="teal-text text-darken-3">Leave competition</a></li></div>,
+    "Member": <div><li><a className="teal-text text-darken-3">Leave competition</a></li></div>,
     "Director": (
       <div>
-        <li><a href="#" className="teal-text text-darken-3">Leave competition</a></li>
-        <li><a href="#" className="teal-text text-darken-3">Add new members</a></li>
-        <li><a href="#" className="teal-text text-darken-3">Add new directors</a></li>
-        <li><a href="#" className="teal-text text-darken-3">Step down as director</a></li>
+        <li><a className="teal-text text-darken-3">Leave competition</a></li>
+        <li><a className="teal-text text-darken-3">Add new members</a></li>
+        <li><a className="teal-text text-darken-3">Add new directors</a></li>
+        <li><a className="teal-text text-darken-3">Step down as director</a></li>
       </div>
     ),
-    "Pending": <div><li><a href="#" className="teal-text text-darken-3">Cancel request</a></li></div>,
-    "Pending Director": <div><li><a href="#" className="teal-text text-darken-3">Cancel request</a></li></div>
+    "Pending": <div><li><a className="teal-text text-darken-3">Cancel request</a></li></div>,
+    "Pending Director": <div><li><a className="teal-text text-darken-3">Cancel request</a></li></div>
   };
 
   return (competitions.length > 0) ? (
@@ -76,7 +76,7 @@ const CompetitionsTab = () => (
           </Modal>
         </form>
       </RightButtonPanel>
-      <p className="right">Does your competition want to join USMCA? <Modal header="Form a Competition" trigger={<a href className="underline-hover teal-text text-darken-3">Form a new competition</a>}>
+      <p className="right">Does your competition want to join USMCA? <Modal header="Form a Competition" trigger={<a className="underline-hover teal-text text-darken-3">Form a new competition</a>}>
         <CreateCompetitionForm />
       </Modal>.</p>
     </Row>
