@@ -1,26 +1,17 @@
 import { 
-  CONTEST_ERROR,
   CONTEST_POST,
   requestStatuses
 } from '../actions/types';
 
-const { SUCCESS, PENDING, SUBMITTED, IDLE } = requestStatuses;
+const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const INITIAL_STATE = { 
-  error: false, 
-  message: '', 
-  requestStatus: IDLE
+  createContest: { content: null, message: '', requestStatus: IDLE }
 };
 
-export default function (state = INITIAL_STATE, action) {  
-  switch(action.type) {
-    case CONTEST_ERROR:
-      return { ...state, error: true, message: action.payload };
+export default function (state = INITIAL_STATE, { type, payload }) {  
+  switch(type) {
     case CONTEST_POST:
-      return { 
-        ...state, 
-        error: false, 
-        requestStatus: action.payload.requestStatus 
-      };
+      return { ...state, createContest: payload };
     default:
       return state;
   }
