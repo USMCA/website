@@ -36,4 +36,4 @@ SolutionForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired
 };
 
-export default reduxForm({ form: 'comment' })(SolutionForm);
+export default reduxForm({ form: 'solution' })(SolutionForm);
