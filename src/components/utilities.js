@@ -90,7 +90,7 @@ const ProblemPreview = ({ children, problem }) => (
     <Col s={9}>
       <div className="katex-preview" style={{marginBottom: "24px"}}>
         <Link
-          to={ "/view-problem/" + problem._id.toString() } 
+          to={ "/view-problem/" + problem._id.toString() }
           className="black-text underline-hover">
           <div ref={ renderKaTeX }>{ problem.statement }</div>
         </Link>
@@ -151,7 +151,7 @@ class HorizontalNav extends React.Component {
             })
           }
         </Col>
-        <Col s={12} style={{marginTop: "36px"}}>
+        <Col s={12}>
           <div>{ tabs[active].view }</div>
         </Col>
       </div>

@@ -65,7 +65,7 @@ const tabs = {
   "contests": {
     title: "Contests",
     view: <div className="round-container">
-      <Modal trigger={ <Button className="teal darken-3">Create contest</Button> }>
+      <Modal header="Create Contest" trigger={ <Button className="teal darken-3">Create contest</Button> }>
         <CreateContestForm />
       </Modal>
       <div style={{borderBottom: "1px solid #cfd8dc"}}>
@@ -93,9 +93,9 @@ const tabs = {
 }
 
 const CompetitionsTab2 = () => (
-  <div>
-    <Modal 
-      header="Request to Join a Competition" 
+  <div style={{marginTop: "36px"}}>
+    <Modal
+      header="Request to Join a Competition"
       trigger={ <Button className="teal darken-3">Join a competition</Button> }>
       <JoinCompetitionForm />
     </Modal>

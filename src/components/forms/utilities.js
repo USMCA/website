@@ -5,10 +5,10 @@ import { Input, Row, Col, Button } from "react-materialize";
 import _ from "lodash";
 
 import renderKaTeX from "../../katex.js";
-import { 
-  allCompetitions, 
-  memberCompetitions, 
-  directorCompetitions 
+import {
+  allCompetitions,
+  memberCompetitions,
+  directorCompetitions
 } from "../../actions";
 import { requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
@@ -33,13 +33,13 @@ class CompetitionsInputDumb extends React.Component {
   componentWillMount() {
     switch (this.props.type) {
       case (competitionsInputOptions.ALL):
-        this.props.allCompetitions(); 
+        this.props.allCompetitions();
         break;
       case (competitionsInputOptions.MEMBER):
-        this.props.memberCompetitions(); 
+        this.props.memberCompetitions();
         break;
       case (competitionsInputOptions.DIRECTOR):
-        this.props.directorCompetitions(); 
+        this.props.directorCompetitions();
         break;
       default:
         this.props.allCompetitions();
@@ -48,34 +48,34 @@ class CompetitionsInputDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type].content; 
+    let a = competitions[type].content;
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
-    return _.reduce(a, (o, comp) => Object.assign(o, { 
-      [comp.name]: comp._id 
+    return _.reduce(a, (o, comp) => Object.assign(o, {
+      [comp.name]: comp._id
     }), {});
   };
 
   render() {
-    const { 
-      competitions, 
+    const {
+      competitions,
       allCompetitions,
       memberCompetitions,
       directorCompetitions,
       type,
-      input, 
+      input,
       meta,
-      ...rest 
+      ...rest
     } = this.props;
     console.log(this.competitionObject());
     return competitions[type].requestStatus === SUCCESS ? (
       <AutocompleteSelect
-        s={12} title="Competition" { ...input } { ...rest } 
+        s={12} title="Competition" { ...input } { ...rest }
         data={ this.competitionObject() } limit={5} />
     ) : (
       <AutocompleteSelect
-        s={12} title="Competition" { ...input } { ...rest } 
+        s={12} title="Competition" { ...input } { ...rest }
         data={ { "Loading competitions..." : null } } />
     );
   }
@@ -106,7 +106,7 @@ const mapStateToPropsCompetitionsInputDumb = state => ({
         }
       });
 const CompetitionsInput = connect(
-  mapStateToPropsCompetitionsInputDumb, 
+  mapStateToPropsCompetitionsInputDumb,
   mapDispatchToPropsCompetitionsInputDumb
 )(CompetitionsInputDumb);
 
@@ -118,13 +118,13 @@ class CompetitionsSelectDumb extends React.Component {
   componentWillMount() {
     switch (this.props.type) {
       case (competitionsInputOptions.ALL):
-        this.props.allCompetitions(); 
+        this.props.allCompetitions();
         break;
       case (competitionsInputOptions.MEMBER):
-        this.props.memberCompetitions(); 
+        this.props.memberCompetitions();
         break;
       case (competitionsInputOptions.DIRECTOR):
-        this.props.directorCompetitions(); 
+        this.props.directorCompetitions();
         break;
       default:
         this.props.allCompetitions();
@@ -133,25 +133,25 @@ class CompetitionsSelectDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type].content; 
+    let a = competitions[type].content;
     if (type === competitionsInputOptions.MEMBER) {
       a = a.map(competitionInfo => competitionInfo.competition);
     }
-    return _.reduce(a, (o, comp) => Object.assign(o, { 
-      [comp.short_name]: comp._id 
+    return _.reduce(a, (o, comp) => Object.assign(o, {
+      [comp.short_name]: comp._id
     }), {});
   };
 
   render() {
-    const { 
-      competitions, 
+    const {
+      competitions,
       allCompetitions,
       memberCompetitions,
       directorCompetitions,
       type,
-      input, 
+      input,
       meta,
-      ...rest 
+      ...rest
     } = this.props;
     return competitions[type].requestStatus === SUCCESS ? (
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
@@ -162,8 +162,8 @@ class CompetitionsSelectDumb extends React.Component {
           ))
         }
       </Input>
-    ) : ( 
-      <Input s={12} type="select" label="Competition" { ...input } { ...rest }> 
+    ) : (
+      <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
         <option value="">Select a Competition</option>
         <option value="">Loading competitions...</option>
       </Input>
@@ -196,7 +196,7 @@ const mapStateToPropsCompetitionsSelectDumb = state => ({
         }
       });
 const CompetitionsSelect = connect(
-  mapStateToPropsCompetitionsSelectDumb, 
+  mapStateToPropsCompetitionsSelectDumb,
   mapDispatchToPropsCompetitionsSelectDumb
 )(CompetitionsSelectDumb);
 
@@ -221,11 +221,9 @@ class LocationArrayInput extends React.Component {
         <Col s={5}>{ loc.site }</Col>
         <Col s={6}>{ loc.address }</Col>
         <Col s={1}>
-          <h1>
-            <a onClick={ this.handleRemoveClick(idx) }>
-              <i className="fa fa-times" aria-hidden="true"></i>
-            </a>
-          </h1>
+          <a className="teal-text text-darken-3 right" onClick={ this.handleRemoveClick(idx) }>
+            <i className="fa fa-times" aria-hidden="true"></i>
+          </a>
         </Col>
       </Row>
     ));
@@ -233,10 +231,10 @@ class LocationArrayInput extends React.Component {
 
   handleAddClick = () => {
     if (!this.state.site) return;
-    this.state.value.push({ 
-      site: this.state.site, 
+    this.state.value.push({
+      site: this.state.site,
       address: this.state.address
-    }); 
+    });
     this.state.site = "";
     this.siteInput._onChange({
       target: { value: "" }
@@ -245,8 +243,8 @@ class LocationArrayInput extends React.Component {
     this.addressInput._onChange({
       target: { value: "" }
     }, "");
- 
-    const { onChange } = this.props; 
+
+    const { onChange } = this.props;
     if (onChange) onChange(this.state.value);
     this.forceUpdate();
   }
@@ -255,7 +253,7 @@ class LocationArrayInput extends React.Component {
     () => {
       _.remove(this.state.value, (val, idx) => (idx === locIdx));
 
-      const { onChange } = this.props; 
+      const { onChange } = this.props;
       if (onChange) onChange(this.state.value);
       this.forceUpdate();
     }
@@ -269,24 +267,22 @@ class LocationArrayInput extends React.Component {
         {
           this.renderList()
         }
-        <ControlledInput 
-          type="text" 
-          label={siteLabel} 
+        <ControlledInput
+          type="text"
+          label={siteLabel}
           s={5}
           ref={ elem => { this.siteInput = elem; } }
           onChange={(evt, val) => { this.state.site = evt.target.value; } } />
-        <ControlledInput 
-          type="text" 
-          label={addressLabel} 
+        <ControlledInput
+          type="text"
+          label={addressLabel}
           s={6}
           ref={ elem => { this.addressInput = elem; } }
           onChange={(evt, val)=> { this.state.address = evt.target.value; } } />
         <Col s={1}>
-          <h1>
-            <a onClick={ this.handleAddClick }>
-              <i className="fa fa-plus" aria-hidden="true"></i>
-            </a>
-          </h1>
+          <a className="teal-text text-darken-3 right" style={{marginTop: "30px"}} onClick={ this.handleAddClick }>
+            <i className="fa fa-plus" aria-hidden="true"></i>
+          </a>
         </Col>
       </div>
     );
@@ -333,7 +329,7 @@ class KaTeXInput extends React.Component {
     const { type, label, includeSubmit } = this.props;
     return (
       <Row>
-        <Input 
+        <Input
           ref={ elem => { this.inputField = elem; } }
           s={6} type={ type } label={ label } />
         <Col s={6}>

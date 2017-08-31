@@ -34,7 +34,7 @@ const NotificationsTab = ({ unread, read, urgent, user }) => {
     }
   };
 
-  return <VerticalNav tabs={ notificationsTabs } active="all" />;
+  return <div style={{marginTop: "36px"}}><VerticalNav tabs={ notificationsTabs } active="all" /></div>;
 };
 
 export default NotificationsTab;

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Col, Input, Modal, Button } from "react-materialize";
+import { Row, Col, Input, Modal, Button } from "react-materialize";
 
 import { RightButtonPanel } from "../../utilities";
 import ChangePasswordForm from "../../forms/change-password";
@@ -12,16 +12,18 @@ class AccountTab extends React.Component {
           { name, email, university } = user;
     return (
       <Col s={12}>
-        <h2 className="teal-text text-darken-4" style={{marginTop: "0"}}>Account
+        <h2 className="teal-text text-darken-4" style={{marginTop: "36px"}}>Account
           <Modal header="Edit Account" trigger={<a href="#" className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
-            <form>
-              <Input s={12} label="Name" value={name} />
-              <Input s={12} label="Email" value={email} />
-              <Input s={12} label="University" value={university} />
-              <RightButtonPanel>
-                <Button className="teal darken-3">Save</Button>
-              </RightButtonPanel>
-            </form>
+            <Row>
+              <form s={12}>
+                <Input s={12} label="Name" defaultValue={name} />
+                <Input s={12} label="Email" defaultValue={email} />
+                <Input s={12} label="University" defaultValue={university} />
+                <RightButtonPanel>
+                  <Button className="teal darken-3">Save</Button>
+                </RightButtonPanel>
+              </form>
+            </Row>
           </Modal>
           </h2>
         <ul>
