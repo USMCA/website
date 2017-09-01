@@ -117,10 +117,10 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
 
 /* get competitions of the user */
 router.get('/competitions', auth.verifyJWT, (req, res) => {
-  Competition.find({ directors: req.payload.user_id }, (err, directorCompetitions) => {
+  Competition.find({ directors: req.user._id }, (err, directorCompetitions) => {
     if (err) {
       console.log(err);
-      return handler(false, 'Database failed to search for director competitions.', 503)(req, res);
+      handler(false, 'Database failed to search for director competitions.', 503)(req, res);
     } else {
       directorCompetitions = _.map(directorCompetitions, competition => {
         return { 
@@ -128,21 +128,34 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
           competition: competition
         };
       });
-      Competition.find({ members: req.payload.user_id }, (err, memberCompetitions) => {
+      Competition.find({ secure_members: req.user._id }, (err, secureCompetitions) => {
         if (err) {
           console.log(err);
-          return handler(false, 'Database failed to search for member competitions.', 503)(req, res);
+          handler(false, 'Database failed to search for secure competitions.', 503)(req, res);
         } else {
-          memberCompetitions = _.map(memberCompetitions, competition => {
+          secureCompetitions = _.map(secureCompetitions, competition => {
             return {
-              membershipStatus: 'Member',
+              membershipStatus: 'Secure Member',
               competition: competition
             };
           });
-          const competitions = _.concat(directorCompetitions, memberCompetitions);
-          return handler(true, 'Succesfully loaded member competitions.', 200, {
-            competitions
-          })(req, res);
+          Competition.find({ members: req.user._id }, (err, memberCompetitions) => {
+            if (err) {
+              console.log(err);
+              handler(false, 'Database failed to search for member competitions.', 503)(req, res);
+            } else {
+              memberCompetitions = _.map(memberCompetitions, competition => {
+                return {
+                  membershipStatus: 'Member',
+                  competition: competition
+                };
+              });
+              const competitions = _.concat(directorCompetitions, secureCompetitions, memberCompetitions);
+              handler(true, 'Succesfully loaded member competitions.', 200, {
+                competitions
+              })(req, res);
+            }
+          });
         }
       });
     }
