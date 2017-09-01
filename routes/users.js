@@ -117,13 +117,16 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
 
 /* get competitions of the user */
 router.get('/competitions', auth.verifyJWT, (req, res) => {
+  const fields = req.query.info ? null : 'name short_name _id';
   Competition.find({ 
     $or: [
       { directors: req.user._id },
       { secure_members: req.user._id },
       { members: req.user._id }
     ] 
-  }, (err, competitions) => {
+  }, fields)
+  .populate(req.query.info ? 'contests members secure_members directors' : null)
+  .exec((err, competitions) => {
     if (err) {
       console.log(err);
       handler(false, 'Database failed to search for user competitions.', 503)(req, res);

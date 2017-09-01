@@ -2,12 +2,43 @@ import React from "react";
 import { Button, Table, Input, Modal } from "react-materialize";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import _ from "lodash";
 
+import auth from "../../../auth";
 import { memberCompetitions } from "../../../actions";
 import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
 import CreateCompetitionForm from "../../forms/create-competition";
 import JoinCompetitionForm from "../../forms/join-competition";
+
+const makeURL = url => {
+  const http = "http://",
+        https = "https://",
+        valid = (url.substr(0, http.length) === http) || 
+                (url.substr(0, https.length) === https);
+  return valid ? url : http + url;
+}
+
+const DIRECTOR = "director",
+      PENDING_DIRECTOR = "pending director",
+      SECURE = "secure member",
+      MEMBER = "member",
+      NONMEMBER = "nonmember";
+
+const competitionMembership = (competition, userId, populated = true) => {
+  const finder = populated ? 
+    user => user._id === userId : // users are populated
+    user => user === userId; // users are ids themselves
+  if (_.find(competition.directors, finder)) {
+    return competition.valid ? DIRECTOR : PENDING_DIRECTOR;
+  } else if (_.find(competition.secure_members, finder)) {
+    return SECURE;
+  } else if (_.find(competition.members, finder)) {
+    return MEMBER;
+  } else {
+    return NONMEMBER;
+  }
+}
 
 class CompetitionsTab extends React.Component {
   componentWillMount() {
@@ -15,21 +46,56 @@ class CompetitionsTab extends React.Component {
   }
 
   competitionTabs = competition => {
+    const membership = competitionMembership(competition, auth.userId());
+    const memberView = (user, idx) => membership === DIRECTOR ? (
+      <tr key={ idx }>
+        <td>{ user.name }</td>
+        <td>{ user.email }</td>
+        <td>{ competitionMembership(competition, user._id) } (<a className="teal-text text-darken-3">change permissions</a>)</td>
+        <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
+      </tr>
+    ) : (
+      <tr key={ idx }>
+        <td>{ user.name }</td>
+        <td>{ user.email }</td>
+        <td>{ competitionMembership(competition, user._id) }</td>
+      </tr>
+    );
+    const contestView = (contest, idx) => {
+      return (
+        <div style={{borderBottom: "1px solid #cfd8dc"}} key={idx}>
+          <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3>
+          <ul>
+            <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
+            <li>Date: January 28th, 2018</li>
+            <li>Test solve deadline: January 14th, 2018</li>
+            <li>Location(s): Carnegie Mellon University (5000 Forbes Ave, Pittsburgh, PA), CMU Qatar Campus (14 Jihad St, Al Qaeda, Qatar)</li>
+            <li>Status: <span className="bold-text">(active/inactive)</span> (<a className="teal-text text-darken-3">mark as inactive</a>)</li>
+          </ul>
+        </div>
+      );
+    }
     return {
       "info": {
         title: "Information",
         view: <div className="round-container">
           <ul>
-            <li><h3>Competition Info<a className="right black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></h3></li>
-            <li>Name: Carnegie Mellon Informatics and Mathematics Competition</li>
-            <li>Short name: CMIMC</li>
-            <li>Website: <a className="teal-text text-darken-3">cmimc.org</a></li>
+            <li><h3>Competition Info<a className="right black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3></li>
+            <li>Name: { competition.name }</li>
+            <li>Short name: { competition.short_name }</li>
+            <li>Website: <a href={ makeURL(competition.website) } className="teal-text text-darken-3">{ competition.website }</a></li>
             <li><h3>Membership Info</h3></li>
-            <li>Your are a: <span className="bold-text">(member/secure member/director)</span></li>
-            <li><a className="teal-text text-darken-3">Step down as director</a></li>
+            <li>Your are a: <span className="bold-text">{ membership }</span></li>
+            { membership === DIRECTOR &&  <li><a className="teal-text text-darken-3">Step down as director</a></li> }
             <li><a className="teal-text text-darken-3">Leave competition</a></li>
-            <li><h3>Database</h3></li>
-            <li><Link to="/view-database" className="btn teal darken-3">View database</Link></li>
+            { 
+              (membership === DIRECTOR || membership === SECURE) && (
+                <div>
+                  <li><h3>Database</h3></li>
+                  <li><Link to="/view-database" className="btn teal darken-3">View database</Link></li>
+                </div>
+              )
+            }
           </ul>
         </div>
       },
@@ -44,29 +110,14 @@ class CompetitionsTab extends React.Component {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Membership</th>
-                <th className="center-align">Remove</th>
+                { membership === DIRECTOR && <th className="center-align">Remove</th> }
               </tr>
             </thead>
 
             <tbody>
-              <tr>
-                <td>Cody Johnson</td>
-                <td>ctj@math.cmu.edu</td>
-                <td>member (<a className="teal-text text-darken-3">change permissions</a>)</td>
-                <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
-              </tr>
-              <tr>
-                <td>Cody Johnson</td>
-                <td>ctj@math.cmu.edu</td>
-                <td>member (<a className="teal-text text-darken-3">change permissions</a>)</td>
-                <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
-              </tr>
-              <tr>
-                <td>Cody Johnson</td>
-                <td>ctj@math.cmu.edu</td>
-                <td>member (<a className="teal-text text-darken-3">change permissions</a>)</td>
-                <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
-              </tr>
+              { competition.directors.map(memberView) }
+              { competition.secure_members.map(memberView) }
+              { competition.members.map(memberView) }
             </tbody>
           </Table>
         </div>
@@ -77,26 +128,12 @@ class CompetitionsTab extends React.Component {
           <Modal header="Create Contest" trigger={ <Button className="teal darken-3">Create contest</Button> }>
             <CreateContestForm />
           </Modal>
-          <div style={{borderBottom: "1px solid #cfd8dc"}}>
-            <h3>CMIMC 2018<a className="right black-text"><i className="fa fa-times" aria-hidden="true"></i></a><a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></h3>
-            <ul>
-              <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
-              <li>Date: January 28th, 2018</li>
-              <li>Test solve deadline: January 14th, 2018</li>
-              <li>Location(s): Carnegie Mellon University (5000 Forbes Ave, Pittsburgh, PA), CMU Qatar Campus (14 Jihad St, Al Qaeda, Qatar)</li>
-              <li>Status: <span className="bold-text">(active/inactive)</span> (<a className="teal-text text-darken-3">mark as inactive</a>)</li>
-            </ul>
-          </div>
-          <div style={{borderBottom: "1px solid #cfd8dc"}}>
-            <h3>CMIMC 2018<a className="right black-text"><i className="fa fa-times" aria-hidden="true"></i></a><a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></h3>
-            <ul>
-              <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
-              <li>Date: January 28th, 2018</li>
-              <li>Test solve deadline: January 14th, 2018</li>
-              <li>Location(s): Carnegie Mellon University (5000 Forbes Ave, Pittsburgh, PA), CMU Qatar Campus (14 Jihad St, Al Qaeda, Qatar)</li>
-              <li>Status: <span className="bold-text">(active/inactive)</span> (<a className="teal-text text-darken-3">mark as inactive</a>)</li>
-            </ul>
-          </div>
+          { 
+            competition.contests.length > 0 ? (
+              competition.contests.map(contestView)
+            ) : (
+              <p>No contests created yet!</p>
+            ) }
         </div>
       }
     };
@@ -135,7 +172,7 @@ const mapStateToProps = state => ({
         competitions: state.competitions.memberCompetitions
       }),
       mapDispatchToProps = dispatch => ({
-        memberCompetitions: () => { memberCompetitions()(dispatch); }
+        memberCompetitions: () => { memberCompetitions({ info: true })(dispatch); }
       });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompetitionsTab);

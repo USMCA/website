@@ -71,30 +71,19 @@ class ViewProbPage extends React.Component {
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: ( 
-          <div>
-            <div>
-              <SolutionForm />
-            </div>
-            <div>
-              { 
-                problem.official_soln.length > 0 ? (
-                  <ul>
-                    {
-                      problem.official_soln.map((soln, key) => (
-                        <Feedback
-                          feedbackType="Solution"
-                          message={soln.body}
-                          author={soln.author.name}
-                          key={key} />
-                      ))
-                    }
-                  </ul>
-                ) : ( <p>No solutions.</p> )
-              }
-            </div>
-          </div>
-        )
+        view: problem.official_soln.length > 0 ? (
+          <ul>
+            {
+              problem.official_soln.map((soln, key) => (
+                <Feedback
+                  feedbackType="Solution"
+                  message={soln.body}
+                  author={soln.author.name}
+                  key={key} />
+              ))
+            }
+          </ul>
+        ) : ( <p>No solutions.</p> )
       },
       "test-solves": {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
