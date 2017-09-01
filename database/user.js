@@ -10,7 +10,6 @@ const userSchema = new Schema({
   university: { type: String, required: true },
   password: { type: String, required: true },
   admin: { type: Boolean, required: true, default: false },
-  secure: { type: Boolean, required: true, default: false },
   salt: { type: String, required: true },
   unread: [ { type: Schema.Types.ObjectId, ref: 'Notification' } ],
   read: [ { type: Schema.Types.ObjectId, ref: 'Notification' } ],

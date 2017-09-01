@@ -48,11 +48,7 @@ class CompetitionsInputDumb extends React.Component {
 
   competitionObject = () => {
     const { competitions, type } = this.props;
-    let a = competitions[type].content;
-    if (type === competitionsInputOptions.MEMBER) {
-      a = a.map(competitionInfo => competitionInfo.competition);
-    }
-    return _.reduce(a, (o, comp) => Object.assign(o, {
+    return _.reduce(competitions[type].content, (o, comp) => Object.assign(o, {
       [comp.name]: comp._id
     }), {});
   };
@@ -130,17 +126,6 @@ class CompetitionsSelectDumb extends React.Component {
     }
   }
 
-  competitionObject = () => {
-    const { competitions, type } = this.props;
-    let a = competitions[type].content;
-    if (type === competitionsInputOptions.MEMBER) {
-      a = a.map(competitionInfo => competitionInfo.competition);
-    }
-    return _.reduce(a, (o, comp) => Object.assign(o, {
-      [comp.short_name]: comp._id
-    }), {});
-  };
-
   render() {
     const {
       competitions,
@@ -156,8 +141,8 @@ class CompetitionsSelectDumb extends React.Component {
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
         <option value="">Select a Competition</option>
         {
-          _.entries(this.competitionObject()).map(([ short_name, id ], idx) => (
-            <option key={ idx } value={ id }>{ short_name }</option>
+          competitions[type].content.map(({ _id, short_name }, idx) => (
+            <option key={ idx } value={ _id }>{ short_name }</option>
           ))
         }
       </Input>
