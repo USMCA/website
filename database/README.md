@@ -25,7 +25,6 @@
   short_name: String,
   website: String,
   contests: [ Contest ],
-  active_contests: [ Contest ],
   directors: [ User ],
   secure_members: [ User ],
   members: [ User ],
@@ -70,6 +69,7 @@
     site: String,
     address: String
   } ],
+  active: Boolean,
   name: String,
   date: Date,
   tests: [ Tests ],
