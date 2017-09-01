@@ -3,6 +3,7 @@ import { Button, Table, Input, Modal } from "react-materialize";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import _ from "lodash";
+import moment from "moment";
 
 import auth from "../../../auth";
 import { memberCompetitions } from "../../../actions";
@@ -40,6 +41,14 @@ const competitionMembership = (competition, userId, populated = true) => {
   }
 }
 
+const locationsString = locations => {
+  return (locations.length === 0) ? "N/A" : (
+    locations.map(
+      ({ site, address }) => address ? `${site} (${address})` : site
+    ).join(", ")
+  );
+}
+
 class CompetitionsTab extends React.Component {
   componentWillMount() {
     this.props.memberCompetitions();
@@ -67,10 +76,10 @@ class CompetitionsTab extends React.Component {
           <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3>
           <ul>
             <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
-            <li>Date: January 28th, 2018</li>
-            <li>Test solve deadline: January 14th, 2018</li>
-            <li>Location(s): Carnegie Mellon University (5000 Forbes Ave, Pittsburgh, PA), CMU Qatar Campus (14 Jihad St, Al Qaeda, Qatar)</li>
-            <li>Status: <span className="bold-text">(active/inactive)</span> (<a className="teal-text text-darken-3">mark as inactive</a>)</li>
+            <li>Date: { contest.date ? moment(contest.date).format('ll') : "N/A" }</li>
+            <li>Test solve deadline: { contest.test_solve_deadline ? moment(contest.test_solve_deadline) : "N/A" }</li>
+            <li>Location(s): { locationsString(contest.locations) }</li>
+            <li>Status: <span className="bold-text">{ contest.active ? "active" : "inactive" }</span> (<a className="teal-text text-darken-3">mark as { contest.active ? "inactive" : "active" }</a>)</li>
           </ul>
         </div>
       );
@@ -126,11 +135,14 @@ class CompetitionsTab extends React.Component {
         title: "Contests",
         view: <div className="round-container">
           <Modal header="Create Contest" trigger={ <Button className="teal darken-3">Create contest</Button> }>
-            <CreateContestForm />
+            <CreateContestForm competition_id={ competition._id } />
           </Modal>
           { 
             competition.contests.length > 0 ? (
-              competition.contests.map(contestView)
+              _.reverse(_.sortBy(competition.contests, 
+                  contest => new Date(contest.date)
+                ).map(contestView)
+              )
             ) : (
               <p>No contests created yet!</p>
             ) }

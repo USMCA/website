@@ -12,7 +12,7 @@ const User = require('../database/user'),
 
 router.post('/', auth.verifyJWT, (req, res) => {
   const { competition_id, name, date, locations } = req.body;
-  Competition.findById(competition_id, '_id directors', (err, competition) => {
+  Competition.findById(competition_id, (err, competition) => {
     if (err) {
       handler(false, 'Database failed to find the associated competition.', 503)(req, res);
     } else if (!competition) {
@@ -29,16 +29,18 @@ router.post('/', auth.verifyJWT, (req, res) => {
         });
         contest.save(err => {
           if (err) {
+            console.log(err);
             return handler(false, 'Database failed to save the contest.', 503)(req, res);
           } else {
             competition.contests.push(contest._id);
             competition.save(err => {
               if (err) {
+                console.log(err);
                 handler(false, 'Database failed to save contest to competition.', 503)(req, res);
               } else {
                 handler(true, 'Successfully created the contest.', 200)(req, res);
               }
-            })
+            });
           }
         });
       }
