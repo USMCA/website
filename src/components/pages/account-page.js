@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import NotificationsTab from "./account-page/notifications-tab";
-import CompetitionsTab2 from "./account-page/competitions-tab-2";
+import CompetitionsTab from "./account-page/competitions-tab";
 import ProblemsTab from "./account-page/problems-tab";
 import AccountTab from "./account-page/account-tab";
 import { HorizontalNav } from "../utilities";
@@ -30,7 +30,7 @@ const AccountPage = ({ match }) => {
           </Link>
         </div>
       ),
-      view: <CompetitionsTab2 />
+      view: <CompetitionsTab />
     },
     "problems": {
       title: (

@@ -8,6 +8,7 @@ const competitionSchema = new Schema({
   active_contests: [ { type: Schema.Types.ObjectId, ref: 'Contest' } ],
   contests: [ { type: Schema.Types.ObjectId, ref: 'Contest' } ],
   directors: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
+  secure_members: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   members: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   announcements: [ { type: Schema.Types.ObjectId, ref: 'Announcement' } ],
   valid: { type: Boolean, required: true, default: false },

@@ -117,34 +117,18 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
 
 /* get competitions of the user */
 router.get('/competitions', auth.verifyJWT, (req, res) => {
-  Competition.find({ directors: req.payload.user_id }, (err, directorCompetitions) => {
+  Competition.find({ 
+    $or: [
+      { directors: req.user._id },
+      { secure_members: req.user._id },
+      { members: req.user._id }
+    ] 
+  }, (err, competitions) => {
     if (err) {
       console.log(err);
-      return handler(false, 'Database failed to search for director competitions.', 503)(req, res);
+      handler(false, 'Database failed to search for user competitions.', 503)(req, res);
     } else {
-      directorCompetitions = _.map(directorCompetitions, competition => {
-        return { 
-          membershipStatus: competition.valid ? 'Director' : 'Pending Director',
-          competition: competition
-        };
-      });
-      Competition.find({ members: req.payload.user_id }, (err, memberCompetitions) => {
-        if (err) {
-          console.log(err);
-          return handler(false, 'Database failed to search for member competitions.', 503)(req, res);
-        } else {
-          memberCompetitions = _.map(memberCompetitions, competition => {
-            return {
-              membershipStatus: 'Member',
-              competition: competition
-            };
-          });
-          const competitions = _.concat(directorCompetitions, memberCompetitions);
-          return handler(true, 'Succesfully loaded member competitions.', 200, {
-            competitions
-          })(req, res);
-        }
-      });
+      handler(true, 'Successfully loaded user competitions.', 200, { competitions })(req, res);
     }
   });
 });
