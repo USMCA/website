@@ -8,36 +8,37 @@ const User = require('../database/user'),
       Solution = require('../database/solution'),
       Competition = require('../database/competition');
 
+/*******************************************************************************
+ * Generic requests
+ ******************************************************************************/
+
 router.get('/', auth.verifyJWT, (req, res) => {
-  const { id } = req.query;
-  if (!id) {
-    return handler(false, 'Invalid request.', 400)(req, res);
-  } else if (id !== req.payload.user_id) {
-    return handler(false, 'Unauthorized request for user information.', 401)(req, res);
-  } else { 
-    User.findById(id)
-    .populate('urgent unread read requests')
-    .exec((err, user) => {
-      if (err) {
-        console.log(err);
-        return handler(false, 'Database failed to find user.', 503)(req, res);
-      } else {
-        Competition.populate(user, {
-          path: 'unread.author read.author urgent.author',
-          select: 'short_name'
-        }, (err, user) => {
-          console.log(user);
-          const { name, email, university, unread, read, urgent, requests } = user;
-          return handler(true, 'Successfully retrieved user data.', 200, {
-            user: {
-              name, email, university, unread, read, urgent, requests
-            }
-          })(req, res);
-        });
-      }
-    });
-  }
+  req.user.populate('urgent unread read requests', (err, user) => {
+    if (err) handler(false, 'Failed to find user.', 503)(req, res);
+    else {
+      Competition.populate(user, {
+        path: 'unread.author read.author urgent.author',
+        select: 'short_name'
+      }, (err, user) => {
+        const { name, email, university, unread, read, urgent, requests } = user;
+        handler(true, 'Successfully retrieved user data.', 200, {
+          user: { name, email, university, unread, read, urgent, requests }
+        })(req, res);
+      });
+    }
+  });
 });
+
+router.put('/', auth.verifyJWT, (req, res) => {
+  req.user.update({$set: req.body}, (err, user) => {
+    if (err) handler(false, 'Failed to update user.', 503)(req, res);
+    else handler(true, 'Successfully updated user.', 200, { user })(req, res);
+  });  
+});
+
+/*******************************************************************************
+ * Admin
+ ******************************************************************************/
 
 router.get('/admin', (req, res) => {
   User.find({ admin: true }, 'name email', (err, admins) => {
