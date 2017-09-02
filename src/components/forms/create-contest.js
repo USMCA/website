@@ -28,11 +28,18 @@ const NameInput = ({ input, meta, ...rest }) => (
         <LocationArrayInput { ...input } { ...rest } />
       );
 
+<<<<<<< HEAD
+class CreateContestForm extends React.Component {
+  onSubmit = ({ competition_id, name, date, locations }) => {
+    if (!competition_id || !name || !date || !locations) {
+      return this.props.errorHandler('Please fill out all fields.');
+=======
 class CreateContestForm extends React.Component { 
   onSubmit = ({ name, date, locations }) => {
     const { competition_id, postContest, errorHandler } = this.props;
     if (!name || !date || !locations) {
       return errorHandler('Please fill out all fields.');
+>>>>>>> 6a99d7cf4c1cbc6cb697aab1d3dfa8ab901e106d
     }
     postContest({ competition_id, name, date, locations });
   }
@@ -64,7 +71,13 @@ class CreateContestForm extends React.Component {
             <Button type="submit" className="teal darken-3">Create</Button>
           </RightButtonPanel><br />
           <Error error={ requestStatus === ERROR } message={ message } />
+<<<<<<< HEAD
+          {
+            (requestStatus === PENDING) && <Spinner />
+          }
+=======
           { (requestStatus === PENDING) && <Spinner /> }
+>>>>>>> 6a99d7cf4c1cbc6cb697aab1d3dfa8ab901e106d
         </Row>
       </form>
     );

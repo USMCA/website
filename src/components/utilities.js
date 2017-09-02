@@ -94,37 +94,159 @@ const mapStateToProps = state => ({
       });
 const Request = connect(mapStateToProps, mapDispatchToProps)(RequestDumb);
 
-const ProblemPreview = ({ children, problem }) => (
-  <Row className="problem-preview">
-    <Col s={9}>
-      <div className="katex-preview" style={{marginBottom: "24px"}}>
-        <Link
-          to={ "/view-problem/" + problem._id.toString() }
-          className="black-text underline-hover">
-          <div ref={ renderKaTeX }>{ problem.statement }</div>
-        </Link>
-      </div>
-    </Col>
-    <Col s={3}>
-      <Row style={{marginBottom: "0"}}>
-        <Col s={4}>
-          <span className="count">{ problem.upvotes.length }</span><br />votes
-        </Col>
-        <Col s={4}>
-          <span className="count">{ problem.alternate_soln.length }</span><br />solves
-        </Col>
-        <Col s={4}>
-          <span className="count">{ problem.views.length }</span><br />views
-        </Col>
-      </Row>
-      <Row style={{marginBottom: "24px"}}>
+class ProblemPreview extends React.Component  {
+  render() {
+    const { problem } = this.props;
+    return (
+      <Row className="problem">
         <Col s={12}>
-          { children }
+          <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
+          <ul className="problem-options">
+            <li><a className="black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
+            <li><a className="black-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+          </ul>
+        </Col>
+        <Col s={12}>
+          <div className="katex-preview">
+            <Link
+              to={ "/view-problem/" + problem._id.toString() }
+              className="black-text underline-hover">
+              <div ref={ renderKaTeX }>
+                { problem.statement }
+              </div>
+            </Link>
+          </div>
         </Col>
       </Row>
-    </Col>
-  </Row>
-);
+    );
+  }
+}
+
+class ExtendedProblemPreview extends React.Component  {
+  render() {
+    const { problem } = this.props;
+    return (
+      <Row className="problem">
+        <Col s={12}>
+          <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
+          <ul className="problem-options">
+            <li><a className="black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
+            <li><a className="black-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+          </ul>
+        </Col>
+        <Col s={12}>
+          <div className="katex-preview">
+            <div ref={ renderKaTeX }>
+              { problem.statement }
+            </div>
+          </div>
+        </Col>
+        <Col m={3} s={12} className="problem-stats">
+          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span className="bold-text">Varun Kambhampati</span><br />
+          <span className="small-stat"><i>Sep 27, 2017, 4:20 am</i></span>
+        </Col>
+        <Col m={9} s={12} className="comments">
+          <ul>
+            <li><a className="teal-text text-darken-3"><i className="fa fa-caret-down" aria-hidden="true"></i> <span className="underline-hover">Show comments</span></a></li>
+            <li>This is such a nice problem.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Taisuke Yasuda</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>This is the hardest problem I have ever even attempted to solve.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Ethan Gruman</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>The problem is decent but your LaTeX is horrendous.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Evan J. Wu</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>Have you ever wondered if theres an O(n^2) algorithm for factoring integers?
+            &mdash; <span className="comment-author">
+              <span className="author-name">Manuel Fernández</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li><a className="teal-text text-darken-3 underline-hover">Add a comment</a></li>
+          </ul>
+        </Col>
+      </Row>
+    );
+  }
+}
+
+class Solution extends React.Component  {
+  render() {
+    var problem = {views: [], alternate_soln: [], upvotes: [], statement: "Blah blah blah use induction"};
+    return (
+      <Row className="problem">
+        <Col s={12}>
+          <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
+          <ul className="problem-options">
+            <li><a className="black-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
+            <li><a className="black-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+          </ul>
+        </Col>
+        <Col s={12}>
+          <div className="katex-preview">
+            <div ref={ renderKaTeX }>
+              { problem.statement }
+            </div>
+          </div>
+        </Col>
+        <Col m={3} s={12} className="problem-stats">
+          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span className="bold-text">Varun Kambhampati</span><br />
+          <span className="small-stat"><i>Sep 27, 2017, 4:20 am</i></span>
+        </Col>
+        <Col m={9} s={12} className="comments">
+          <ul>
+            <li><a className="teal-text text-darken-3"><i className="fa fa-caret-down" aria-hidden="true"></i> <span className="underline-hover">Show comments</span></a></li>
+            <li>This is such a nice problem.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Taisuke Yasuda</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>This is the hardest problem I have ever even attempted to solve.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Ethan Gruman</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>The problem is decent but your LaTeX is horrendous.
+            &mdash; <span className="comment-author">
+              <span className="author-name">Evan J. Wu</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li>Have you ever wondered if theres an O(n^2) algorithm for factoring integers?
+            &mdash; <span className="comment-author">
+              <span className="author-name">Manuel Fernández</span>
+              <i>Sep 2, 2017, 10:23 pm</i>
+              <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i className="fa fa-trash" aria-hidden="true"></i></a>
+            </span></li>
+            <li><a className="teal-text text-darken-3 underline-hover">Add a comment</a></li>
+          </ul>
+        </Col>
+      </Row>
+    );
+  }
+}
 
 class HorizontalNav extends React.Component {
   constructor(props) {
@@ -213,6 +335,8 @@ export {
   Notification,
   RightButtonPanel,
   ProblemPreview,
+  ExtendedProblemPreview,
+  Solution,
   LoadMore,
   Counter,
   HorizontalNav,

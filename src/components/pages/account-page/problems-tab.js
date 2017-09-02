@@ -23,7 +23,9 @@ class ProblemsTab extends React.Component {
       <Col s={12} style={{marginTop: "36px"}}>
         {
           content.map((proposal, key) => (
-            <ProblemPreview problem={proposal} key={key} />
+            <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
+              <ProblemPreview problem={proposal} />
+            </div>
           ))
         }
         <LoadMore />
