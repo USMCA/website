@@ -55,6 +55,7 @@ class ViewProbPage extends React.Component {
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
+<<<<<<< HEAD
         view: (
           <div>
             <div>
@@ -79,6 +80,21 @@ class ViewProbPage extends React.Component {
             </div>
           </div>
         )
+=======
+        view: problem.official_soln.length > 0 ? (
+          <ul>
+            {
+              problem.official_soln.map((soln, key) => (
+                <Feedback
+                  feedbackType="Solution"
+                  message={soln.body}
+                  author={soln.author.name}
+                  key={key} />
+              ))
+            }
+          </ul>
+        ) : ( <p>No solutions.</p> )
+>>>>>>> 6a99d7cf4c1cbc6cb697aab1d3dfa8ab901e106d
       },
       "test-solves": {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,

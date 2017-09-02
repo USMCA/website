@@ -18,10 +18,7 @@ import { CONTEST_POST, requestStatuses } from "../../actions/types";
 
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
-const CompetitionInput = ({ input, meta, ...rest }) => (
-        <CompetitionsSelect type={ competitionsInputOptions.DIRECTOR } { ...input } { ...rest } />
-      ),
-      NameInput = ({ input, meta, ...rest }) => (
+const NameInput = ({ input, meta, ...rest }) => (
         <Input s={12} label="Name" { ...input } { ...rest } />
       ),
       DateInput = ({ input, meta, ...rest }) => (
@@ -31,12 +28,20 @@ const CompetitionInput = ({ input, meta, ...rest }) => (
         <LocationArrayInput { ...input } { ...rest } />
       );
 
+<<<<<<< HEAD
 class CreateContestForm extends React.Component {
   onSubmit = ({ competition_id, name, date, locations }) => {
     if (!competition_id || !name || !date || !locations) {
       return this.props.errorHandler('Please fill out all fields.');
+=======
+class CreateContestForm extends React.Component { 
+  onSubmit = ({ name, date, locations }) => {
+    const { competition_id, postContest, errorHandler } = this.props;
+    if (!name || !date || !locations) {
+      return errorHandler('Please fill out all fields.');
+>>>>>>> 6a99d7cf4c1cbc6cb697aab1d3dfa8ab901e106d
     }
-    this.props.postContest({ competition_id, name, date, locations });
+    postContest({ competition_id, name, date, locations });
   }
 
   resetForm = () => {
@@ -54,9 +59,6 @@ class CreateContestForm extends React.Component {
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
           <div>
-            <Field name="competition_id" component={ CompetitionInput } />
-          </div>
-          <div>
             <Field name="name" component={ NameInput } />
           </div>
           <div>
@@ -69,9 +71,13 @@ class CreateContestForm extends React.Component {
             <Button type="submit" className="teal darken-3">Create</Button>
           </RightButtonPanel><br />
           <Error error={ requestStatus === ERROR } message={ message } />
+<<<<<<< HEAD
           {
             (requestStatus === PENDING) && <Spinner />
           }
+=======
+          { (requestStatus === PENDING) && <Spinner /> }
+>>>>>>> 6a99d7cf4c1cbc6cb697aab1d3dfa8ab901e106d
         </Row>
       </form>
     );
@@ -80,7 +86,10 @@ class CreateContestForm extends React.Component {
 
 CreateContestForm.propTypes = {
   postContest: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+  competition_id: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
+  errorHandler: PropTypes.func.isRequired,
+  resetContestForm: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

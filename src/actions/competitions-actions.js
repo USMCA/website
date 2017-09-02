@@ -51,53 +51,42 @@ export function requestCompetition({ name, shortName, website }) {
         }
       })
       .then(
-        response => {
-          return response.json()
-          .then(({ success, message }) => {
-            if (!success) dispatch(Object.assign(action, errorPayload(message)));
-            else dispatch(Object.assign(action, submittedPayload()));
-          });
-        }, 
-        error => {
-          dispatch(Object.assign(action, errorPayload(
-            error.message || 'Failed to communicate with server'
-          )));
-        }
+        res => res.json().then(({ success, message }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, submittedPayload()));
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          error.message || 'Failed to communicate with server'
+        ))),
       );
     }
   }
 }
 
-export function memberCompetitions() {
+export function memberCompetitions(options = { info: false }) {
   let action = { type: COMP_FETCH_MINE };
+  const { info } = options;
   return dispatch => {
-    const userId = auth.userId();
-    if (!userId) {
-      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
-    } else {
+    authenticate(action, dispatch, userId => {
       dispatch(Object.assign(action, pendingPayload()));
-      fetch('/api/users/competitions', {
+      const url = `/api/users/competitions?${$.param({info})}`;
+      fetch(url, {
         method: 'get',
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }).then(
-        response => {
-          return response.json()
-          .then(({ success, message, competitions }) => {
+        res => res.json().then(({ success, message, competitions }) => {
             if (!success) dispatch(Object.assign(action, errorPayload(message)));
             else dispatch(Object.assign(action, successPayload({ 
               content: competitions 
             })));
-          });
-        },
-        error => {
-          dispatch(Object.assign(action, errorPayload(
-            error.message || 'Failed to communicate with server'
-          )));
-        }
+        }),
+        err => dispatch(Object.assign(action, errorPayload(
+          error.message || 'Failed to communicate with server'
+        )))
       );
-    }
+    });
   }
 }
 
@@ -107,19 +96,15 @@ export function allCompetitions() {
     dispatch(Object.assign(action, pendingPayload()));
     fetch('/api/competitions', { method: 'get' })
     .then(
-      res => {
-        return res.json().then(({ success, message, competitions }) => {
-          if (!success) dispatch(Object.assign(action, errorPayload(message)));
-          else dispatch(Object.assign(action, successPayload({ 
-            content: competitions 
-          })));
-        });
-      },
-      err => {
-        dispatch(Object.assign(action, errorPayload(
-          err.message || 'Failed to communicate with server'
-        )));
-      }
+      res => res.json().then(({ success, message, competitions }) => {
+        if (!success) dispatch(Object.assign(action, errorPayload(message)));
+        else dispatch(Object.assign(action, successPayload({ 
+          content: competitions 
+        })));
+      }),
+      err => dispatch(Object.assign(action, errorPayload(
+        err.message || 'Failed to communicate with server'
+      )))
     );
   }
 }

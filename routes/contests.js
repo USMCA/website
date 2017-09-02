@@ -12,16 +12,13 @@ const User = require('../database/user'),
 
 router.post('/', auth.verifyJWT, (req, res) => {
   const { competition_id, name, date, locations } = req.body;
-  Competition.findById(competition_id, '_id directors', (err, competition) => {
+  Competition.findById(competition_id, (err, competition) => {
     if (err) {
       handler(false, 'Database failed to find the associated competition.', 503)(req, res);
     } else if (!competition) {
       handler(false, 'The associated competition does not exist.', 503)(req, res);
     } else {
-      const user = _.find(competition.directors, director_id => {
-        return director_id.equals(req.user._id);
-      });
-      if (!user) {
+      if (competition.directors.indexOf(req.user._id) === -1) {
         return handler(false, 'User is not a director of the competition.', 401)(req, res);
       } else {
         const contest = Object.assign(new Contest(), {
@@ -32,9 +29,18 @@ router.post('/', auth.verifyJWT, (req, res) => {
         });
         contest.save(err => {
           if (err) {
+            console.log(err);
             return handler(false, 'Database failed to save the contest.', 503)(req, res);
           } else {
-            return handler(true, 'Successfully created the contest.', 200)(req, res);
+            competition.contests.push(contest._id);
+            competition.save(err => {
+              if (err) {
+                console.log(err);
+                handler(false, 'Database failed to save contest to competition.', 503)(req, res);
+              } else {
+                handler(true, 'Successfully created the contest.', 200)(req, res);
+              }
+            });
           }
         });
       }
