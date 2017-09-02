@@ -68,10 +68,6 @@ class NotificationsTab extends React.Component {
     unread = unread.map(notif => Object.assign(notif, { label: "new" }));
     read = read.map(notif => Object.assign(notif, { label: "none" }));
     urgent = urgent.map(notif => Object.assign(notif, { label: "urgent" }));
-    /* sort */
-    unread = _.sortBy(unread, "updated");
-    read = _.sortBy(read, "updated");
-    urgent = _.sortBy(urgent, "updated");
     /* combine and sort unread, read, and urgent */ 
     let all = _.concat(unread, read, urgent);
     all = _.sortBy(all, "updated");
@@ -89,6 +85,10 @@ class NotificationsTab extends React.Component {
     unread = unread.map(notif => Object.assign(notif, { label: "new-announcement" }));
     read = read.map(notif => Object.assign(notif, { label: "" }));
     urgent = urgent.map(notif => Object.assign(notif, { label: "urgent-announcement" }));
+    /* sort */
+    unread = _(_.sortBy(unread, "updated")).reverse().value();
+    read = _(_.sortBy(read, "updated")).reverse().value();
+    urgent = _(_.sortBy(urgent, "updated")).reverse().value();
     /* combine and sort unread, read, and urgent */ 
     let all = _.concat(unread, read, urgent);
     all = _.sortBy(all, "created");
