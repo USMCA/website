@@ -20,6 +20,10 @@ module.exports = {
     CZAR: 'czar',
     MEMBER: 'member',
     TEST_SOLVER: 'test_solver'
+  },
+  requestActionEnum: {
+    JOIN: 'join',
+    COMP: 'comp'
   }
 };
 

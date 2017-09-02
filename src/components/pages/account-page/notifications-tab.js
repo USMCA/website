@@ -46,7 +46,7 @@ class NotificationsTab extends React.Component {
       <div className="notifications-container">
         <ul className="notifications-list">
           {
-            (requests.length == 0) ? noRequestView : 
+            (requests.length === 0) ? noRequestView : 
             <div>
               {
                 requests.map((request, key) => <Request request={request} key={key} />)
@@ -97,11 +97,11 @@ class NotificationsTab extends React.Component {
             : <div>
                 {
                   notifications.map((notification, key) => {
-                    const { admin_author, title, body, competition, label } = notification;
+                    const { admin_author, title, body, author, label } = notification;
                     return (
                       <Notification 
                         className={label} 
-                        author={admin_author ? 'Admin' : competition.short_name} 
+                        author={admin_author ? 'Admin' : author.short_name } 
                         title={title} 
                         message={body} 
                         key={key} />

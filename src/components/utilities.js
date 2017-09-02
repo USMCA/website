@@ -5,7 +5,13 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import renderKaTeX from "../katex";
-import { respondCompetition } from "../actions";
+import { respondRequest } from "../actions";
+import { 
+  USER_COMP_RES, 
+  USER_JOIN_RES,
+  COMP_REQ,
+  COMP_REQ_JOIN
+} from "../actions/types";
 import { requestTypes } from "../../constants";
 
 const LoadMore = () => (
@@ -26,26 +32,29 @@ const RightButtonPanel = ({ children, marginBottom }) => (
 )
 
 const Notification = ({ className, label, author, title, message }) => {
-  return <li className={className}>
-        <a><span className="select-circle"></span></a>
-        <Modal header={author + ": " + title} trigger={
-          <a className="underline-hover"><span className="bold-text">{ author }</span>: { title }</a>
-        }>{message}</Modal>
-      </li>;
+  return (
+    <li className={className}>
+      <a><span className="select-circle"></span></a>
+      <Modal header={author + ": " + title} trigger={
+        <a className="underline-hover"><span className="bold-text">{ author }</span>: { title }</a>
+      }>{message}</Modal>
+    </li>
+  );
 };
 
 /* smart component for approving requests */
-const RequestDumb = ({ request, respondCompetition }) => {
-  let makeHandleClick;
-  if (request.competition) {
-    makeHandleClick = adminResponse => {
-      return () => { respondCompetition(request, adminResponse); };
-    };
-  } else {
-    makeHandleClick = response => {
-      return () => { console.log(response); }
-    };
-  }
+const RequestDumb = ({ request, respondRequest }) => {
+  /* different response based on action_type of request */
+  const responseHandleClick = {
+    [COMP_REQ]: response => {
+      return () => { respondRequest(request, response, USER_COMP_RES); };
+    },
+    [COMP_REQ_JOIN]: response => {
+      return () => { respondRequest(request, response, USER_JOIN_RES); };
+    }
+  };
+  const makeHandleClick = responseHandleClick[request.action_type];
+  if (!makeHandleClick) return <div></div>;
   return (
     <li className="white">
       <Row>
@@ -53,14 +62,14 @@ const RequestDumb = ({ request, respondCompetition }) => {
           { request.body }
         </Col>
         <Col s={2}>
-          <Modal header="Confirm Reject" trigger={<a className="right"><i className="fa fa-times" aria-hidden="true"></i></a>} actions={<div>
+          <Modal header="Confirm Reject" trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} actions={<div>
             <Button flat modal="close" waves="light">Cancel</Button>
             <Button flat modal="close" waves="light"
               onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
           </div>}>
             Are you sure you want to reject this request?
           </Modal>
-          <Modal header="Confirm Accept" trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true"></i></a>}actions={<div>
+          <Modal header="Confirm Accept" trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}actions={<div>
             <Button flat modal="close" waves="light">Cancel</Button>
             <Button flat modal="close" waves="light"
               onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
@@ -74,13 +83,13 @@ const RequestDumb = ({ request, respondCompetition }) => {
 }
 RequestDumb.propTypes = {
   request: PropTypes.object.isRequired,
-  respondCompetition: PropTypes.func.isRequired
+  respondRequest: PropTypes.func.isRequired
 };
 const mapStateToProps = state => ({
       }),
       mapDispatchToProps = dispatch => ({
-        respondCompetition: (request, adminResponse) => {
-          respondCompetition(request, adminResponse)(dispatch);
+        respondRequest: (request, response, type, action_type) => {
+          respondRequest(request, response, type, action_type)(dispatch);
         }
       });
 const Request = connect(mapStateToProps, mapDispatchToProps)(RequestDumb);
