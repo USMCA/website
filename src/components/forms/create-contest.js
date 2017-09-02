@@ -7,10 +7,10 @@ import { Input, Row, Button } from "react-materialize";
 import Spinner from "../spinner";
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import { 
-  competitionsInputOptions, 
-  CompetitionsInput, 
-  CompetitionsSelect, 
+import {
+  competitionsInputOptions,
+  CompetitionsInput,
+  CompetitionsSelect,
   LocationArrayInput
 } from "./utilities";
 import { postContest } from "../../actions";
@@ -62,7 +62,7 @@ class CreateContestForm extends React.Component {
           </div>
           <RightButtonPanel>
             <Button type="submit" className="teal darken-3">Create</Button>
-          </RightButtonPanel>
+          </RightButtonPanel><br />
           <Error error={ requestStatus === ERROR } message={ message } />
           { (requestStatus === PENDING) && <Spinner /> }
         </Row>
@@ -84,8 +84,8 @@ const mapStateToProps = state => ({
       }),
       mapDispatchToProps = dispatch => ({
         errorHandler: message => {
-          dispatch({ 
-            type: CONTEST_POST, 
+          dispatch({
+            type: CONTEST_POST,
             payload: {
               requestStatus: ERROR,
               message
