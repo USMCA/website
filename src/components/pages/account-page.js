@@ -15,7 +15,7 @@ const AccountPage = ({ match }) => {
     "notifications": {
       title: (
         <div>
-          <Link to="/tabs/notifications">
+          <Link to="/home/notifications">
             <i className="fa fa-bell" aria-hidden="true"></i> Notifications
           </Link>
         </div>
@@ -25,7 +25,7 @@ const AccountPage = ({ match }) => {
     "competitions": {
       title: (
         <div>
-          <Link to="/tabs/competitions">
+          <Link to="/home/competitions">
             <i className="fa fa-trophy" aria-hidden="true"></i> Competitions
           </Link>
         </div>
@@ -35,7 +35,7 @@ const AccountPage = ({ match }) => {
     "problems": {
       title: (
         <div>
-          <Link to="/tabs/problems">
+          <Link to="/home/problems">
             <i className="fa fa-pencil-square" aria-hidden="true"></i> Problems
           </Link>
         </div>
@@ -45,7 +45,7 @@ const AccountPage = ({ match }) => {
     "account": {
       title: (
         <div>
-          <Link to="/tabs/account">
+          <Link to="/home/account">
             <i className="fa fa-user" aria-hidden="true"></i> Account
           </Link>
         </div>
@@ -58,7 +58,7 @@ const AccountPage = ({ match }) => {
     accountTabs.admin = {
       title: (
         <div>
-          <Link to="/tabs/admin">
+          <Link to="/home/admin">
             <i className="fa fa-lock" aria-hidden="true"></i> Admin
           </Link>
         </div>

@@ -6,27 +6,11 @@ import _ from "lodash"
 import auth from "../../auth";
 import renderKaTeX from "../../katex";
 import { getProposal, upvoteProblem } from "../../actions";
-import { HorizontalNav, Counter } from "../utilities";
+import { ProblemPreview, ExtendedProblemPreview, Solution, HorizontalNav, Counter } from "../utilities";
 import TestSolveForm from "../forms/test-solve";
 import SolutionForm from "../forms/solution";
 import CommentForm from "../forms/comment";
 import Spinner from "../spinner";
-
-const Feedback = ({feedbackType, author, message}) => (
-  <li>
-    <Row className="feedback">
-      <Col s={1}>
-        <Vote type="novote" netVotes="4" />
-      </Col>
-      <Col s={8} className="katex-preview">
-        <p ref={ renderKaTeX }>{ message }</p>
-      </Col>
-      <Col s={3}>
-        Author: { author }
-      </Col>
-    </Row>
-  </li>
-);
 
 class Vote extends React.Component {
   toggle = () => {
@@ -71,18 +55,15 @@ class ViewProbPage extends React.Component {
       },
       "solutions": {
         title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: ( 
+        view: (
           <div>
             <div>
-              <SolutionForm />
-            </div>
-            <div>
-              { 
-                problem.official_soln.length > 0 ? (
+              {
+                (problem.official_soln.length > 0) && (
                   <ul>
                     {
                       problem.official_soln.map((soln, key) => (
-                        <Feedback
+                        <Solution
                           feedbackType="Solution"
                           message={soln.body}
                           author={soln.author.name}
@@ -90,8 +71,11 @@ class ViewProbPage extends React.Component {
                       ))
                     }
                   </ul>
-                ) : ( <p>No solutions.</p> )
+                )
               }
+            </div>
+            <div>
+              <SolutionForm id={ problem._id } />
             </div>
           </div>
         )
@@ -100,51 +84,24 @@ class ViewProbPage extends React.Component {
         title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
         view: (
           <div>
-            <div>
-              <TestSolveForm />
-            </div>
             {
-              (problem.alternate_soln.length > 0) ? (
+              (problem.alternate_soln.length > 0) && (
               <ul>
                 {
                   problem.alternate_soln.map((soln, key) => (
-                    <Feedback
+                    <Solution
                       feedbackType="Solution"
                       message={soln.body}
                       author={soln.author.name}
                       key={key} />
                   ))
                 }
-              </ul>) : ( <p>No test solves.</p> )
+              </ul>)
             }
+            <div>
+              <TestSolveForm />
+            </div>
          </div>
-        )
-      },
-      "comments": {
-        title: <div>Comments<Counter count={ problem.comments.length } /></div>,
-        view: (
-          <div>
-            <div>
-              <CommentForm id={ problem._id } />
-            </div>
-            <div>
-              {
-                problem.comments.length > 0 ? (
-                  <ul>
-                    {
-                      problem.comments.map((cmt, key) => (
-                        <Feedback
-                          feedbackType="Comment"
-                          message={cmt.comment}
-                          author={cmt.author.name}
-                          key={key} />
-                      ))
-                    }
-                  </ul>
-                ) : ( <p>No comments.</p> )
-              }
-            </div>
-          </div>
         )
       }
     })
@@ -171,26 +128,22 @@ class ViewProbPage extends React.Component {
           problem = content;
     return problem ? (
       <Row className="container">
-        <h2 className="col s12 teal-text text-darken-4">View Problem<a className="teal-text text-darken-4 right"><i className="fa fa-trash" aria-hidden="true"></i></a><a href={"edit-problem/" + problem._id} className="teal-text text-darken-4 right right-space"><i className="fa fa-pencil" aria-hidden="true"></i></a></h2>
-        <Col s={1}>
-          <Vote type="novote" netVotes={ problem.upvotes.length } onClick={ () => upvote(problem._id) } type={ this.upvoted() ? "upvote" : "novote" } />
-        </Col>
-        <Col s={11} className="katex-preview">
-          <p ref={ renderKaTeX }>{ problem.statement }</p>
-        </Col>
-        <Col s={12} style={{marginTop: "8px"}}>
+        <div style={{marginTop: "36px"}}>
+          <ExtendedProblemPreview problem={problem} />
+        </div>
+        <Col s={12}>
           {
             this.state.showDiscussion ? (
-              <div>
-                <a onClick={ this.toggleDiscussion }>
-                  <i className="fa fa-caret-up" aria-hidden="true" /> Hide Discussion
+              <div className="toggle-discussion">
+                <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
+                  <h3><i className="fa fa-caret-up" aria-hidden="true" /> Hide Discussion</h3>
                 </a>
                 <HorizontalNav tabs={ this.problemTabs() } active="info" />
               </div>
             ) : (
-              <div>
-                <a onClick={ this.toggleDiscussion }>
-                  <i className="fa fa-caret-down" aria-hidden="true" /> Show Discussion
+              <div className="toggle-discussion">
+                <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
+                  <h3><i className="fa fa-caret-down" aria-hidden="true" /> Show Discussion</h3>
                 </a>
               </div>
             )

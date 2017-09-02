@@ -1,11 +1,14 @@
 import React from "react";
 import { Row, Col } from "react-materialize";
-import { LoadMore } from "../utilities";
+import { ProblemPreview, LoadMore } from "../utilities";
+
+
 
 const TestSolvePage = () => (
   <Row className="container">
     <Col m={7} s={12} style={{marginTop: "24px"}}>
       <p>Select a test from the <span className="bold-text">Contests</span> section on the right.</p>
+      
     </Col>
     <Col m={5} s={12} style={{marginTop: "20px"}}>
       <h3>Requests</h3>

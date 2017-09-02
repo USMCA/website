@@ -7,6 +7,7 @@ const contestSchema = new Schema({
     site: { type: String, required: true },
     address: String
   } ],
+  active: { type: Boolean, required: true, default: false },
   name: { type: String, required: true },
   date: Date,
   test_solve_deadline: Date,

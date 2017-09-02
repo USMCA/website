@@ -7,10 +7,10 @@ import { Input, Row, Button } from "react-materialize";
 import Spinner from "../spinner";
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import { 
-  competitionsInputOptions, 
-  CompetitionsInput, 
-  CompetitionsSelect, 
+import {
+  competitionsInputOptions,
+  CompetitionsInput,
+  CompetitionsSelect,
   LocationArrayInput
 } from "./utilities";
 import { postContest } from "../../actions";
@@ -31,7 +31,7 @@ const CompetitionInput = ({ input, meta, ...rest }) => (
         <LocationArrayInput { ...input } { ...rest } />
       );
 
-class CreateContestForm extends React.Component { 
+class CreateContestForm extends React.Component {
   onSubmit = ({ competition_id, name, date, locations }) => {
     if (!competition_id || !name || !date || !locations) {
       return this.props.errorHandler('Please fill out all fields.');
@@ -67,10 +67,10 @@ class CreateContestForm extends React.Component {
           </div>
           <RightButtonPanel>
             <Button type="submit" className="teal darken-3">Create</Button>
-          </RightButtonPanel>
+          </RightButtonPanel><br />
           <Error error={ requestStatus === ERROR } message={ message } />
-          { 
-            (requestStatus === PENDING) && <Spinner /> 
+          {
+            (requestStatus === PENDING) && <Spinner />
           }
         </Row>
       </form>
@@ -88,8 +88,8 @@ const mapStateToProps = state => ({
       }),
       mapDispatchToProps = dispatch => ({
         errorHandler: message => {
-          dispatch({ 
-            type: CONTEST_POST, 
+          dispatch({
+            type: CONTEST_POST,
             payload: {
               requestStatus: ERROR,
               message

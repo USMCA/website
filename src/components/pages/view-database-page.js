@@ -54,10 +54,14 @@ const DatabasePage = () => (
       <h3>Results</h3>
       {
         results.map((proposal, key) => (
-          <ProblemPreview problem={proposal} key={key}>sup</ProblemPreview>
+          <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
+            <ProblemPreview problem={proposal} />
+          </div>
         ))
       }
-      <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
+      <div style={{padding: "24px 0"}}>
+        <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
+      </div>
     </Col>
   </Row>
 );

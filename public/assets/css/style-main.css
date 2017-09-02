@@ -179,16 +179,81 @@ li.urgent-announcement {
   background-color: #ffebee;
 }
 
-.problem-preview {
+.problem-options {
+  float: right;
+  display: inline;
+  margin: 0;
+}
+
+.problem-options li {
+  display: inline;
+  margin-left: 8px;
+}
+
+.problem-stats  {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.author-name  {
+  color: white;
+  background-color: #b0bec5;
+  padding: 2px 4px;
+}
+
+.small-stat, .comments {
+  font-size: 12px;
+}
+
+.upvote {
+  display: block;
+  width: 100px;
+  margin: 0 auto;
+  padding: 3px 0;
+  border: 1px solid #cfd8dc;
+  border-radius: 3px;
+}
+
+.upvote i {
+  margin-right: 6px;
+}
+
+.upvoted, .upvoted a  {
+  color: black;
+}
+
+.unvoted, .unvoted a  {
+  color: #2196f3;
+}
+
+.comments ul {
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.comments li {
+  border-bottom: 1px solid #cfd8dc;
+  padding: 8px 0;
+}
+
+.comments li:last-child {
+  border-bottom: none;
+}
+
+.comment-author, .comment-author a {
+  color: #9e9e9e;
+}
+
+.comment-author i, .comment-author .author-name {
+  margin-right: 6px;
+}
+
+.toggle-discussion  {
   border-bottom: 1px solid #cfd8dc;
 }
 
-.problem-preview .col:nth-child(2) {
-  font-size: 10px;
-}
-
-.problem-preview .col:nth-child(2) .s4 {
-  text-align: center;
+.toggle-discussion h3  {
+  margin: 12px 0;
 }
 
 .count  {
@@ -210,15 +275,6 @@ li.urgent-announcement {
 
 .placeholder-form .input-field  {
   margin-top: 0;
-}
-
-.feedback {
-  padding: 4px 0 24px;
-  border-bottom: 1px solid #cfd8dc;
-}
-
-.feedback span  {
-  font-size: 12px;
 }
 
 .tabs {
@@ -261,14 +317,6 @@ li.urgent-announcement {
   margin-left: 16px;
 }
 
-.upvote, .upvote a  {
-  color: #4caf50;
-}
-
-.novote, .novote a  {
-  color: #9e9e9e;
-}
-
 .roster, .roster input[type="text"] {
   font-size: 12px;
 }
@@ -283,4 +331,10 @@ li.urgent-announcement {
 
 .contests-list li ul {
   margin-left: 16px;
+}
+
+.spinner {
+  width: 100%;
+  margin-top: 24px;
+  text-align: center;
 }
