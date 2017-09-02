@@ -30,9 +30,12 @@ class NotificationsTab extends React.Component {
 
   requestList = (content, requestType) => {
     if (!content.requests) return "";
-    const requests = content.requests.filter(
-      ({ type }) => type === requestType
-    );
+    const requests = _(_.sortBy(
+        content.requests.filter(
+          ({ type }) => type === requestType
+        ), "updated"
+      )
+    ).reverse().value();
     let noRequestView = <li className="transparent">Error.</li>;
     switch (requestType) {
       case REQUEST:
@@ -68,7 +71,7 @@ class NotificationsTab extends React.Component {
     urgent = urgent.map(notif => Object.assign(notif, { label: "urgent" }));
     /* combine and sort unread, read, and urgent */ 
     let all = _.concat(unread, read, urgent);
-    all = _.sortBy(all, "created");
+    all = _.sortBy(all, "updated");
     const notificationOptions = {
             unread, read, urgent, all 
           },
@@ -83,6 +86,10 @@ class NotificationsTab extends React.Component {
     unread = unread.map(notif => Object.assign(notif, { label: "new-announcement" }));
     read = read.map(notif => Object.assign(notif, { label: "" }));
     urgent = urgent.map(notif => Object.assign(notif, { label: "urgent-announcement" }));
+    /* sort */
+    unread = _(_.sortBy(unread, "updated")).reverse().value();
+    read = _(_.sortBy(read, "updated")).reverse().value();
+    urgent = _(_.sortBy(urgent, "updated")).reverse().value();
     /* combine and sort unread, read, and urgent */ 
     let all = _.concat(unread, read, urgent);
     all = _.sortBy(all, "created");

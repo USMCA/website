@@ -59,7 +59,7 @@ class ViewProbPage extends React.Component {
           <ul>
             {
               problem.official_soln.map((soln, key) => (
-                <Feedback
+                <Solution
                   feedbackType="Solution"
                   message={soln.body}
                   author={soln.author.name}

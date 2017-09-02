@@ -9,7 +9,8 @@ import {
   USER_INFO,
   USER_ADMIN,
   USER_COMP_RES,
-  USER_JOIN_RES
+  USER_JOIN_RES,
+  USER_PUT
 } from './types';
 import { requestTypes } from '../../constants';
 import { authenticate, serverError } from './utilities';
@@ -28,11 +29,9 @@ export function userInfo() {
   return dispatch => {
     authenticate(action, dispatch, userId => {
       dispatch(Object.assign(action, pendingPayload()));
-      fetch(`/api/users?${$.param({ id: userId })}`, { 
+      fetch('/api/users', { 
         method: 'get',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       }).then(
         res => res.json().then(({ success, message, user }) => {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
@@ -93,3 +92,23 @@ export function respondRequest(request, response, type) {
   }
 }
 
+export function userPut(query) {
+  let action = { type: USER_PUT };
+  return dispatch => {
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch('/api/users', {
+        method: 'put',
+        body: JSON.stringify(query),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(
+        res => res.json().then(({ success, message, user }) => {
+        }),
+        serverError(action, dispatch)
+      ); 
+    });
+  }
+}
