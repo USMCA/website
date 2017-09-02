@@ -13,7 +13,7 @@ import {
 } from './types';
 import { requestTypes } from '../../constants';
 import auth from '../auth';
-import { authenticate } from './utilities';
+import { authenticate, serverError } from './utilities';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const {
@@ -31,19 +31,14 @@ const {
 export function requestCompetition({ name, shortName, website }) {
   let action = { type: COMP_REQ };
   return dispatch => {
-    const userId = auth.userId();
-    if (!userId) {
-      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
-    } else {
+    authenticate(action, dispatch, userId => {
       dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/competitions', {
         method: 'post',
         body: JSON.stringify({ 
-          type: requestTypes.REQUEST, 
-          competition: {
-            name, shortName, website 
-          },
-          userId: userId //@TODO remove this
+          type: requestTypes.REQUEST,
+          action_type: COMP_REQ,
+          competition: { name, shortName, website }
         }),
         headers: { 
           'Content-Type': 'application/json',
@@ -55,11 +50,9 @@ export function requestCompetition({ name, shortName, website }) {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, submittedPayload()));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          error.message || 'Failed to communicate with server'
-        ))),
+        serverError(action, dispatch)
       );
-    }
+    });
   }
 }
 
@@ -77,14 +70,12 @@ export function memberCompetitions(options = { info: false }) {
         }
       }).then(
         res => res.json().then(({ success, message, competitions }) => {
-            if (!success) dispatch(Object.assign(action, errorPayload(message)));
-            else dispatch(Object.assign(action, successPayload({ 
-              content: competitions 
-            })));
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ 
+            content: competitions 
+          })));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          error.message || 'Failed to communicate with server'
-        )))
+        serverError(action, dispatch)
       );
     });
   }
@@ -102,9 +93,7 @@ export function allCompetitions() {
           content: competitions 
         })));
       }),
-      err => dispatch(Object.assign(action, errorPayload(
-        err.message || 'Failed to communicate with server'
-      )))
+      serverError(action, dispatch)
     );
   }
 }
@@ -112,10 +101,7 @@ export function allCompetitions() {
 export function directorCompetitions() {
   let action = { type: COMP_FETCH_DIR };
   return dispatch => {
-    const userId = auth.userId();
-    if (!userId) {
-      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
-    } else {
+    authenticate(action, dispatch, userId => {
       dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/users/director', {
         method: 'get',
@@ -129,11 +115,9 @@ export function directorCompetitions() {
             content: competitions 
           })));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          err.message || 'Failed to communicate with server.'
-        )))
+        serverError(action, dispatch)
       );
-    }
+    });
   }
 }
 
@@ -144,7 +128,11 @@ export function joinCompetition(competition_id) {
       dispatch(Object.assign(action, pendingPayload()));
       fetch('/api/competitions/join', {
         method: 'post',
-        body: JSON.stringify({ type: requestTypes.REQUEST, competition_id }),
+        body: JSON.stringify({ 
+          type: requestTypes.REQUEST, 
+          action_type: COMP_REQ_JOIN, 
+          competition_id 
+        }),
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -154,9 +142,7 @@ export function joinCompetition(competition_id) {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, successPayload()));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          err.message || 'Failed to communicate with server.'
-        )))
+        serverError(action, dispatch)
       );
     });    
   }

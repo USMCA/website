@@ -53,6 +53,7 @@
   author: User,
   body: String,
   type: Enum(REQUEST, INVITE), 
+  action_type: Enum(COMP, JOIN),
   competition: Competition,
   contest, Contest,
   user_type: Enum(ADMIN, DIRECTOR, CZAR, MEMBER, TEST_SOLVER),

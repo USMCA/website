@@ -22,3 +22,9 @@ export function authenticate(action, dispatch, callback) {
     callback(userId);
   }
 }
+
+export function serverError(action, dispatch) {
+  return err => dispatch(Object.assign(action, errorPayload(
+    err.message || 'Failed to communicate with server.'
+  )));
+}

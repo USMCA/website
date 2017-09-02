@@ -8,10 +8,11 @@ import {
   requestStatuses,
   USER_INFO,
   USER_ADMIN,
-  USER_COMP_RES
+  USER_COMP_RES,
+  USER_JOIN_RES
 } from './types';
 import { requestTypes } from '../../constants';
-import { authenticate } from './utilities';
+import { authenticate, serverError } from './utilities';
 
 const {
   successPayload,
@@ -37,9 +38,7 @@ export function userInfo() {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, successPayload({ content: user })));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          err.message || 'Failed to communicate with server.'
-        )))
+        serverError(action, dispatch)
       );
     });
   }
@@ -55,21 +54,19 @@ export function adminInfo() {
         if (!success) dispatch(Object.assign(action, errorPayload(message)));
         else dispatch(Object.assign(action, successPayload({ content: admins })));
       }),
-      err => dispatch(Object.assign(action, errorPayload(
-        err.message || 'Failed to communicate with server.'
-      )))
+      serverError(action, dispatch)
     );
   }
 }
 
 /* respond to a competition request */
-export function respondCompetition(request, adminResponse) {
+export function respondCompetition(request, response) {
   let action = { type: USER_COMP_RES };
   return dispatch => {
     if (!auth.isAdmin()) {
       dispatch(Object.assign(action, errorPayload('User is not an admin.')));
-    } else if ( adminResponse !== requestTypes.ACCEPT && 
-                adminResponse !== requestTypes.REJECT ) {
+    } else if ( response !== requestTypes.ACCEPT && 
+                response !== requestTypes.REJECT ) {
       dispatch(Object.assign(action, errorPayload('Invalid response to request.')));
     } else {
       dispatch(Object.assign(action, pendingPayload()));
@@ -77,7 +74,7 @@ export function respondCompetition(request, adminResponse) {
         method: 'post',
         body: JSON.stringify({
           requestId: request._id,
-          type: adminResponse
+          type: response
         }),
         headers: { 
           'Content-Type': 'application/json',
@@ -86,11 +83,45 @@ export function respondCompetition(request, adminResponse) {
       }).then(
         res => res.json().then(({ success, message, request }) => {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
-          else dispatch(Object.assign(action, successPayload(requestId: request._id)));
+          else dispatch(Object.assign(action, successPayload({
+            requestId: request._id
+          })));
         }),
-        err => dispatch(Object.assign(action, errorPayload(
-          err.message || 'Failed to communicate with server.'
-        )))
+        serverError(action, dispatch)
+      );
+    }
+  }
+}
+
+const requestURLs = {
+  [USER_COMP_RES]: '/api/competitions',
+  [USER_JOIN_RES]: '/api/competitions/join'
+};
+
+/* respond to a request */
+export function respondRequest(request, response, type) {
+  let action = { type };
+  return dispatch => {
+    if (response !== requestTypes.ACCEPT && 
+        response !== requestTypes.REJECT ) {
+      dispatch(Object.assign(action, errorPayload('Invalid response to request.')));
+    } else {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch(requestURLs[type], {
+        method: 'post',
+        body: JSON.stringify({ requestId: request._id, type: response }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(
+        res => res.json().then(({ success, message }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({
+            requestId: request._id
+          })));
+        }),
+        serverError(action, dispatch)
       );
     }
   }

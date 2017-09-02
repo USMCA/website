@@ -1,12 +1,13 @@
 const mongoose = require('mongoose'),
       _ = require('lodash'),
       Schema = mongoose.Schema,
-      { requestEnum, userTypeEnum } = require('../constants');
+      { requestEnum, userTypeEnum, requestActionEnum } = require('../constants');
 
 const requestSchema = new Schema({
   body: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   type: { type: String, enum: _.values(requestEnum) },
+  action_type: { type: String, required: true },
   competition: { type: Schema.Types.ObjectId, ref: 'Competition' },
   contest: { type: Schema.Types.ObjectId, ref: 'Contest' },
   user_type: { type: String, enum: _.values(userTypeEnum) },

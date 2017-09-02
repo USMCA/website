@@ -22,12 +22,18 @@ router.get('/', auth.verifyJWT, (req, res) => {
         console.log(err);
         return handler(false, 'Database failed to find user.', 503)(req, res);
       } else {
-        const { name, email, university, unread, read, urgent, requests } = user;
-        return handler(true, 'Successfully retrieved user data.', 200, {
-          user: {
-            name, email, university, unread, read, urgent, requests
-          }
-        })(req, res);
+        Competition.populate(user, {
+          path: 'unread.author read.author urgent.author',
+          select: 'short_name'
+        }, (err, user) => {
+          console.log(user);
+          const { name, email, university, unread, read, urgent, requests } = user;
+          return handler(true, 'Successfully retrieved user data.', 200, {
+            user: {
+              name, email, university, unread, read, urgent, requests
+            }
+          })(req, res);
+        });
       }
     });
   }
