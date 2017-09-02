@@ -84,7 +84,7 @@ export function respondCompetition(request, adminResponse) {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }).then(
-        res => res.json().then(({ success, message }) => {
+        res => res.json().then(({ success, message, request }) => {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, successPayload(requestId: request._id)));
         }),
