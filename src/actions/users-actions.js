@@ -59,40 +59,6 @@ export function adminInfo() {
   }
 }
 
-/* respond to a competition request */
-export function respondCompetition(request, response) {
-  let action = { type: USER_COMP_RES };
-  return dispatch => {
-    if (!auth.isAdmin()) {
-      dispatch(Object.assign(action, errorPayload('User is not an admin.')));
-    } else if ( response !== requestTypes.ACCEPT && 
-                response !== requestTypes.REJECT ) {
-      dispatch(Object.assign(action, errorPayload('Invalid response to request.')));
-    } else {
-      dispatch(Object.assign(action, pendingPayload()));
-      fetch('/api/competitions', {
-        method: 'post',
-        body: JSON.stringify({
-          requestId: request._id,
-          type: response
-        }),
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      }).then(
-        res => res.json().then(({ success, message, request }) => {
-          if (!success) dispatch(Object.assign(action, errorPayload(message)));
-          else dispatch(Object.assign(action, successPayload({
-            requestId: request._id
-          })));
-        }),
-        serverError(action, dispatch)
-      );
-    }
-  }
-}
-
 const requestURLs = {
   [USER_COMP_RES]: '/api/competitions',
   [USER_JOIN_RES]: '/api/competitions/join'
