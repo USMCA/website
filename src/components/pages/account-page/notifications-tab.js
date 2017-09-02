@@ -30,11 +30,12 @@ class NotificationsTab extends React.Component {
 
   requestList = (content, requestType) => {
     if (!content.requests) return "";
-    const requests = _.sortBy(
-      content.requests.filter(
-        ({ type }) => type === requestType
-      ), "updated"
-    );
+    const requests = _(_.sortBy(
+        content.requests.filter(
+          ({ type }) => type === requestType
+        ), "updated"
+      )
+    ).reverse().value();
     let noRequestView = <li className="transparent">Error.</li>;
     switch (requestType) {
       case REQUEST:
