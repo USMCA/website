@@ -260,17 +260,18 @@ router.get('/', (req, res) => {
 
 router.post('/join', auth.verifyJWT, (req, res) => {
   const { type, competition_id } = req.body;
-  console.log('ailee', competition_id);
   switch(type) {
     case REQUEST:
       Competition.findById(competition_id)
-      .populate('directors members')
+      .populate('directors')
       .exec((err, competition) => {
         if (err) {
           console.log(err);
           handler(false, 'Database failed to load competition.', 503)(req, res);
         } else {
-          if (competition.members.indexOf(req.user._id > -1)) {
+          if (competition.members.indexOf(req.user._id) > -1 ||
+              competition.secure_members.indexOf(req.user._id) > -1 ||
+              competition.directors.indexOf(req.user) > -1) {
             handler(false, 'User is already a member of the competition.', 400)(req, res);
           } else {
             const request = Object.assign(new Request(), {
