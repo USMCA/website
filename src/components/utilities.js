@@ -246,7 +246,7 @@ class HorizontalNav extends React.Component {
                       onClick: evt => { this.setState({ active: key }); }
                     };
               return tab.to ?
-                <Link to={ tab.to } { ...props }>{ tab.title }</Link> :
+                <Link to={ tab.to } { ...props }>{ tab.title(headerProps[key]) }</Link> :
                 <a { ...props }>{ tab.title(headerProps[key]) }</a>;
             })
           }
