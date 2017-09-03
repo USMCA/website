@@ -4,7 +4,8 @@ import {
   PROB_POST,
   PROB_GET,
   PROB_UPVOTE,
-  PROB_DATABASE
+  PROB_DATABASE,
+  PROB_PUT
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -22,6 +23,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, myProposals: payload };
     case PROB_POST:
       return { ...state, postProposal: payload };
+    case PROB_PUT:
     case PROB_UPVOTE:
     case PROB_GET:
       return { ...state, proposal: payload };

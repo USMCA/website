@@ -202,6 +202,7 @@ class LocationArrayInput extends React.Component {
   }
 
   renderList = () => {
+    if (this.state.value.length === 0) return <p>No locations added.</p>;
     return this.state.value.map((loc, idx) => (
       <Row key={idx}>
         <Col s={5}>{ loc.site }</Col>
@@ -262,10 +263,10 @@ class LocationArrayInput extends React.Component {
         <ControlledInput
           type="text"
           label={addressLabel}
-          s={6}
+          s={5}
           ref={ elem => { this.addressInput = elem; } }
           onChange={(evt, val)=> { this.state.address = evt.target.value; } } />
-        <Col s={1}>
+        <Col s={2}>
           <a className="teal-text text-darken-3 right" style={{marginTop: "30px"}} onClick={ this.handleAddClick }>
             <i className="fa fa-plus" aria-hidden="true"></i>
           </a>
