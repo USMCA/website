@@ -202,7 +202,7 @@ class LocationArrayInput extends React.Component {
   }
 
   renderList = () => {
-    if (this.state.value.length === 0) return <p>No locations added.</p>;
+    if (this.state.value.length === 0) return <Row><Col s={12}><p>No locations added.</p></Col></Row>;
     return this.state.value.map((loc, idx) => (
       <Row key={idx}>
         <Col s={5}>{ loc.site }</Col>
@@ -300,6 +300,31 @@ const SubjectsInput = props => {
  * KaTeX input fields.
  ******************************************************************************/
 
+const Flame = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>
+)
+
+class FlameInput extends React.Component  {
+  constructor(props) {
+    super(props);
+    this.state = {
+      n: this.props.n || 5,
+      value: this.props.value || 0
+    };
+  }
+
+  render() {
+    const { n, value } = this.state;
+    return <div>
+      {
+        Array(n).fill(0).map((a, key) => (
+          <a style={{padding: "0 3px"}} id={"flame-" + key} key={key}><Flame /></a>
+        ))
+      }
+    </div>;
+  }
+}
+
 class KaTeXInput extends React.Component {
   previewKaTeX = () => {
     if (this.inputField && this.inputField.state.value) {
@@ -315,39 +340,51 @@ class KaTeXInput extends React.Component {
   render() {
     const { type, label, includeSubmit, onChange } = this.props;
     return (
-      <Row>
-        <Input
-          ref={ elem => { this.inputField = elem; } }
-          s={6} type={ type } label={ label }
-          onChange={ onChange } />
-        <Col s={6}>
-          <div ref={ elem => { this.renderField = elem; } }></div>
-        </Col>
-        {
-          includeSubmit ? (
-            <div>
-              <Col s={12}>
-                <RightButtonPanel>
-                  <a
-                    className="waves-effect waves-light btn teal darken-3"
-                    onClick={ this.previewKaTeX }>
-                    Preview
-                  </a>
-                  <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
-                </RightButtonPanel>
+      <div>
+        <Row>
+          <Input
+            ref={ elem => { this.inputField = elem; } }
+            s={6} type={ type } label={ label }
+            onChange={ onChange } />
+          <Col s={6}>
+            <div ref={ elem => { this.renderField = elem; } }></div>
+          </Col>
+        </Row>
+        <Row>
+          <Col s={6}>
+            How difficult did you find this problem?
+          </Col>
+          <Col s={6}>
+            <FlameInput n={ 5 } value={ 0 } />
+          </Col>
+        </Row>
+        <Row>
+          {
+            includeSubmit ? (
+              <div>
+                <Col s={12}>
+                  <RightButtonPanel>
+                    <a
+                      className="waves-effect waves-light btn teal darken-3"
+                      onClick={ this.previewKaTeX }>
+                      Preview
+                    </a>
+                    <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
+                  </RightButtonPanel>
+                </Col>
+              </div>
+            ) : (
+              <Col s={2} className="offset-s10">
+                <a
+                  className="waves-effect waves-light btn teal darken-3"
+                  onClick={ this.previewKaTeX }>
+                  Preview
+                </a>
               </Col>
-            </div>
-          ) : (
-            <Col s={2} className="offset-s10">
-              <a
-                className="waves-effect waves-light btn teal darken-3"
-                onClick={ this.previewKaTeX }>
-                Preview
-              </a>
-            </Col>
-          )
-        }
-      </Row>
+            )
+          }
+        </Row>
+      </div>
     );
   }
 }
