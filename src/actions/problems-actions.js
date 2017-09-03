@@ -9,9 +9,9 @@ import {
   PROB_UPVOTE,
   PROB_COMMENT,
   PROB_DATABASE,
+  PROB_TEST_SOLVE,
   PROB_PUT
-} from './types';
-import auth from '../auth';
+} from './types'; import auth from '../auth';
 import { 
   authenticate, 
   serverError, 
@@ -210,8 +210,8 @@ export function testSolve(problem_id, solution) {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     }, 
-    formatData: ({ success, message, problem }) => {
-      return { success, message, content: problem };
+    formatData: ({ success, message, alternate_soln }) => {
+      return { success, message, content: alternate_soln };
     }
   });
 }

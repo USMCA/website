@@ -14,9 +14,7 @@ const {
   submittedPayload
 } = requestPayloads;
 
-export function authenticate(action, dispatch, callback) {
-  const userId = auth.userId();
-  if (!userId) {
+export function authenticate(action, dispatch, callback) { const userId = auth.userId(); if (!userId) {
     dispatch(Object.assign(action, errorPayload('User is not logged in.')));
   } else {
     callback(userId);

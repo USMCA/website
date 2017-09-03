@@ -14,8 +14,8 @@ const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
   .populate('competition', 'short_name _id')
-  .populate('official_soln', 'author body')
-  .populate('alternate_soln', 'author body')
+  .populate('official_soln', 'author body updated created')
+  .populate('alternate_soln', 'author body updated created')
   .populate('comments', 'author body')
   .exec((err, problem) => {
     if (err) handler(false, 'Failed to load problem.', 503)(req, res);
@@ -56,9 +56,11 @@ router.put('/:problem_id', auth.verifyJWT, (req, res) => {
 
 router.post('/test-solve', auth.verifyJWT, (req, res) => {
   const { problem_id, solution } = req.body;
+  console.log(req.body);
+  if (!solution) handler(false, 'Solution is required.', 400)(req, res);
   problemParam(problem_id, req, res, problem => {
     const testSolveSolution = Object.assign(new Solution(), {
-      author: req.user._id,
+      author: req.user,
       body: solution
     });
     testSolveSolution.save(err => {
@@ -67,7 +69,9 @@ router.post('/test-solve', auth.verifyJWT, (req, res) => {
         problem.alternate_soln.push(testSolveSolution);
         problem.save(err => {
           if (err) handler(false, 'Failed to save solution to problem.', 503)(req, res);
-          else handler(true, 'Successfully posted test solve.', 200, { problem })(req, res);
+          else handler(true, 'Successfully posted test solve.', 200, { 
+            alternate_soln: problem.alternate_soln
+          })(req, res);
         });
       }
     });

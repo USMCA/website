@@ -159,8 +159,8 @@ class ExtendedProblemPreview extends React.Component  {
         <Col s={12}>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
           <ul className="problem-options">
-            <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
-            <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+            <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"/></a></li>
+            <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"/></a></li>
           </ul>
         </Col>
         <Col s={12}>
@@ -231,6 +231,8 @@ class HorizontalNav extends React.Component {
       return <div />;
     }
 
+    const activeProp = (this.props.childProps || {})[active],
+          headerProps = (this.props.headerProps || {});
     return (
       <div>
         <Col s={12} className="horizontal-nav">
@@ -245,12 +247,12 @@ class HorizontalNav extends React.Component {
                     };
               return tab.to ?
                 <Link to={ tab.to } { ...props }>{ tab.title }</Link> :
-                <a { ...props }>{ tab.title }</a>;
+                <a { ...props }>{ tab.title(headerProps[key]) }</a>;
             })
           }
         </Col>
         <Col s={12}>
-          <div>{ tabs[active].view }</div>
+          <div>{ tabs[active].view(activeProp) }</div>
         </Col>
       </div>
     );
