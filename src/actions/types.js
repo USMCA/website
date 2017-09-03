@@ -6,8 +6,7 @@ export const INIT_ERROR = 'init_error', // notify initialization error
 export const requestStatuses = {
   SUCCESS: 'success',
   PENDING: 'pending',
-  SUBMITTED: 'submitted',
-  IDLE: 'idle',
+  SUBMITTED: 'submitted', IDLE: 'idle',
   ERROR: 'error'
 };
 
@@ -71,4 +70,5 @@ export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by 
              PROB_GET = 'prob_get', // get a proposal by id
              PROB_UPVOTE = 'prob_upvote', // upvote a problem
              PROB_COMMENT = 'prob_comment', // comment on a problem
-             PROB_DATABASE = 'prob_database'; // fetch database of a competition
+             PROB_DATABASE = 'prob_database', // fetch database of a competition
+             PROB_PUT = 'prob_put'; // generic put request

@@ -8,7 +8,8 @@ import {
   PROB_GET,
   PROB_UPVOTE,
   PROB_COMMENT,
-  PROB_DATABASE
+  PROB_DATABASE,
+  PROB_PUT
 } from './types';
 import auth from '../auth';
 import { authenticate, serverError } from './utilities';
@@ -99,7 +100,7 @@ export function getProposal(id) {
       dispatch(Object.assign(action, errorPayload('User is not logged in.')));
     } else {
       dispatch(Object.assign(action, pendingPayload()));
-      fetch(`/api/problems?${$.param({ id: id })}`, {
+      fetch(`/api/problems/${id}`, {
         method: 'get',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -107,13 +108,10 @@ export function getProposal(id) {
       })
       .then(
         res => res.json().then(({ success, message, problem }) => {
-          if (!success) {
-            dispatch(Object.assign(action, errorPayload(message)));
-          } else {
-            dispatch(Object.assign(action, successPayload({
-              content: problem
-            })));
-          }
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({
+            content: problem
+          })));
         }),
         serverError(action, dispatch)
       );
@@ -170,4 +168,27 @@ export function fetchDatabase(id) {
       );
     });
   };
+}
+
+export function problemPut(id, query) {
+  let action = { type: USER_PUT };
+  return dispatch => {
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch(`/api/problems?${$.param({ id })}`, {
+        method: 'put',
+        body: JSON.stringify(query),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(
+        res => res.json().then(({ success, message, problem }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ content: problem })));
+        }),
+        serverError(action, dispatch)
+      ); 
+    });
+  }
 }
