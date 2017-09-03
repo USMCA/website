@@ -202,6 +202,7 @@ class LocationArrayInput extends React.Component {
   }
 
   renderList = () => {
+    if (this.state.value.length === 0) return <p>No locations added.</p>;
     return this.state.value.map((loc, idx) => (
       <Row key={idx}>
         <Col s={5}>{ loc.site }</Col>
