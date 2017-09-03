@@ -5,6 +5,7 @@ import {
   PROB_GET,
   PROB_UPVOTE,
   PROB_DATABASE,
+  PROB_TEST_SOLVE,
   PROB_PUT
 } from '../actions/types';
 
@@ -27,6 +28,24 @@ export default function (state = INITIAL_STATE, { type, payload }) {
     case PROB_UPVOTE:
     case PROB_GET:
       return { ...state, proposal: payload };
+    case PROB_TEST_SOLVE:
+      const { requestStatus, message, content } = payload, 
+            newState = (requestStatus !== SUCCESS) ? { 
+              ...state,
+              proposal: Object.assign({}, state.proposal, {
+                requestStatus, message 
+              })
+            } : { 
+              ...state, 
+              proposal: {
+                requestStatus, 
+                message, 
+                content: Object.assign({}, state.proposal.content, { 
+                  alternate_soln: content 
+                })
+              }
+            };
+      return newState;
     case PROB_DATABASE:
       return { ...state, database: payload };
     default:

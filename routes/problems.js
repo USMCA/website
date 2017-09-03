@@ -8,31 +8,39 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 
 const User = require('../database/user'),
       Problem = require('../database/problem'),
-      Solution = require('../database/solution');
+      Solution = require('../database/solution'),
+      Comment = require('../database/comment');
 
 const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
   .populate('competition', 'short_name _id')
-  .populate('official_soln', 'author body')
-  .populate('alternate_soln', 'author body')
-  .populate('comments', 'author body')
+  .populate('official_soln', 'author body created updated comments')
+  .populate('alternate_soln', 'author body created updated comments')
+  .populate('comments', 'author body created updated')
   .exec((err, problem) => {
-    if (err) {
-      console.log(err);
-      return handler(false, 'Database failed to load problem.', 503)(req, res);
-    } else if (!problem) {
-      return handler(false, 'Problem was not found.', 400)(req, res);
-    } else {
-      User.populate(problem, {
-        path: 'official_soln.author alternate_soln.author comments.author',
-        select: 'name'
+    if (err) handler(false, 'Failed to load problem.', 503)(req, res);
+    else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
+    else {
+      Comment.populate(problem, {
+        path: 'official_soln.comments alternate_soln.comments',
+        select: 'author body created updated'
       }, (err, problem) => {
         if (err) {
           console.log(err);
-          return handler(false, 'Database failed to load solution author.', 503)(req, res);
+          return handler(false, 'Failed to load solution comments.', 503)(req, res);
         } else {
-          callback(problem);
+          User.populate(problem, {
+            path: 'official_soln.author official_soln.comments.author ' +
+                  'alternate_soln.author official_soln.comments.author' +
+                  'comments.author',
+            select: 'name'
+          }, (err, problem) => {
+            if (err) {
+              console.log(err);
+              handler(false, 'Failed to load solution author.', 503)(req, res);
+            } else callback(problem);
+          });
         }
       });
     }
@@ -56,6 +64,30 @@ router.put('/:problem_id', auth.verifyJWT, (req, res) => {
 /*******************************************************************************
  * Specific routes.
  ******************************************************************************/
+
+router.post('/test-solve', auth.verifyJWT, (req, res) => {
+  const { problem_id, solution } = req.body;
+  console.log(req.body);
+  if (!solution) handler(false, 'Solution is required.', 400)(req, res);
+  problemParam(problem_id, req, res, problem => {
+    const testSolveSolution = Object.assign(new Solution(), {
+      author: req.user,
+      body: solution
+    });
+    testSolveSolution.save(err => {
+      if (err) handler(false, 'Failed to save solution.', 503)(req, res);
+      else {
+        problem.alternate_soln.push(testSolveSolution);
+        problem.save(err => {
+          if (err) handler(false, 'Failed to save solution to problem.', 503)(req, res);
+          else handler(true, 'Successfully posted test solve.', 200, { 
+            alternate_soln: problem.alternate_soln
+          })(req, res);
+        });
+      }
+    });
+  });
+});
 
 router.post('/upvotes', auth.verifyJWT, (req, res) => {
   Problem.findById(req.body.id, (err, problem) => {

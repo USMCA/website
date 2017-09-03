@@ -14,9 +14,7 @@ const {
   submittedPayload
 } = requestPayloads;
 
-export function authenticate(action, dispatch, callback) {
-  const userId = auth.userId();
-  if (!userId) {
+export function authenticate(action, dispatch, callback) { const userId = auth.userId(); if (!userId) {
     dispatch(Object.assign(action, errorPayload('User is not logged in.')));
   } else {
     callback(userId);
@@ -36,7 +34,7 @@ export function apiAction(type, callback) {
   };
 }
 
-export function APIAction(type, url, opts, formatData) {
+export function APIAction({ type, url, opts, formatData }) {
   let action = { type };
   return dispatch => {
     dispatch(Object.assign(action, pendingPayload()));
@@ -51,7 +49,7 @@ export function APIAction(type, url, opts, formatData) {
   }
 }
 
-export function authAPIAction(type, url, opts, formatData) {
+export function authAPIAction({ type, url, opts, formatData }) {
   let action = { type };
   return dispatch => {
     authenticate(action, dispatch, userId => {

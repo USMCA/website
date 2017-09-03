@@ -35,12 +35,10 @@ class ViewProbPage extends React.Component {
   }
 
   problemTabs = () => {
-    const { proposal: { content, message } } = this.props,
-          problem = content;
     return ({
       "info": {
-        title: "Information",
-        view: (
+        title: () => "Information",
+        view: (problem) => (
           <ul>
             <li>Author: { problem.author.name }</li>
             <li>Subject: { problem.subject }</li>
@@ -50,12 +48,12 @@ class ViewProbPage extends React.Component {
         )
       },
       "answer": {
-        title: "Answer",
-        view: <p ref={ renderKaTeX }>{ problem.answer || 'No answer provided.' }</p>
+        title: () => "Answer",
+        view: (problem) => <p ref={ renderKaTeX }>{ problem.answer || 'No answer provided.' }</p>
       },
       "solutions": {
-        title: <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: problem.official_soln.length > 0 ? (
+        title: (problem) => <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
+        view: (problem) => problem.official_soln.length > 0 ? (
           <ul>
             {
               problem.official_soln.map((soln, key) => (
@@ -66,22 +64,24 @@ class ViewProbPage extends React.Component {
         ) : ( <p>No solutions.</p> )
       },
       "test-solves": {
-        title: <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
-        view: (
+        title: (problem) => <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
+        view: (problem) => (
           <div>
-            {
-              (problem.alternate_soln.length > 0) && (
-              <ul>
-                {
-                  problem.alternate_soln.map((soln, key) => (
-                    <Solution solution={soln} key={key} />
-                  ))
-                }
-              </ul>)
-            }
             <div>
-              <TestSolveForm />
+              <TestSolveForm problem_id={ problem._id }/>
             </div>
+            {
+              (problem.alternate_soln.length > 0) ? (
+                <ul>
+                  {
+                    _(_.sortBy(problem.alternate_soln, "updated"))
+                    .reverse().value().map((soln, key) => (
+                      <Solution solution={soln} key={key} />
+                    ))
+                  }
+                </ul>
+              ) : ( <p>No test solves.</p> )
+            }
          </div>
         )
       }
@@ -107,6 +107,18 @@ class ViewProbPage extends React.Component {
   render() {
     const { proposal: { content, message }, upvote } = this.props,
           problem = content;
+
+    const childProps = {
+            "info": problem,
+            "answer": problem,
+            "solutions": problem,
+            "test-solves": problem
+          }, 
+          headerProps = {
+            "solutions": problem,
+            "test-solves": problem
+          }
+
     return problem ? (
       <Row className="container">
         <div style={{marginTop: "36px"}}>
@@ -117,14 +129,18 @@ class ViewProbPage extends React.Component {
             this.state.showDiscussion ? (
               <div className="toggle-discussion">
                 <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
-                  <h3><i className="fa fa-caret-up" aria-hidden="true" /> Hide Discussion</h3>
+                  <h3><i className="fa fa-caret-up" aria-hidden="true"/> Hide Discussion</h3>
                 </a>
-                <HorizontalNav tabs={ this.problemTabs() } active="info" />
+                <HorizontalNav 
+                  tabs={ this.problemTabs() } 
+                  active="info"
+                  childProps={ childProps }
+                  headerProps={ headerProps }/>
               </div>
             ) : (
               <div className="toggle-discussion">
                 <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
-                  <h3><i className="fa fa-caret-down" aria-hidden="true" /> Show Discussion</h3>
+                  <h3><i className="fa fa-caret-down" aria-hidden="true"/> Show Discussion</h3>
                 </a>
               </div>
             )

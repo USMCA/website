@@ -17,32 +17,32 @@ const Title = ({ fa, title}) => (
 const AccountPage = ({ match }) => {
   let accountTabs = {
     "notifications": {
-      title: <Title fa="bell" title="Notifications"/>,
+      title: () => <Title fa="bell" title="Notifications"/>,
       to: "/home/notifications",
-      view: <NotificationsTab />
+      view: () => <NotificationsTab />
     },
     "competitions": {
-      title: <Title fa="trophy" title="Competitions"/>,
+      title: () => <Title fa="trophy" title="Competitions"/>,
       to: "/home/competitions",
-      view: <CompetitionsTab />
+      view: () => <CompetitionsTab />
     },
     "problems": {
-      title: <Title fa="pencil-square" title="Problems"/>,
+      title: () => <Title fa="pencil-square" title="Problems"/>,
       to: "/home/problems",
-      view: <ProblemsTab />
+      view: () => <ProblemsTab />
     },
     "account": {
-      title: <Title fa="user" title="Account" />,
+      title: () => <Title fa="user" title="Account" />,
       to: "/home/account",
-      view: <AccountTab />
+      view: () => <AccountTab />
     }
   };
 
   if (auth.isAdmin()) {
     accountTabs.admin = {
-      title: <Title fa="lock" title="Admin" />,
+      title: () => <Title fa="lock" title="Admin"/>,
       to: "/home/admin",
-      view: <h1>Admin</h1>
+      view: () => <h1>Admin</h1>
     }
   }
  
@@ -53,7 +53,7 @@ const AccountPage = ({ match }) => {
 
   return (
     <Row className="container">
-      <HorizontalNav tabs={ accountTabs } active={ active } />
+      <HorizontalNav tabs={ accountTabs } active={ active }/>
     </Row>
   );
 }
