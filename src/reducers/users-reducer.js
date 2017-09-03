@@ -4,7 +4,8 @@ import {
   USER_INFO,
   USER_ADMIN,
   USER_COMP_RES,
-  USER_JOIN_RES
+  USER_JOIN_RES,
+  USER_PUT
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -40,6 +41,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: Object.assign({}, state.user.content, { requests })
         }
       };
+    case USER_PUT:
     default:
       return state;
   }

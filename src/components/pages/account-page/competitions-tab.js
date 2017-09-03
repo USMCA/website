@@ -13,6 +13,7 @@ import CreateCompetitionForm from "../../forms/create-competition";
 import JoinCompetitionForm from "../../forms/join-competition";
 
 const makeURL = url => {
+  if (!url) return url;
   const http = "http://",
         https = "https://",
         valid = (url.substr(0, http.length) === http) || 
@@ -30,15 +31,11 @@ const competitionMembership = (competition, userId, populated = true) => {
   const finder = populated ? 
     user => user._id === userId : // users are populated
     user => user === userId; // users are ids themselves
-  if (_.find(competition.directors, finder)) {
+  if (_.find(competition.directors, finder))
     return competition.valid ? DIRECTOR : PENDING_DIRECTOR;
-  } else if (_.find(competition.secure_members, finder)) {
-    return SECURE;
-  } else if (_.find(competition.members, finder)) {
-    return MEMBER;
-  } else {
-    return NONMEMBER;
-  }
+  else if (_.find(competition.secure_members, finder)) return SECURE;
+  else if (_.find(competition.members, finder)) return MEMBER;
+  else return NONMEMBER;
 }
 
 const locationsString = locations => {
@@ -73,21 +70,21 @@ class CompetitionsTab extends React.Component {
     const contestView = (contest, idx) => {
       return (
         <div style={{borderBottom: "1px solid #cfd8dc"}} key={idx}>
-          <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3>
+          <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><Modal header="Update Contest" trigger={<a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a>}><CreateContestForm contest={ contest } competition_id={ competition._id } /></Modal></h3>
           <ul>
             <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
             <li>Date: { contest.date ? moment(contest.date).format('ll') : "N/A" }</li>
             <li>Test solve deadline: { contest.test_solve_deadline ? moment(contest.test_solve_deadline) : "N/A" }</li>
             <li>Location(s): { locationsString(contest.locations) }</li>
-            <li>Status: <span className="bold-text">{ contest.active ? "active" : "inactive" }</span> (<a className="teal-text text-darken-3">mark as { contest.active ? "inactive" : "active" }</a>)</li>
+            <li>Status: <span className="bold-text">{ contest.active ? "active" : "inactive" }</span></li>
           </ul>
         </div>
       );
     }
     return {
       "info": {
-        title: "Information",
-        view: <div className="round-container">
+        title: () => "Information",
+        view: () => <div className="round-container">
           <ul>
             <li><h3>Competition Info<a className="right black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3></li>
             <li>Name: { competition.name }</li>
@@ -109,8 +106,8 @@ class CompetitionsTab extends React.Component {
         </div>
       },
       "members": {
-        title: "Members",
-        view: <div className="round-container">
+        title: () => "Members",
+        view: () => <div className="round-container">
           <Button className="teal darken-3">Add new member</Button>
           <h3>Roster</h3>
           <Table className="roster">
@@ -132,8 +129,8 @@ class CompetitionsTab extends React.Component {
         </div>
       },
       "contests": {
-        title: "Contests",
-        view: <div className="round-container">
+        title: () => "Contests",
+        view: () => <div className="round-container">
           <Modal header="Create Contest" trigger={ <Button className="teal darken-3">Create contest</Button> }>
             <CreateContestForm competition_id={ competition._id } />
           </Modal>
