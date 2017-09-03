@@ -39,7 +39,13 @@ router.get('/', auth.verifyJWT, (req, res) => {
 router.put('/', auth.verifyJWT, (req, res) => {
   req.user.update(req.body, (err, user) => {
     if (err) handler(false, 'Failed to update user.', 503)(req, res);
-    else handler(true, 'Successfully upated user.', 200)(req, res);
+    else {
+      User.findById(req.user._id, (err, user) => {
+        userPopulate(user, req, res, user => {
+          handler(true, 'Successfully upated user.', 200, { user })(req, res);
+        });
+      });
+    }
   });
 });
 

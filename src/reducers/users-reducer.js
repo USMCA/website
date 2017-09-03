@@ -16,6 +16,7 @@ const INITIAL_STATE = {
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
   switch(type) {
+    case USER_PUT:
     case USER_INFO:
       return { ...state, user: payload };
     case USER_ADMIN:
@@ -41,7 +42,6 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: Object.assign({}, state.user.content, { requests })
         }
       };
-    case USER_PUT:
     default:
       return state;
   }
