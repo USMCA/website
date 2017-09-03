@@ -317,10 +317,6 @@ li.urgent-announcement {
   margin-left: 16px;
 }
 
-.roster, .roster input[type="text"] {
-  font-size: 12px;
-}
-
 .contests-list li {
   margin-bottom: 6px;
 }
@@ -337,8 +333,4 @@ li.urgent-announcement {
   width: 100%;
   margin-top: 24px;
   text-align: center;
-}
-
-.flame  {
-  margin: 0 2px;
 }

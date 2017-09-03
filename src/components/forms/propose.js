@@ -6,17 +6,17 @@ import { Field, reduxForm } from "redux-form";
 import { Link } from "react-router-dom";
 
 import renderKaTeX from "../../katex";
-import { 
-  probErrorHandler, 
-  postProposal 
+import {
+  probErrorHandler,
+  postProposal
 } from "../../actions";
 import { PROB_POST, requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
 import Error from "../error";
-import { 
+import {
   competitionsInputOptions,
-  CompetitionsSelect, 
-  SubjectsInput 
+  CompetitionsSelect,
+  SubjectsInput
 } from "./utilities";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
@@ -24,9 +24,9 @@ const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const CompetitionField = ({ input, meta, ...rest }) => (
         <CompetitionsSelect
-          s={4} 
-          type={ competitionsInputOptions.MEMBER } 
-          { ...input } 
+          s={4}
+          type={ competitionsInputOptions.MEMBER }
+          { ...input }
           { ...rest } />
       ),
       SubjectField = ({ input, meta, ...rest }) => (
@@ -43,7 +43,7 @@ const CompetitionField = ({ input, meta, ...rest }) => (
       );
 
 class ProposeForm extends React.Component {
-  onSubmit = ({ 
+  onSubmit = ({
     competition_id, subject, difficulty, statement, answer, solution
   }) => {
     const { errorHandler, postProposal } = this.props;
@@ -54,7 +54,7 @@ class ProposeForm extends React.Component {
         competition_id, subject, difficulty, statement, answer, solution
       });
     }
-  } 
+  }
 
   resetForm = () => {
     this.props.resetProposalForm();
@@ -88,21 +88,21 @@ class ProposeForm extends React.Component {
   }
 
   statementInput = ({ input, meta, ...rest }) => (
-    <ControlledInput 
+    <ControlledInput
       s={6} type="textarea" label="Problem"
       { ...input } { ...rest }
       ref={ elem => { this.statementField = elem; } } />
   );
-  
+
   answerInput = ({ input, meta, ...rest }) => (
-    <ControlledInput 
+    <ControlledInput
       s={6} type="text" label="Answer (optional)"
       { ...input } { ...rest }
       ref={ elem => { this.answerField = elem; } } />
   );
 
   solutionInput = ({ input, meta, ...rest }) => (
-    <ControlledInput 
+    <ControlledInput
       s={6} type="textarea" label="Solution (optional)"
       { ...input } { ...rest }
       ref={ elem => { this.solutionField = elem; } } />
@@ -129,8 +129,8 @@ class ProposeForm extends React.Component {
         </Row>
         <Row>
           <div>
-            <Field 
-              name="statement" 
+            <Field
+              name="statement"
               component={ this.statementInput } />
           </div>
           <Col s={6}>
@@ -139,8 +139,8 @@ class ProposeForm extends React.Component {
         </Row>
         <Row>
           <div>
-            <Field 
-              name="answer" 
+            <Field
+              name="answer"
               component={ this.answerInput } />
           </div>
           <Col s={6}>
@@ -149,8 +149,8 @@ class ProposeForm extends React.Component {
         </Row>
         <Row>
           <div>
-            <Field 
-              name="solution" 
+            <Field
+              name="solution"
               component={ this.solutionInput } />
           </div>
           <Col s={6}>
@@ -186,20 +186,20 @@ const mapStateToProps = state => ({
         probStatus: state.problems.postProposal,
       }),
       mapDispatchToProps = dispatch => ({
-        postProposal: ({ 
-          competition_id, subject, difficulty, statement, answer, solution 
+        postProposal: ({
+          competition_id, subject, difficulty, statement, answer, solution
         }) => {
-          postProposal({ 
-            competition_id, subject, difficulty, statement, answer, solution 
+          postProposal({
+            competition_id, subject, difficulty, statement, answer, solution
           })(dispatch);
         },
         resetProposalForm: () => {
           dispatch({ type: PROB_POST, payload: { requestStatus: IDLE } });
         },
         errorHandler: message => {
-          dispatch({ 
-            type: PROB_POST, 
-            payload: { requestStatus: ERROR, message } 
+          dispatch({
+            type: PROB_POST,
+            payload: { requestStatus: ERROR, message }
           });
         }
       });
@@ -207,7 +207,7 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps, mapDispatchToProps
 )(
-  reduxForm({ 
+  reduxForm({
     form: 'propose'
   })(ProposeForm)
 );

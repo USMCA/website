@@ -6,10 +6,10 @@ import CreateContestForm from "../forms/create-contest";
 
 const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers }) => ({
   "tests": {
-    title: "Tests",
-    view: (
+    title: () => "Tests",
+    view: () => (
       <div className="round-container">
-        <Button className="teal darken-3">Add</Button>
+        <Button className="teal darken-3" waves="light">Add</Button>
         <Table>
           <thead>
             <tr>
@@ -25,7 +25,7 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
                 <tr key={key}>
                   <td>{test.name}</td>
                   <td>{test.problems}</td>
-                  <td><a href="/view-test" className="teal-text text-darken-3">Manage</a></td>
+                  <td><a href="/view-test" className="teal-text text-darken-3 underline-hover">Manage</a></td>
                 </tr>
               ))
             }
@@ -35,10 +35,10 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
     )
   },
   "czars": {
-    title: "Czars",
-    view: (
+    title: () => "Czars",
+    view: () => (
       <div className="round-container">
-        <Button className="teal darken-3">Add</Button>
+        <Button className="teal darken-3" waves="light">Add</Button>
         <h3>Czars</h3>
         <Table>
           <thead>
@@ -62,16 +62,16 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
           </tbody>
         </Table><br />
         <RightButtonPanel>
-          <a className="btn teal darken-3">Leave as czar</a>
+          <a className="btn teal darken-3 waves-effect waves-light">Leave as czar</a>
         </RightButtonPanel>
       </div>
     )
   },
   "test-solvers": {
-    title: "Test Solvers",
-    view: (
+    title: () => "Test Solvers",
+    view: () => (
       <div className="round-container">
-        <Button className="teal darken-3">Add</Button> <Button className="teal darken-3">Request</Button>
+        <Button className="teal darken-3" waves="light">Add</Button> <Button className="teal darken-3" waves="light">Request</Button>
         <h3>Test Solvers</h3>
         <Table>
           <thead>

@@ -21,7 +21,7 @@ class AccountTab extends React.Component {
                 <Input s={12} label="Email" defaultValue={email} />
                 <Input s={12} label="University" defaultValue={university} />
                 <RightButtonPanel>
-                  <Button className="teal darken-3">Save</Button>
+                  <Button className="teal darken-3" waves="light">Save</Button>
                 </RightButtonPanel>
               </form>
             </Row>
@@ -31,7 +31,7 @@ class AccountTab extends React.Component {
           <li>Name: {name}</li>
           <li>Email: {email}</li>
           <li>University: {university}</li>
-          <li><Modal header="Change Password" trigger={<a className="teal-text text-darken-3">Change password</a>}>
+          <li><Modal header="Change Password" trigger={<a className="teal-text text-darken-3 underline-hover">Change password</a>}>
             <ChangePasswordForm />
           </Modal></li>
         </ul>
@@ -45,7 +45,7 @@ class AccountTab extends React.Component {
           )
         }
         </ul>
-        <RightButtonPanel><Button className="teal darken-3">Add Admin</Button><Button className="teal darken-3">Step Down</Button></RightButtonPanel>
+        <RightButtonPanel><Button className="teal darken-3" waves="light">Add Admin</Button><Button className="teal darken-3" waves="light">Step Down</Button></RightButtonPanel>
       </Col>
     );
   }
