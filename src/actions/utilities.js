@@ -28,3 +28,43 @@ export function serverError(action, dispatch) {
     err.message || 'Failed to communicate with server.'
   )));
 }
+
+export function apiAction(type, callback) {
+  let action = { type };
+  return dispatch => {
+    
+  };
+}
+
+export function APIAction(type, url, opts, formatData) {
+  let action = { type };
+  return dispatch => {
+    dispatch(Object.assign(action, pendingPayload()));
+    fetch(url, opts).then(
+      res => res.json().then(data => {
+        const { success, message, content } = formatData(data);
+        if (!success) dispatch(Object.assign(action, errorPayload(message)));
+        else dispatch(Object.assign(action, successPayload({ content })));
+      }),
+      serverError(action, dispatch)
+    ); 
+  }
+}
+
+export function authAPIAction(type, url, opts, formatData) {
+  let action = { type };
+  return dispatch => {
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch(url, opts).then(
+        res => res.json().then(data => {
+          const { success, message, content } = formatData(data);
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ content })));
+        }),
+        serverError(action, dispatch)
+      ); 
+    });
+  }
+}
+
