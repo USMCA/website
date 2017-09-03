@@ -260,10 +260,10 @@ class LocationArrayInput extends React.Component {
         <ControlledInput
           type="text"
           label={addressLabel}
-          s={6}
+          s={5}
           ref={ elem => { this.addressInput = elem; } }
           onChange={(evt, val)=> { this.state.address = evt.target.value; } } />
-        <Col s={1}>
+        <Col s={2}>
           <a className="teal-text text-darken-3 right" style={{marginTop: "30px"}} onClick={ this.handleAddClick }>
             <i className="fa fa-plus" aria-hidden="true"></i>
           </a>
