@@ -3,37 +3,62 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 
+import { probComment } from "../../actions";
+import { PROB_PROB_COMMENT, requestStatuses } from "../../actions/types";
 import { KaTeXInput } from "./utilities";
 
-class CommentForm extends React.Component {
-  onSubmit = ({ comment }) => {
-    console.log(comment);
-  }
+const { SUBMIT, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
+class CommentForm extends React.Component {
+  onSubmit = ({ body }) => {
+    const { problem_id, probComment, errorHandler } = this.props;
+    if (!body) return errorHandler("Empty comment submitted.");
+    probComment(problem_id, body);
+  }
+  
   commentField = ({ input, meta, ...rest }) => (
-    <KaTeXInput
-      type="textarea"
-      label="Comment"
+    <KaTeXInput 
+      type="textarea" 
+      label="Comment" 
       includeSubmit={true}
       { ...input } { ...rest } />
   );
 
-  render() {
-    const { handleSubmit } = this.props;
+  render() { 
+    const { handleSubmit, probData: { requestStatus, message } } = this.props;
     return (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
-        <div>
-          <Field name="comment" component={ this.commentField } />
+        <div style={{marginTop: "12px"}}>
+          <Field name="body" component={ this.commentField } />
         </div>
       </form>
     );
   }
-};
+}
 
 CommentForm.propTypes = {
-  /* problem id to comment to */
-  id: PropTypes.string.isRequired,
+  problem_id: PropTypes.string.isRequired,
+  probData: PropTypes.object.isRequired,
+  probComment: PropTypes.func.isRequired,
+  errorHandler: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
 
-export default reduxForm({ form: 'comment' })(CommentForm);
+const mapStateToProps = state => ({
+  probData: state.problems.proposal
+});
+const mapDispatchToProps = dispatch => ({
+  probComment: (problem_id, body) => {
+    probComment(problem_id, body)(dispatch);
+  },
+  errorHandler: message => {
+    dispatch({ 
+      type: PROB_PROB_COMMENT, 
+      payload: { requestStatus: ERROR, message }
+    });
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  reduxForm({ form: 'comment' })(CommentForm)
+);

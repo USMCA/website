@@ -72,4 +72,5 @@ export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by 
              PROB_COMMENT = 'prob_comment', // comment on a problem
              PROB_DATABASE = 'prob_database', // fetch database of a competition
              PROB_TEST_SOLVE = 'prob_test_solve', // post a test solve
-             PROB_PUT = 'prob_put'; // generic put request
+             PROB_PROB_COMMENT = 'prob_prob_coment', // comment on a problem
+             PROB_SOLN_COMMENT = 'prob_soln_comment'; // comment on a solution

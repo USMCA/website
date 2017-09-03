@@ -119,7 +119,6 @@
   author: User,
   body: String,
   issue: Boolean,
-  upvotes: [ User ],
   created: Date,
   updated: Date
 }
@@ -131,6 +130,7 @@
   author: User,
   body: String,
   comments: [ Comment ],
+  upvotes: [ User ],
   created: Date,
   updated: Date
 }

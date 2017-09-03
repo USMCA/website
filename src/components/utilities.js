@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
+import CommentForm from "./forms/comment";
+
 import renderKaTeX from "../katex";
 import { respondRequest, userPut } from "../actions";
 import {
@@ -111,17 +113,53 @@ const Comment = ({ comment }) => (
   </span></li>
 )
 
-const CommentList = ({ comments }) => (
-  <ul>
-    { (comments.length > 0) && <li><a className="teal-text text-darken-3"><i className="fa fa-caret-down" aria-hidden="true"></i> <span className="underline-hover">Show comments ({ comments.length })</span></a></li>}
-    {
-      comments.map((comment, key) => (
-        <Comment comment={comment} />
-      ))
-    }
-    <li><a className="teal-text text-darken-3 underline-hover">Add a comment</a></li>
-  </ul>
-)
+class CommentList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { showCommentForm: false, showComments: false };
+  }
+
+  toggleCommentForm = () => {
+    this.setState({ showCommentForm: !this.state.showCommentForm });
+  }
+
+  toggleComments = () => {
+    this.setState({ showComments: !this.state.showComments });
+  }
+
+  render() {
+    const { comments, problem_id, solution_id } = this.props;
+    return (
+      <ul>
+        <li>
+          <a className="teal-text text-darken-3" onClick={ this.toggleComments }>
+            <i className={ this.state.showComments ? "fa fa-caret-up" : "fa fa-caret-down" } aria-hidden="true"/> <span className="underline-hover">{ this.state.showComments ? "Hide comments" : "Show comments" } ({ comments.length })</span>
+          </a>
+        </li>
+        {
+          this.state.showComments && (
+            (comments.length > 0) ? (
+              comments.map((comment, key) => (
+                <Comment comment={comment} />
+              ))
+            ) : (<p>No comments.</p>)
+          )
+        }
+        <li>
+          {
+            this.state.showCommentForm ? 
+              <CommentForm problem_id={ problem_id } solution_id={ solution_id } /> :
+              <a 
+                className="teal-text text-darken-3 underline-hover" 
+                onClick={ this.toggleCommentForm }>
+                Add a comment
+              </a>
+          }
+        </li>
+      </ul>
+    )
+  }
+}
 
 class ProblemPreview extends React.Component  {
   render() {
@@ -176,7 +214,7 @@ class ExtendedProblemPreview extends React.Component  {
           <span className="small-stat"><i>{ (problem.created === problem.updated) ? datify(problem.created) : ("Edited " + datify(problem.created)) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
-          <CommentList comments={problem.comments} />
+          <CommentList comments={problem.comments} problem_id={ problem._id } />
         </Col>
       </Row>
     );
@@ -206,7 +244,7 @@ class Solution extends React.Component  {
           <span className="small-stat"><i>{ datify(solution.created) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
-          <CommentList comments={[]} />
+          <CommentList comments={solution.comments} solution_id={ solution._id } />
         </Col>
       </Row>
     );

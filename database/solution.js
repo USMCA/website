@@ -5,6 +5,7 @@ const solutionSchema = new Schema({
   body: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
+  upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   created: { type: Date, required: true },
   updated: { type: Date, required: true }
 });

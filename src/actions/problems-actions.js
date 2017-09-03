@@ -10,7 +10,8 @@ import {
   PROB_COMMENT,
   PROB_DATABASE,
   PROB_TEST_SOLVE,
-  PROB_PUT
+  PROB_PROB_COMMENT,
+  PROB_SOLN_COMMENT,
 } from './types'; import auth from '../auth';
 import { 
   authenticate, 
@@ -212,6 +213,24 @@ export function testSolve(problem_id, solution) {
     }, 
     formatData: ({ success, message, alternate_soln }) => {
       return { success, message, content: alternate_soln };
+    }
+  });
+}
+
+export function probComment(problem_id, body) {
+  return authAPIAction({
+    type: PROB_PROB_COMMENT, 
+    url: '/api/problems/comment/problem', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id, body }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, comments }) => {
+      return { success, message, content: comments };
     }
   });
 }

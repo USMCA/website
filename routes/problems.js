@@ -15,8 +15,8 @@ const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
   .populate('competition', 'short_name _id')
-  .populate('official_soln', 'author body created updated comments')
-  .populate('alternate_soln', 'author body created updated comments')
+  .populate('official_soln', 'author body created updated comments upvotes')
+  .populate('alternate_soln', 'author body created updated comments upvotes')
   .populate('comments', 'author body created updated')
   .exec((err, problem) => {
     if (err) handler(false, 'Failed to load problem.', 503)(req, res);
@@ -113,8 +113,27 @@ router.post('/upvotes', auth.verifyJWT, (req, res) => {
   });
 });
 
-router.post('/comments', auth.verifyJWT, (req, res) => {
-  const { comment, id } = req.body;
+router.post('/comment/problem', auth.verifyJWT, (req, res) => {
+  const { problem_id, body, issue } = req.body;
+  problemParam(problem_id, req, res, problem => {
+    const comment = Object.assign(new Comment(), {
+      author: req.user,
+      body,
+      issue: !!issue
+    });
+    comment.save(err => {
+      if (err) handler(false, 'Failed to save comment.', 503)(req, res);
+      else {
+        problem.comments.push(comment);
+        problem.save(err => {
+          if (err) handler(false, 'Failed to save comment to problem.', 503)(req, res);
+          else handler(true, 'Successfully posted comment.', 200, { 
+            comments: problem.comments
+          })(req, res);
+        });
+      }
+    });
+  });
 });
 
 module.exports = router;
