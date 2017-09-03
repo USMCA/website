@@ -15,8 +15,10 @@ import {
 } from "../actions/types";
 import { requestTypes } from "../../constants";
 
-const datify = date => (
-  moment(date).format("MMM Do, YYYY, h:mm a")
+const datify = (created, updated) => (
+  updated ?
+  ((created === updated) ? moment(created).format("MMM Do, YYYY, h:mm a") : "Edited " + moment(updated).format("MMM Do, YYYY, h:mm a")) :
+  moment(created).format("MMM Do, YYYY, h:mm a")
 )
 
 const LoadMore = () => (
@@ -39,6 +41,7 @@ const RightButtonPanel = ({ children, marginBottom }) => (
 const Notification = ({ className, label, author, title, message, onClick }) => {
   return (
     <li className={className}>
+      <a className="right"><i className="fa fa-times" aria-hidden="true"></i></a>
       <a onClick={ onClick }><span className="select-circle"></span></a>
       <Modal header={author + ": " + title} trigger={
         <a className="underline-hover">
@@ -105,7 +108,7 @@ const Comment = ({ comment }) => (
   <li>{ comment.body }
   &mdash; <span className="comment-author">
     <span className="author-name">{ comment.author.name }</span>
-    <i>{ datify(comment.created) }</i>
+    <i>{ datify(comment.created, comment.updated) }</i>
     <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
     <a><i className="fa fa-trash" aria-hidden="true"></i></a>
   </span></li>
@@ -173,7 +176,7 @@ class ExtendedProblemPreview extends React.Component  {
         <Col m={3} s={12} className="problem-stats">
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
-          <span className="small-stat"><i>{ (problem.created === problem.updated) ? datify(problem.created) : ("Edited " + datify(problem.created)) }</i></span>
+          <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} />
@@ -189,6 +192,7 @@ class Solution extends React.Component  {
     return (
       <Row className="problem">
         <Col s={12}>
+          <span className="small-stat">{ solution.upvotes.length } Upvotes</span>
           <ul className="problem-options">
             <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
             <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
@@ -202,8 +206,9 @@ class Solution extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
+          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ solution.author.name }</span><br />
-          <span className="small-stat"><i>{ datify(solution.created) }</i></span>
+          <span className="small-stat"><i>{ datify(solution.created, solution.updated) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={[]} />
