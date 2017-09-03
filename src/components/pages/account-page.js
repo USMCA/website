@@ -10,59 +10,38 @@ import AccountTab from "./account-page/account-tab";
 import { HorizontalNav } from "../utilities";
 import auth from "../../auth";
 
+const Title = ({ fa, title}) => (
+  <div><i className={ "fa fa-"+fa } aria-hidden="true"/> { title }</div>
+);
+
 const AccountPage = ({ match }) => {
   let accountTabs = {
     "notifications": {
-      title: (
-        <div>
-          <Link to="/home/notifications">
-            <i className="fa fa-bell" aria-hidden="true"></i> Notifications
-          </Link>
-        </div>
-      ),
+      title: <Title fa="bell" title="Notifications"/>,
+      to: "/home/notifications",
       view: <NotificationsTab />
     },
     "competitions": {
-      title: (
-        <div>
-          <Link to="/home/competitions">
-            <i className="fa fa-trophy" aria-hidden="true"></i> Competitions
-          </Link>
-        </div>
-      ),
+      title: <Title fa="trophy" title="Competitions"/>,
+      to: "/home/competitions",
       view: <CompetitionsTab />
     },
     "problems": {
-      title: (
-        <div>
-          <Link to="/home/problems">
-            <i className="fa fa-pencil-square" aria-hidden="true"></i> Problems
-          </Link>
-        </div>
-      ),
+      title: <Title fa="pencil-square" title="Problems"/>,
+      to: "/home/problems",
       view: <ProblemsTab />
     },
     "account": {
-      title: (
-        <div>
-          <Link to="/home/account">
-            <i className="fa fa-user" aria-hidden="true"></i> Account
-          </Link>
-        </div>
-      ),
+      title: <Title fa="user" title="Account" />,
+      to: "/home/account",
       view: <AccountTab />
     }
   };
 
   if (auth.isAdmin()) {
     accountTabs.admin = {
-      title: (
-        <div>
-          <Link to="/home/admin">
-            <i className="fa fa-lock" aria-hidden="true"></i> Admin
-          </Link>
-        </div>
-      ),
+      title: <Title fa="lock" title="Admin" />,
+      to: "/home/admin",
       view: <h1>Admin</h1>
     }
   }
@@ -71,11 +50,12 @@ const AccountPage = ({ match }) => {
   if (!(_.find(_.keys(accountTabs), tab => tab === active))) {
     active = "notifications";
   }
+
   return (
     <Row className="container">
       <HorizontalNav tabs={ accountTabs } active={ active } />
     </Row>
   );
-};
+}
 
 export default AccountPage;

@@ -106,6 +106,8 @@ export function userPut(query) {
         }
       }).then(
         res => res.json().then(({ success, message, user }) => {
+          if (!success) dispatch(Object.assign(action, errorPayload(message)));
+          else dispatch(Object.assign(action, successPayload({ content: user })));
         }),
         serverError(action, dispatch)
       ); 

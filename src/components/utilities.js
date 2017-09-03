@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import renderKaTeX from "../katex";
-import { respondRequest } from "../actions";
-import {
-  USER_COMP_RES,
+import { respondRequest, userPut } from "../actions";
+import { 
+  USER_COMP_RES, 
   USER_JOIN_RES,
   COMP_REQ,
   COMP_REQ_JOIN
@@ -31,13 +31,15 @@ const RightButtonPanel = ({ children, marginBottom }) => (
   </div>
 )
 
-const Notification = ({ className, label, author, title, message }) => {
+const Notification = ({ className, label, author, title, message, onClick }) => {
   return (
     <li className={className}>
-      <a><span className="select-circle"></span></a>
+      <a onClick={ onClick }><span className="select-circle"></span></a>
       <Modal header={author + ": " + title} trigger={
-        <a className="underline-hover"><span className="bold-text">{ author }</span>: { title }</a>
-      }>{message}</Modal>
+        <a className="underline-hover">
+          <span className="bold-text">{ author }</span>: { title }
+        </a>
+      }>{ message }</Modal>
     </li>
   );
 };
@@ -214,25 +216,27 @@ class HorizontalNav extends React.Component {
 
   render() {
     const { tabs, active } = this.state;
-    if (!tabs) return (<div></div>);
+    if (!tabs) return <div />;
     if (tabs[active] === undefined) {
       throw 'Specified active tab is not in the tabs object.';
-      return (<div></div>);
+      return <div />;
     }
+
     return (
       <div>
         <Col s={12} className="horizontal-nav">
           {
             Object.keys(tabs).map((key, idx) => {
               const tab = tabs[key],
-                    className = (key === active) ? "left active-tab" : "left";
-              return (
-                <a
-                  key={idx} className={ className }
-                  onClick={ evt =>  {this.setState({ active: key }); } }>
-                  { tab.title }
-                </a>
-              );
+                    className = (key === active) ? "left active-tab" : "left",
+                    props = {
+                      key: idx,
+                      className: className,
+                      onClick: evt => { this.setState({ active: key }); }
+                    };
+              return tab.to ?
+                <Link to={ tab.to } { ...props }>{ tab.title }</Link> :
+                <a { ...props }>{ tab.title }</a>;
             })
           }
         </Col>
@@ -256,6 +260,14 @@ class VerticalNav extends React.Component {
 
   render() {
     const { tabs, active } = this.state;
+    if (!tabs) return <div />;
+    if (tabs[active] === undefined) {
+      throw 'Specified active tab is not in the tabs object.';
+      return <div />;
+    }
+
+    const activeProp = (this.props.childProps || {})[active],
+          headerProps = (this.props.headerProps || {});
     return (
       <Row>
         <Col s={3}>
@@ -268,8 +280,8 @@ class VerticalNav extends React.Component {
                   <li key={idx}>
                     <a
                       className={ className }
-                      onClick={ evt =>  {this.setState({ active: key }); } }>
-                      { tab.title }
+                      onClick={ evt => { this.setState({ active: key }); } }>
+                      { tab.title(headerProps[key]) }
                     </a>
                   </li>
                 );
@@ -278,7 +290,7 @@ class VerticalNav extends React.Component {
           </ul>
         </Col>
         <Col s={9}>
-          <div>{ tabs[active].view }</div>
+          <div>{ tabs[active].view(activeProp) }</div>
         </Col>
       </Row>
     );

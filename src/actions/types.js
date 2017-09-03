@@ -52,7 +52,8 @@ export const USER_INFO = 'user_info', // get user info
              USER_ADMIN = 'user_admin', // get admins
              USER_COMP_RES = 'comp_res', // respond to create competition
              USER_JOIN_RES = 'user_join_res', // respond to join competition
-             USER_NOTIF_TOGGLE = 'notif_toggle'; // toggle between unread, read, and urgent
+             USER_NOTIF_TOGGLE = 'notif_toggle', // toggle between unread, read, and urgent
+             USER_PUT = 'user_put'; // generic put request
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
@@ -69,4 +70,5 @@ export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by 
              PROB_POST = 'prob_post', // post a proposal
              PROB_GET = 'prob_get', // get a proposal by id
              PROB_UPVOTE = 'prob_upvote', // upvote a problem
-             PROB_COMMENT = 'prob_comment'; // comment on a problem
+             PROB_COMMENT = 'prob_comment', // comment on a problem
+             PROB_DATABASE = 'prob_database'; // fetch database of a competition

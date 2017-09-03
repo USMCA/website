@@ -15,6 +15,7 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 const User = require('../database/user'),
       Competition = require('../database/competition'),
       Request = require('../database/request'),
+      Problem = require('../database/problem'),
       Notification = require('../database/notification');
 
 router.post('/', auth.verifyJWT, (req, res) => {
@@ -240,6 +241,29 @@ router.post('/join', auth.verifyJWT, (req, res) => {
     default:
       handler(false, 'Invalid join competition post.', 400)(req, res);
   }
+});
+
+router.get('/database', auth.verifyJWT, (req, res) => {
+  const { id } = req.query;
+  Competition.findById(id, (err, competition) => {
+    if (err) {
+      console.log(err);
+      handler(false, 'Failed to load competition.', 503)(req, res);
+    } else if (!competition) {
+      handler(false, 'Could not find competition.', 400)(req, res);
+    } else if (!(competition.directors.indexOf(req.user._id.toString()) > -1) &&
+        !(competition.secure_members.indexOf(req.user._id.toString()) > -1)) {
+      handler(false, 'Only directors and secure members can see the database.', 401)(req, res);
+    } else {
+      Problem.find({ competition: competition._id }, (err, problems) => {
+        if (err) {
+          handler(false, 'Failed to load database problems.', 503)(req, res);
+        } else {
+          handler(true, 'Succesfully loaded database problems.', 200, { problems })(req, res);
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;

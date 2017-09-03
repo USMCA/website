@@ -4,7 +4,8 @@ import {
   USER_INFO,
   USER_ADMIN,
   USER_COMP_RES,
-  USER_JOIN_RES
+  USER_JOIN_RES,
+  USER_PUT
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
   switch(type) {
+    case USER_PUT:
     case USER_INFO:
       return { ...state, user: payload };
     case USER_ADMIN:

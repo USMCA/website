@@ -11,29 +11,34 @@ import {
   Request
 } from "../../utilities";
 import { requestEnum } from "../../../../constants";
-import { userInfo } from "../../../actions";
+import { userInfo, userPut } from "../../../actions";
 
 const { REQUEST, INVITE } = requestEnum;
 
 class NotificationsTab extends React.Component {
-  componentWillMount() {
-    this.props.userInfo();
-  }
-
-  requestCounter = (content, requestType) => {
-    if (!content.requests) return "";
-    const count = content.requests.filter(
+  requestCounter = (userData, requestType) => { 
+    if (!userData) return <div />;
+    const data = userData.content;
+    if (!data) return <div />;
+    const { requests } = data;
+    if (!requests) return <div></div>;
+    const count = requests.filter(
             ({ type }) => type === requestType
           ).length;
     return <Counter count={ count } />;
   }
 
-  requestList = (content, requestType) => {
-    if (!content.requests) return "";
-    const requests = _(_.sortBy(
-        content.requests.filter(
+  requestList = ({ userData }, requestType) => {
+    if (!userData) return <div />;
+    const data = userData.content;
+    if (!data) return <div />;
+    let { requests } = data;
+    if (!requests) return <div />;
+    requests = _(
+      _.sortBy(
+        requests.filter(
           ({ type }) => type === requestType
-        ), "updated"
+        ), "created"
       )
     ).reverse().value();
     let noRequestView = <li className="transparent">Error.</li>;
@@ -62,119 +67,162 @@ class NotificationsTab extends React.Component {
     );
   }
 
-  notificationCounter = (content, type) => {
-    let { unread, read, urgent } = content;
-    if (!unread || !read || !urgent ) return <div></div>;
-    /* add styling */
-    unread = unread.map(notif => Object.assign(notif, { label: "new" }));
-    read = read.map(notif => Object.assign(notif, { label: "none" }));
-    urgent = urgent.map(notif => Object.assign(notif, { label: "urgent" }));
-    /* combine and sort unread, read, and urgent */ 
-    let all = _.concat(unread, read, urgent);
-    all = _.sortBy(all, "updated");
-    const notificationOptions = {
-            unread, read, urgent, all 
-          },
-          count = notificationOptions[type].length;
-    return <Counter count={ count } />
+  notificationCounter = (userData, type) => {
+    if (!userData) return <div />;
+    const data = userData.content;
+    if (!data) return <div />;
+    let notifications = data[type];
+    if (!notifications) {
+      if (type === "all") {
+        const { unread, read, urgent } = data;
+        notifications = _.concat(unread, read, urgent);
+      } else return <div />;
+    }
+    return <Counter count={ notifications.length } />;
   }
     
-  notificationList = (content, type) => {
-    let { unread, read, urgent } = content;
-    if (!unread || !read || !urgent) return <div></div>;
-    /* add styling */
-    unread = unread.map(notif => Object.assign(notif, { label: "new-announcement" }));
-    read = read.map(notif => Object.assign(notif, { label: "" }));
-    urgent = urgent.map(notif => Object.assign(notif, { label: "urgent-announcement" }));
-    /* sort */
-    unread = _(_.sortBy(unread, "updated")).reverse().value();
-    read = _(_.sortBy(read, "updated")).reverse().value();
-    urgent = _(_.sortBy(urgent, "updated")).reverse().value();
+  notificationList = ({ userData, markRead, markUrgent, markUnread }, type) => {
+    if (!userData) return <div />;
+    const data = userData.content;
+    if (!data) return <div />;
+    let { unread, read, urgent } = data;
+    if (!unread || !read || !urgent) return <div />;
+    /* add styling and handleClick */
+    const styleNotifs = (notifs, label, handleClick) => {
+      return notifs.map(notif => Object.assign(notif, { label, handleClick }));
+    };
+    unread = styleNotifs(unread, "new-announcement", markRead);
+    read = styleNotifs(read, "", markUrgent);
+    urgent = styleNotifs(urgent, "urgent-announcement", markUnread);
     /* combine and sort unread, read, and urgent */ 
-    let all = _.concat(unread, read, urgent);
-    all = _.sortBy(all, "created");
-    all = _(all).reverse().value();
-    const notificationOptions = { unread, read, urgent, all },
-          notifications = notificationOptions[type];
+    const all = _.concat(unread, read, urgent),
+          notificationOptions = { unread, read, urgent, all };
+    let notifications= _.sortBy(notificationOptions[type], "created");
+    notifications = _(notifications).reverse().value();
     return (
       <div className="notifications-container">
         <ul className="notifications-list">
           {
-            (notifications.length == 0) ? <li className="transparent">No notifications found.</li>
-            : <div>
-                {
-                  notifications.map((notification, key) => {
-                    const { admin_author, title, body, author, label } = notification;
-                    return (
-                      <Notification 
-                        className={label} 
-                        author={admin_author ? 'Admin' : author.short_name } 
-                        title={title} 
-                        message={body} 
-                        key={key} />
-                    );
-                  })
-                }
-                <li className="transparent center-align"><LoadMore /></li>
-              </div>
+            (notifications.length == 0) ? 
+            <li className="transparent">No notifications found.</li> : 
+            <div>
+              {
+                notifications.map((notification, key) => {
+                  const { 
+                    admin_author, 
+                    title, 
+                    body, 
+                    author, 
+                    label, 
+                    handleClick,
+                    _id
+                  } = notification;
+                  return (
+                    <Notification 
+                      className={label} 
+                      author={admin_author ? 'Admin' : author.short_name } 
+                      title={title} 
+                      message={body} 
+                      key={key}
+                      onClick={ () => handleClick(notification._id) } />
+                  );
+                })
+              }
+              <li className="transparent center-align"><LoadMore /></li>
+            </div>
           }
         </ul>
       </div>
     );
   }
 
-  notificationsTabs = ({ content }) => { 
-    if (!content) return null; 
-    const { unread, read, urgent, requests } = content;
-    if (!unread || !read || !urgent || !requests) return null;
+  notificationsTabs = () => { 
     return ({
       "all": {
-        title: "All",
-        view: this.notificationList(content, "all")
+        title: () => "All",
+        view: (props) => this.notificationList(props, "all")
       },
       "urgent": {
-        title: <div>Urgent { this.notificationCounter(content, "urgent") }</div>,
-        view: this.notificationList(content, "urgent")
+        title: ({ userData }) => (
+          <div>Urgent { this.notificationCounter(userData, "urgent") }</div>
+        ),
+        view: (props) => this.notificationList(props, "urgent")
       },
       "unread": {
-        title: <div>New { this.notificationCounter(content, "unread") }</div>,
-        view: this.notificationList(content, "unread")
+        title: ({ userData }) => (
+          <div>New { this.notificationCounter(userData, "unread") }</div>
+        ),
+        view: (props) => this.notificationList(props, "unread")
       },
       "requests": {
-        title: <div>Requests { this.requestCounter(content, REQUEST) }</div>,
-        view: this.requestList(content, REQUEST)
+        title: ({ userData }) => (
+          <div>Requests { this.requestCounter(userData, REQUEST) }</div>
+        ),
+        view: (props) => this.requestList(props, REQUEST)
       },
       "invites": {
-        title: <div>Invites { this.requestCounter(content, INVITE) }</div>,
-        view: this.requestList(content, INVITE)
+        title: ({ userData }) => (
+          <div>Invites { this.requestCounter(userData, INVITE) }</div>
+        ),
+        view: (props) => this.requestList(props, INVITE)
       }
     });
   }
 
   render() {
-    const { userData } = this.props;
-    this.notificationsTabsViews = this.notificationsTabs(userData);
-    if (!this.notificationsTabsViews) return <div></div>;
+    this.notificationsTabsViews = this.notificationsTabs();
+    if (!this.notificationsTabsViews) return <div />;
+
+    const { userData, markRead, markUnread, markUrgent } = this.props;
+    const childProps = {
+            "all": { userData, markRead, markUnread, markUrgent },
+            "urgent": { userData, markUnread },
+            "unread": { userData, markRead },
+            "requests": { userData },
+            "invites": { userData }
+          },
+          headerProps = {
+            "urgent": { userData },
+            "unread": { userData },
+            "requests": { userData },
+            "invites": { userData }
+          };
+
     return (
       <div style={{marginTop: "36px"}}>
-        <VerticalNav tabs={ this.notificationsTabsViews } active="all" />
+        <VerticalNav 
+          tabs={ this.notificationsTabsViews } 
+          active="all"
+          childProps={ childProps }
+          headerProps={ headerProps } />
       </div>
     );
   }
-};
-
-NotificationsTab.propTypes = {
-  userData: PropTypes.object.isRequired,
-  userInfo: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
         userData: state.users.user
       }),
       mapDispatchToProps = dispatch => ({
-        userInfo: () => { userInfo()(dispatch); }
+        userInfo: () => { userInfo()(dispatch); },
+        markRead: notif => { 
+          userPut({ 
+            $pull: { unread: notif, urgent: notif }, 
+            $push: { read: notif } 
+          })(dispatch);
+        },
+        markUnread: notif => { 
+          userPut({ 
+            $pull: { urgent: notif, read: notif }, 
+            $push: { unread: notif } 
+          })(dispatch);
+        },
+        markUrgent: notif => {
+          userPut({ 
+            $pull: { read: notif, unread: notif }, 
+            $push: { urgent: notif } 
+          })(dispatch);
+        }
       });
 
-export default connect(
-  mapStateToProps, mapDispatchToProps
-)(NotificationsTab);
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationsTab);

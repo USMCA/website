@@ -12,28 +12,41 @@ const User = require('../database/user'),
  * Generic requests
  ******************************************************************************/
 
-router.get('/', auth.verifyJWT, (req, res) => {
-  req.user.populate('urgent unread read requests', (err, user) => {
-    if (err) handler(false, 'Failed to find user.', 503)(req, res);
+const userPopulate = (user, req, res, callback) => {
+  user.populate('urgent unread read requests', (err, user) => {
+    if (err) handler(false, 'Failed to populate user.', 503)(req, res);
     else {
       Competition.populate(user, {
         path: 'unread.author read.author urgent.author',
         select: 'short_name'
       }, (err, user) => {
-        const { name, email, university, unread, read, urgent, requests } = user;
-        handler(true, 'Successfully retrieved user data.', 200, {
-          user: { name, email, university, unread, read, urgent, requests }
-        })(req, res);
+        if (err) handler(false, 'Failed to populate user.', 503)(req, res);
+        else {
+          const { name, email, university, unread, read, urgent, requests } = user;
+          callback({ name, email, university, unread, read, urgent, requests });
+        }
       });
     }
+  });
+}
+
+router.get('/', auth.verifyJWT, (req, res) => {
+  userPopulate(req.user, req, res, user => {
+    handler(true, 'Successfully retrieved user data.', 200, { user })(req, res);
   });
 });
 
 router.put('/', auth.verifyJWT, (req, res) => {
-  req.user.update({$set: req.body}, (err, user) => {
+  req.user.update(req.body, (err, user) => {
     if (err) handler(false, 'Failed to update user.', 503)(req, res);
-    else handler(true, 'Successfully updated user.', 200, { user })(req, res);
-  });  
+    else {
+      User.findById(req.user._id, (err, user) => {
+        userPopulate(user, req, res, user => {
+          handler(true, 'Successfully upated user.', 200, { user })(req, res);
+        });
+      });
+    }
+  });
 });
 
 /*******************************************************************************

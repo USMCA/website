@@ -6,9 +6,12 @@ import {
   PROB_FETCH_MINE,
   PROB_POST,
   PROB_GET,
-  PROB_UPVOTE
+  PROB_UPVOTE,
+  PROB_COMMENT,
+  PROB_DATABASE
 } from './types';
 import auth from '../auth';
+import { authenticate, serverError } from './utilities';
 
 const {
   errorPayload,
@@ -103,23 +106,16 @@ export function getProposal(id) {
         }
       })
       .then(
-        response => {
-          return response.json()
-          .then(({ success, message, problem }) => {
-            if (!success) {
-              dispatch(Object.assign(action, errorPayload(message)));
-            } else {
-              dispatch(Object.assign(action, successPayload({
-                content: problem
-              })));
-            }
-          });
-        },
-        error => {
-          dispatch(Object.assign(action, errorPayload(
-            error.message || 'Failed to communicate with server.'
-          )));
-        }
+        res => res.json().then(({ success, message, problem }) => {
+          if (!success) {
+            dispatch(Object.assign(action, errorPayload(message)));
+          } else {
+            dispatch(Object.assign(action, successPayload({
+              content: problem
+            })));
+          }
+        }),
+        serverError(action, dispatch)
       );
     }
   }
@@ -128,10 +124,7 @@ export function getProposal(id) {
 export function upvoteProblem(id) {
   let action = { type: PROB_UPVOTE };
   return dispatch => {
-    const userId = auth.userId();
-    if (!userId) {
-      dispatch(Object.assign(action, errorPayload('User is not logged in.')));
-    } else {
+    authenticate(action, dispatch, userId => {
       fetch('api/problems/upvotes', {
         method: 'post',
         body: JSON.stringify({ id }),
@@ -139,26 +132,42 @@ export function upvoteProblem(id) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-      })
-      .then(
-        response => {
-          return response.json()
-          .then(({ success, message, problem }) => {
-            if (!success) {
-              dispatch(Object.assign(action, errorPayload(message)));
-            } else {
-              dispatch(Object.assign(action, successPayload({
-                content: problem
-              })));
-            }
-          });
-        },
-        error => {
-          dispatch(Object.assign(action, errorPayload(
-            error.message || 'Failed to communicate with server.'
-          )));
-        }
+      }).then(
+        res => res.json().then(({ success, message, problem }) => {
+          if (!success) {
+            dispatch(Object.assign(action, errorPayload(message)));
+          } else {
+            dispatch(Object.assign(action, successPayload({
+              content: problem
+            })));
+          }
+        }),
+        serverError(action, dispatch)
       );
-    }
+    });
   }
+}
+
+export function fetchDatabase(id) {
+  let action = { type: PROB_DATABASE };
+  return dispatch => {
+    authenticate(action, dispatch, userId => {
+      dispatch(Object.assign(action, pendingPayload()));
+      fetch(`api/competitions/database?${$.param({ id })}`, {
+        method: 'get',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      }).then(
+        res => res.json().then(({ success, message, problems }) => {
+          if (!success) {
+            dispatch(Object.assign(action, errorPayload(message)));
+          } else {
+            dispatch(Object.assign(action, successPayload({
+              content: problems
+            })));
+          }
+        }),
+        serverError(action, dispatch)
+      );
+    });
+  };
 }

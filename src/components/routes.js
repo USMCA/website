@@ -23,7 +23,7 @@ const Routes = ({ authenticated }) => (
     <Route exact path="/propose" component={ requireAuth(ProposePage) }/>
     <Route exact path="/test-solve" component={ requireAuth(TestSolvePage) }/>
     <Route exact path="/view-contest" component={ requireAuth(ViewContestPage) }/>
-    <Route exact path="/view-database" component={ requireAuth(ViewDatabasePage) }/>
+    <Route path="/view-database/:id" component={ requireAuth(ViewDatabasePage) }/>
     <Route exact path="/view-test" component={ requireAuth(ViewTestPage) }/>
     <Route path="/view-problem/:id" component={ requireAuth(ViewProblemPage) }/>
     <Route path="*" component={ NotFoundPage } />
