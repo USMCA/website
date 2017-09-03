@@ -13,7 +13,6 @@ import SolutionForm from "../forms/solution";
 import CommentForm from "../forms/comment";
 import Spinner from "../spinner";
 import Error from "../error";
-
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
 class Vote extends React.Component {

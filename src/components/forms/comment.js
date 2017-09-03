@@ -11,9 +11,10 @@ const { SUBMIT, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 class CommentForm extends React.Component {
   onSubmit = ({ body }) => {
-    const { problem_id, probComment, errorHandler } = this.props;
+    const { problem_id, probComment, errorHandler, afterSubmit } = this.props;
     if (!body) return errorHandler("Empty comment submitted.");
     probComment(problem_id, body);
+    if (afterSubmit) afterSubmit();
   }
   
   commentField = ({ input, meta, ...rest }) => (
@@ -41,6 +42,7 @@ CommentForm.propTypes = {
   probData: PropTypes.object.isRequired,
   probComment: PropTypes.func.isRequired,
   errorHandler: PropTypes.func.isRequired,
+  afterSubmit: PropTypes.func,
   handleSubmit: PropTypes.func.isRequired
 };
 

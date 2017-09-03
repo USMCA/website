@@ -104,7 +104,7 @@ const mapStateToProps = state => ({
 const Request = connect(mapStateToProps, mapDispatchToProps)(RequestDumb);
 
 const Comment = ({ comment }) => (
-  <li>{ comment.body }
+  <li ref={ renderKaTeX }>{ comment.body }
   &mdash; <span className="comment-author">
     <span className="author-name">{ comment.author.name }</span>
     <i>{ datify(comment.created) }</i>
@@ -140,7 +140,7 @@ class CommentList extends React.Component {
           this.state.showComments && (
             (comments.length > 0) ? (
               comments.map((comment, key) => (
-                <Comment comment={comment} />
+                <Comment comment={comment} key={key}/>
               ))
             ) : (<p>No comments.</p>)
           )
@@ -148,7 +148,10 @@ class CommentList extends React.Component {
         <li>
           {
             this.state.showCommentForm ? 
-              <CommentForm problem_id={ problem_id } solution_id={ solution_id } /> :
+              <CommentForm 
+                problem_id={ problem_id } 
+                solution_id={ solution_id }
+                afterSubmit={ () => { this.state.showCommentForm = false; } } /> :
               <a 
                 className="teal-text text-darken-3 underline-hover" 
                 onClick={ this.toggleCommentForm }>

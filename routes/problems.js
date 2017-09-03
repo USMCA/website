@@ -32,7 +32,7 @@ const problemParam = (problem_id, req, res, callback)  => {
         } else {
           User.populate(problem, {
             path: 'official_soln.author official_soln.comments.author ' +
-                  'alternate_soln.author official_soln.comments.author' +
+                  'alternate_soln.author official_soln.comments.author ' +
                   'comments.author',
             select: 'name'
           }, (err, problem) => {
