@@ -59,11 +59,7 @@ class ViewProbPage extends React.Component {
           <ul>
             {
               problem.official_soln.map((soln, key) => (
-                <Solution
-                  feedbackType="Solution"
-                  message={soln.body}
-                  author={soln.author.name}
-                  key={key} />
+                <Solution solution={soln} key={key} />
               ))
             }
           </ul>
@@ -78,11 +74,7 @@ class ViewProbPage extends React.Component {
               <ul>
                 {
                   problem.alternate_soln.map((soln, key) => (
-                    <Solution
-                      feedbackType="Solution"
-                      message={soln.body}
-                      author={soln.author.name}
-                      key={key} />
+                    <Solution solution={soln} key={key} />
                   ))
                 }
               </ul>)
