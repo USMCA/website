@@ -20,7 +20,7 @@ class ProblemsTab extends React.Component {
     const { proposals: { content, requestStatus, message } } = this.props;
     if (requestStatus === PENDING) return <Col s={12}><Spinner /></Col>
     return (content && content.length > 0) ? (
-      <Col s={12} style={{marginTop: "36px"}}>
+      <Col s={12}>
         {
           content.map((proposal, key) => (
             <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
