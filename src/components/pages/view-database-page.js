@@ -66,10 +66,10 @@ class DatabasePage extends React.Component {
           </Row>
           <h3>Results</h3>
           {
-            results.map((proposal, key) => (
+            (database.content) && (database.content.map((proposal, key) => (
               <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
                 <ProblemPreview problem={proposal} />
-              </div>
+              </div>)
             ))
           }
           <div style={{padding: "24px 0"}}>

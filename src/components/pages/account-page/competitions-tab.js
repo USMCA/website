@@ -16,7 +16,7 @@ const makeURL = url => {
   if (!url) return url;
   const http = "http://",
         https = "https://",
-        valid = (url.substr(0, http.length) === http) || 
+        valid = (url.substr(0, http.length) === http) ||
                 (url.substr(0, https.length) === https);
   return valid ? url : http + url;
 }
@@ -28,7 +28,7 @@ const DIRECTOR = "director",
       NONMEMBER = "nonmember";
 
 const competitionMembership = (competition, userId, populated = true) => {
-  const finder = populated ? 
+  const finder = populated ?
     user => user._id === userId : // users are populated
     user => user === userId; // users are ids themselves
   if (_.find(competition.directors, finder))
@@ -57,7 +57,7 @@ class CompetitionsTab extends React.Component {
       <tr key={ idx }>
         <td>{ user.name }</td>
         <td>{ user.email }</td>
-        <td>{ competitionMembership(competition, user._id) } (<a className="teal-text text-darken-3">change permissions</a>)</td>
+        <td>{ competitionMembership(competition, user._id) } (<a className="teal-text text-darken-3 underline-hover">change permissions</a>)</td>
         <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
       </tr>
     ) : (
@@ -72,7 +72,7 @@ class CompetitionsTab extends React.Component {
         <div style={{borderBottom: "1px solid #cfd8dc"}} key={idx}>
           <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><Modal header="Update Contest" trigger={<a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a>}><CreateContestForm contest={ contest } competition_id={ competition._id } /></Modal></h3>
           <ul>
-            <li><a href="/view-contest" className="teal-text text-darken-3">View contest</a></li>
+            <li><a href="/view-contest" className="teal-text text-darken-3 underline-hover">View contest</a></li>
             <li>Date: { contest.date ? moment(contest.date).format('ll') : "N/A" }</li>
             <li>Test solve deadline: { contest.test_solve_deadline ? moment(contest.test_solve_deadline) : "N/A" }</li>
             <li>Location(s): { locationsString(contest.locations) }</li>
@@ -89,16 +89,16 @@ class CompetitionsTab extends React.Component {
             <li><h3>Competition Info<a className="right black-text"><i className="fa fa-pencil" aria-hidden="true" /></a></h3></li>
             <li>Name: { competition.name }</li>
             <li>Short name: { competition.short_name }</li>
-            <li>Website: <a href={ makeURL(competition.website) } className="teal-text text-darken-3">{ competition.website }</a></li>
+            <li>Website: { (competition.website) ? <a href={ makeURL(competition.website) } className="teal-text text-darken-3 underline-hover">{ competition.website }</a> : "N/A"}</li>
             <li><h3>Membership Info</h3></li>
             <li>Your are a: <span className="bold-text">{ membership }</span></li>
-            { membership === DIRECTOR &&  <li><a className="teal-text text-darken-3">Step down as director</a></li> }
-            <li><a className="teal-text text-darken-3">Leave competition</a></li>
-            { 
+            { membership === DIRECTOR &&  <li><a className="teal-text text-darken-3 underline-hover">Step down as director</a></li> }
+            <li><a className="teal-text text-darken-3 underline-hover">Leave competition</a></li>
+            {
               (membership === DIRECTOR || membership === SECURE) && (
                 <div>
                   <li><h3>Database</h3></li>
-                  <li><Link to={ `/view-database/${competition._id}` } className="btn teal darken-3">View database</Link></li>
+                  <li><Link to={ `/view-database/${competition._id}` } className="waves-effect waves-light btn teal darken-3">View database</Link></li>
                 </div>
               )
             }
@@ -108,7 +108,7 @@ class CompetitionsTab extends React.Component {
       "members": {
         title: () => "Members",
         view: () => <div className="round-container">
-          <Button className="teal darken-3">Add new member</Button>
+          <Button className="teal darken-3" waves="light">Add new member</Button>
           <h3>Roster</h3>
           <Table className="roster">
             <thead>
@@ -131,12 +131,12 @@ class CompetitionsTab extends React.Component {
       "contests": {
         title: () => "Contests",
         view: () => <div className="round-container">
-          <Modal header="Create Contest" trigger={ <Button className="teal darken-3">Create contest</Button> }>
+          <Modal header="Create Contest" trigger={ <Button className="teal darken-3" waves="light">Create contest</Button> }>
             <CreateContestForm competition_id={ competition._id } />
           </Modal>
-          { 
+          {
             competition.contests.length > 0 ? (
-              _.reverse(_.sortBy(competition.contests, 
+              _.reverse(_.sortBy(competition.contests,
                   contest => new Date(contest.date)
                 ).map(contestView)
               )
@@ -154,7 +154,7 @@ class CompetitionsTab extends React.Component {
       <div style={{marginTop: "36px"}}>
         <Modal
           header="Request to Join a Competition"
-          trigger={ <Button className="teal darken-3">Join a competition</Button> }>
+          trigger={ <Button className="teal darken-3" waves="light">Join a competition</Button> }>
           <JoinCompetitionForm />
         </Modal>
           {
@@ -168,7 +168,7 @@ class CompetitionsTab extends React.Component {
             ))
           }
         <RightButtonPanel>
-          Does your competition want to join USMCA? <Modal header="Form a Competition" trigger={<a className="teal-text text-darken-3">Register your competition.</a>}>
+          Does your competition want to join USMCA? <Modal header="Form a Competition" trigger={<a className="teal-text text-darken-3 underline-hover">Register your competition.</a>}>
             <CreateCompetitionForm />
           </Modal>
         </RightButtonPanel>

@@ -3,16 +3,21 @@ import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 import renderKaTeX from "../katex";
 import { respondRequest, userPut } from "../actions";
-import { 
-  USER_COMP_RES, 
+import {
+  USER_COMP_RES,
   USER_JOIN_RES,
   COMP_REQ,
   COMP_REQ_JOIN
 } from "../actions/types";
 import { requestTypes } from "../../constants";
+
+const datify = date => (
+  moment(date).format("MMM Do, YYYY, h:mm a")
+)
 
 const LoadMore = () => (
   <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
@@ -100,7 +105,7 @@ const Comment = ({ comment }) => (
   <li>{ comment.body }
   &mdash; <span className="comment-author">
     <span className="author-name">{ comment.author.name }</span>
-    <i>{ comment.created }</i>
+    <i>{ datify(comment.created) }</i>
     <a><i className="fa fa-pencil" aria-hidden="true"></i></a>
     <a><i className="fa fa-trash" aria-hidden="true"></i></a>
   </span></li>
@@ -132,9 +137,13 @@ class ProblemPreview extends React.Component  {
         </Col>
         <Col s={12}>
           <div className="katex-preview">
-            <div ref={ renderKaTeX }>
-              { problem.statement }
-            </div>
+            <Link
+              to={ "/view-problem/" + problem._id.toString() }
+              className="black-text underline-hover">
+              <div ref={ renderKaTeX }>
+                { problem.statement }
+              </div>
+            </Link>
           </div>
         </Col>
       </Row>
@@ -164,7 +173,7 @@ class ExtendedProblemPreview extends React.Component  {
         <Col m={3} s={12} className="problem-stats">
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
-          <span className="small-stat"><i>{ (problem.created === problem.updated) ? problem.created : ("Edited " + problem.created) }</i></span>
+          <span className="small-stat"><i>{ (problem.created === problem.updated) ? datify(problem.created) : ("Edited " + datify(problem.created)) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} />
@@ -194,7 +203,7 @@ class Solution extends React.Component  {
         </Col>
         <Col m={3} s={12} className="problem-stats">
           <span className="bold-text">{ solution.author.name }</span><br />
-          <span className="small-stat"><i>{ solution.created }</i></span>
+          <span className="small-stat"><i>{ datify(solution.created) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={[]} />
