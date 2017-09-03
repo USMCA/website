@@ -17,6 +17,8 @@ import Autocomplete from "../react-materialize-custom/Autocomplete";
 import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
+import { RightButtonPanel } from "../utilities";
+
 const { SUCCESS, ERROR, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
 /*******************************************************************************
@@ -323,15 +325,15 @@ class KaTeXInput extends React.Component {
         {
           includeSubmit ? (
             <div>
-              <Col s={2} className="offset-s8">
-                <a
-                  className="waves-effect waves-light btn teal darken-3"
-                  onClick={ this.previewKaTeX }>
-                  Preview
-                </a>
-              </Col>
-              <Col s={2}>
-                <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
+              <Col s={12}>
+                <RightButtonPanel>
+                  <a
+                    className="waves-effect waves-light btn teal darken-3"
+                    onClick={ this.previewKaTeX }>
+                    Preview
+                  </a>
+                  <Button waves="light" className="teal darken-3" type="submit">Submit</Button>
+                </RightButtonPanel>
               </Col>
             </div>
           ) : (
