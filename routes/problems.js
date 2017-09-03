@@ -8,28 +8,39 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 
 const User = require('../database/user'),
       Problem = require('../database/problem'),
-      Solution = require('../database/solution');
+      Solution = require('../database/solution'),
+      Comment = require('../database/comment');
 
 const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
   .populate('competition', 'short_name _id')
-  .populate('official_soln', 'author body updated created')
-  .populate('alternate_soln', 'author body updated created')
-  .populate('comments', 'author body')
+  .populate('official_soln', 'author body created updated comments')
+  .populate('alternate_soln', 'author body created updated comments')
+  .populate('comments', 'author body created updated')
   .exec((err, problem) => {
     if (err) handler(false, 'Failed to load problem.', 503)(req, res);
     else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
     else {
-      User.populate(problem, {
-        path: 'official_soln.author alternate_soln.author comments.author',
-        select: 'name'
+      Comment.populate(problem, {
+        path: 'official_soln.comments alternate_soln.comments',
+        select: 'author body created updated'
       }, (err, problem) => {
         if (err) {
           console.log(err);
-          return handler(false, 'Database failed to load solution author.', 503)(req, res);
+          return handler(false, 'Failed to load solution comments.', 503)(req, res);
         } else {
-          callback(problem);
+          User.populate(problem, {
+            path: 'official_soln.author official_soln.comments.author ' +
+                  'alternate_soln.author official_soln.comments.author' +
+                  'comments.author',
+            select: 'name'
+          }, (err, problem) => {
+            if (err) {
+              console.log(err);
+              handler(false, 'Failed to load solution author.', 503)(req, res);
+            } else callback(problem);
+          });
         }
       });
     }
