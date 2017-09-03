@@ -11,9 +11,9 @@ class SolutionForm extends React.Component {
   }
 
   commentField = ({ input, meta, ...rest }) => (
-    <KaTeXInput 
-      type="textarea" 
-      label="Solution" 
+    <KaTeXInput
+      type="textarea"
+      label="Solution"
       includeSubmit={true}
       { ...input } { ...rest } />
   );

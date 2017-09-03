@@ -132,13 +132,9 @@ class ProblemPreview extends React.Component  {
         </Col>
         <Col s={12}>
           <div className="katex-preview">
-            <Link
-              to={ "/view-problem/" + problem._id.toString() }
-              className="black-text underline-hover">
-              <div ref={ renderKaTeX }>
-                { problem.statement }
-              </div>
-            </Link>
+            <div ref={ renderKaTeX }>
+              { problem.statement }
+            </div>
           </div>
         </Col>
       </Row>
@@ -168,7 +164,7 @@ class ExtendedProblemPreview extends React.Component  {
         <Col m={3} s={12} className="problem-stats">
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
-          <span className="small-stat"><i>{ problem.created }</i></span>
+          <span className="small-stat"><i>{ (problem.created === problem.updated) ? problem.created : ("Edited " + problem.created) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} />

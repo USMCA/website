@@ -3,7 +3,7 @@ import { KaTeXInput } from "./utilities";
 
 const TestSolveForm = () => {
   return (
-    <div>
+    <div style={{marginTop: "12px"}}>
       <KaTeXInput type="textarea" label="Solution" includeSubmit={true} />
     </div>
   );
