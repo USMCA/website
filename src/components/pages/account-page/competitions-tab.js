@@ -98,7 +98,7 @@ class CompetitionsTab extends React.Component {
               (membership === DIRECTOR || membership === SECURE) && (
                 <div>
                   <li><h3>Database</h3></li>
-                  <li><Link to="/view-database" className="btn teal darken-3">View database</Link></li>
+                  <li><Link to={ `/view-database/${competition._id}` } className="btn teal darken-3">View database</Link></li>
                 </div>
               )
             }
