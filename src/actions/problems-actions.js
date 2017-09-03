@@ -12,7 +12,12 @@ import {
   PROB_PUT
 } from './types';
 import auth from '../auth';
-import { authenticate, serverError } from './utilities';
+import { 
+  authenticate, 
+  serverError, 
+  APIAction, 
+  authAPIAction 
+} from './utilities';
 
 const {
   errorPayload,
@@ -191,4 +196,22 @@ export function problemPut(id, query) {
       ); 
     });
   }
+}
+
+export function testSolve(problem_id, solution) {
+  return authAPIAction({
+    type: PROB_TEST_SOLVE, 
+    url: '/api/problems/test-solve', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id, solution }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problem }) => {
+      return { success, message, content: problem };
+    }
+  });
 }

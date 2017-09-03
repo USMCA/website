@@ -36,7 +36,7 @@ export function apiAction(type, callback) {
   };
 }
 
-export function APIAction(type, url, opts, formatData) {
+export function APIAction({ type, url, opts, formatData }) {
   let action = { type };
   return dispatch => {
     dispatch(Object.assign(action, pendingPayload()));
@@ -51,7 +51,7 @@ export function APIAction(type, url, opts, formatData) {
   }
 }
 
-export function authAPIAction(type, url, opts, formatData) {
+export function authAPIAction({ type, url, opts, formatData }) {
   let action = { type };
   return dispatch => {
     authenticate(action, dispatch, userId => {

@@ -18,12 +18,9 @@ const problemParam = (problem_id, req, res, callback)  => {
   .populate('alternate_soln', 'author body')
   .populate('comments', 'author body')
   .exec((err, problem) => {
-    if (err) {
-      console.log(err);
-      return handler(false, 'Database failed to load problem.', 503)(req, res);
-    } else if (!problem) {
-      return handler(false, 'Problem was not found.', 400)(req, res);
-    } else {
+    if (err) handler(false, 'Failed to load problem.', 503)(req, res);
+    else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
+    else {
       User.populate(problem, {
         path: 'official_soln.author alternate_soln.author comments.author',
         select: 'name'
@@ -56,6 +53,26 @@ router.put('/:problem_id', auth.verifyJWT, (req, res) => {
 /*******************************************************************************
  * Specific routes.
  ******************************************************************************/
+
+router.post('/test-solve', auth.verifyJWT, (req, res) => {
+  const { problem_id, solution } = req.body;
+  problemParam(problem_id, req, res, problem => {
+    const testSolveSolution = Object.assign(new Solution(), {
+      author: req.user._id,
+      body: solution
+    });
+    testSolveSolution.save(err => {
+      if (err) handler(false, 'Failed to save solution.', 503)(req, res);
+      else {
+        problem.alternate_soln.push(testSolveSolution);
+        problem.save(err => {
+          if (err) handler(false, 'Failed to save solution to problem.', 503)(req, res);
+          else handler(true, 'Successfully posted test solve.', 200, { problem })(req, res);
+        });
+      }
+    });
+  });
+});
 
 router.post('/upvotes', auth.verifyJWT, (req, res) => {
   Problem.findById(req.body.id, (err, problem) => {

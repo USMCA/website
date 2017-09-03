@@ -5,6 +5,7 @@ import {
   PROB_GET,
   PROB_UPVOTE,
   PROB_DATABASE,
+  PROB_TEST_SOLVE,
   PROB_PUT
 } from '../actions/types';
 
@@ -24,6 +25,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
     case PROB_POST:
       return { ...state, postProposal: payload };
     case PROB_PUT:
+    case PROB_TEST_SOLVE:
     case PROB_UPVOTE:
     case PROB_GET:
       return { ...state, proposal: payload };
