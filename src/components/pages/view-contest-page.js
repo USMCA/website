@@ -16,15 +16,19 @@ class ContestPreviewDumb extends React.Component {
       title: () => "Tests",
       view: ({ data: { content } }) => {
         if (!content) return <div />;
+        const contest = content;
         return (
           <div className="round-container">
-            <Modal trigger={<Button className="teal darken-3" waves="light">Create</Button>}><CreateTestForm /></Modal>
+            <Modal trigger={<Button className="teal darken-3" waves="light">Create</Button>}>
+              <CreateTestForm contest_id={ contest._id } />
+            </Modal>
             { (content.tests.length > 0) ? (
                 <Table>
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Problems</th>
+                      <th>Target Number of Problems</th>
+                      <th>Added Problems</th>
                       <th>Options</th>
                     </tr>
                   </thead> 
@@ -33,7 +37,8 @@ class ContestPreviewDumb extends React.Component {
                     content.tests.map((test, key) => (
                       <tr key={key}>
                         <td>{test.name}</td>
-                        <td>{test.problems}</td>
+                        <td>{test.num_problems}</td>
+                        <td>{test.problems.length}</td>
                         <td><Link to={ `/view-test/${test._id}` } className="teal-text text-darken-3 underline-hover">Manage</Link></td>
                       </tr>
                     ))
@@ -115,6 +120,7 @@ class ContestPreviewDumb extends React.Component {
   render() {
     const { data } = this.props,
           contest = data.content;
+    console.log(contest);
     if (!contest) return <div />;
 
     const childProps = {

@@ -8,7 +8,8 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 
 const User = require('../database/user'),
       Competition = require('../database/competition'),
-      Contest = require('../database/contest');
+      Contest = require('../database/contest'),
+      Test = require('../database/test');
 
 router.post('/', auth.verifyJWT, (req, res) => {
   const { competition_id, name, date, locations } = req.body;
@@ -52,11 +53,45 @@ router.get('/:contest_id', (req, res) => {
   const { contest_id } = req.params;
   Contest.findById(contest_id)
   .populate('czars', 'name email')
+  .populate('tests')
   .populate('test_solvers', 'name email')
   .exec((err, contest) => {
     if (err) handler(false, 'Failed to load contest.', 503)(req, res);
     else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
     else handler(true, 'Succesfully loaded contest.', 200, { contest })(req, res);
+  });
+});
+
+router.post('/:contest_id/tests', auth.verifyJWT, (req, res) => {
+  const { contest_id } = req.params,
+        { name, num_problems } = req.body;
+  Contest.findById(contest_id)
+  .populate('competition', 'directors')
+  .exec((err, contest) => {
+    if (err) handler(false, 'Failed to load contest.', 503)(req, res);
+    else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
+    else {
+      /* check if user is czar (or director) */
+      if (contest.czars.indexOf(req.user._id.toString()) === -1 &&
+          contest.competition.directors.indexOf(req.user._id.toString()) === -1) {
+        handler(false, 'User does not have czar privileges.', 401)(req, res);
+      } else {
+        const test = Object.assign(new Test(), {
+          name, num_problems, contest
+        });
+        test.save(err => {
+          console.log(err);
+          if (err) handler(false, 'Failed to save test.', 503)(req, res);
+          else {
+            contest.tests.push(test);
+            contest.save(err => {
+              if (err) handler(false, 'Failed to save test to contest.', 503)(req, res);
+              else handler(true, 'Succesfully created test.', 200, { test })(req, res);
+            });
+          }
+        });
+      }
+    }
   });
 });
 

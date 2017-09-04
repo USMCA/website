@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch';
 import { 
   CONTEST_POST,
   CONTEST_GET,
+  CONTEST_TEST_POST,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -53,5 +54,21 @@ export function getContest(contest_id) {
     url: `/api/contests/${contest_id}`,
     opts: { method: 'get' },
     formatData: ({ success, message, contest }) => ({ success, message, content: contest })  
+  });
+}
+
+export function postTest({ name, num_problems, contest_id }) {
+  return authAPIAction({
+    type: CONTEST_TEST_POST,
+    url: `/api/contests/${contest_id}/tests`,
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ name, num_problems }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    },
+    formatData: ({ success, message, test }) => ({ success, message, content: test })
   });
 }

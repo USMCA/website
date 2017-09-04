@@ -7,7 +7,8 @@ import { Input, Row, Col, Button } from "react-materialize";
 import Spinner from "../spinner";
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import { CONTEST_POST, requestStatuses } from "../../actions/types";
+import { postTest } from "../../actions";
+import { requestStatuses } from "../../actions/types";
 
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
@@ -20,12 +21,15 @@ const NameInput = ({ input, meta, ...rest }) => (
 
 class CreateTestForm extends React.Component { 
   onSubmit = ({ name, number }) => {
-    console.log(name, number);
+    const { contest_id, postTest } = this.props;
+    postTest({ name, num_problems: number, contest_id });
   }
 
   render() {
-    const { handleSubmit } = this.props;
-    return (
+    const { handleSubmit, postTestData: { requestStatus, message } } = this.props;
+    return (requestStatus === SUCCESS) ? (
+      <p>Test created!</p>
+    ) : (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
           <div>
@@ -40,6 +44,8 @@ class CreateTestForm extends React.Component {
             </RightButtonPanel><br />
           </Col>
         </Row>
+        <Error error={ requestStatus === ERROR } message={ message }/>
+        { (requestStatus === PENDING) && <Spinner /> }
       </form>
     );
   }
@@ -49,8 +55,12 @@ CreateTestForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
+        postTestData: state.contests.postTestData
       }),
       mapDispatchToProps = dispatch => ({
+        postTest: ({ name, num_problems, contest_id }) => {
+          postTest({ name, num_problems, contest_id })(dispatch);
+        }
       });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
