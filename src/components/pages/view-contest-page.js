@@ -8,7 +8,7 @@ import { getContest } from "../../actions";
 import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
 
-const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers }) => ({
+const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
   "tests": {
     title: () => "Tests",
     view: () => (
@@ -21,8 +21,7 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
               <th>Problems</th>
               <th>Options</th>
             </tr>
-          </thead>
-
+          </thead> 
           <tbody>
             {
               tests.map((test, key) => (
@@ -111,28 +110,43 @@ const tests = [
   {name: "Number Theory (Individuals)", problems: 10},
   {name: "Team", problems: 10},
   {name: "Algebra (Individuals)", problems: 1}
-]
+], date="January 28, 2018", czars = ["Tai", "Ailee"], 
+  testSolvers=["Ailee"], locations=["asdf"], name="CMIMC Ailee";
 
-const ContestPreview = ({ name, date, locations, status, tests, czars, testSolvers }) => (
-  <Col s={12}>
-    <h2 className="teal-text text-darken-3">{name}</h2>
-    <VerticalNav tabs={ contestTabs({ name, date, locations, status, tests, czars, testSolvers })} active="tests" />
-  </Col>
-)
+class ContestPreviewDumb extends React.Component {
 
-const ViewContestPage = () => (
-  <Row className="container">
-    <ContestPreview name="CMIMC 2018" date="January 28th, 2018" locations={["Carnegie Mellon University", "CMU Qatar Campus"]} status="Active" tests={tests} czars={["Taisuke Yasuda", "Cody Johnson"]} testSolvers={["Taisuke Yasuda", "Cody Johnson"]} />
-  </Row>
-);
-
+  render() {
+    console.log(this.props.data);
+    return (
+      <Col s={12}>
+        <h2 className="teal-text text-darken-3">{name}</h2>
+        <VerticalNav tabs={ contestTabs({ name, date, locations, tests, czars, testSolvers })} active="tests" />
+      </Col>
+    );
+  }
+}
 const mapStateToProps = state => ({
   data: state.contests.contest
 });
-const mapDispatchToProps = dispatch => ({
-  getContest: id => {
-    getContest(id)(dispatch);
+
+const ContestPreview = connect(mapStateToProps)(ContestPreviewDumb);
+
+class ViewContestPage extends React.Component {
+  componentWillMount() {
+    const { match, getContest } = this.props;
+    getContest(match.params.id);
   }
+  
+  render() {
+    return (
+      <Row className="container">
+        <ContestPreview />
+      </Row>
+    );
+  }
+}
+const mapDispatchToProps = dispatch => ({
+  getContest: id => { getContest(id)(dispatch); }
 });
 
-export default ViewContestPage;
+export default connect(null, mapDispatchToProps)(ViewContestPage);
