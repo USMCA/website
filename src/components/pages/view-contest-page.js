@@ -29,17 +29,15 @@ class ContestPreviewDumb extends React.Component {
                       <th>Name</th>
                       <th>Target Number of Problems</th>
                       <th>Added Problems</th>
-                      <th>Options</th>
                     </tr>
                   </thead> 
                   <tbody>
                   {
                     content.tests.map((test, key) => (
                       <tr key={key}>
-                        <td>{test.name}</td>
+                        <td><Link to={ `/view-test/${test._id}` } className="teal-text text-darken-3 underline-hover">{test.name}</Link></td>
                         <td>{test.num_problems}</td>
                         <td>{test.problems.length}</td>
-                        <td><Link to={ `/view-test/${test._id}` } className="teal-text text-darken-3 underline-hover">Manage</Link></td>
                       </tr>
                     ))
                   }

@@ -62,6 +62,17 @@ router.get('/:contest_id', (req, res) => {
   });
 });
 
+router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
+  const { test_id } = req.params;
+  Test.findById(test_id)
+  .populate('problems')
+  .exec((err, test) => {
+    if (err) handler(false, 'Failed to load test.', 503)(req, res);
+    else if (!test) handler(false, 'Test does not exist.', 400)(req, res);
+    else handler(true, 'Succesffully loaded test.', 200, { test })(req, res);
+  });
+});
+
 router.post('/:contest_id/tests', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params,
         { name, num_problems } = req.body;
