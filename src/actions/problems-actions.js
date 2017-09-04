@@ -234,3 +234,22 @@ export function probComment(problem_id, body) {
     }
   });
 }
+
+export function solnComment(solution_id, body) {
+  return authAPIAction({
+    type: PROB_SOLN_COMMENT, 
+    url: '/api/problems/comment/solution', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ solution_id, body }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, alternate_soln }) => {
+      console.log(alternate_soln);
+      return { success, message, content: alternate_soln };
+    }
+  });
+}

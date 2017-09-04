@@ -32,7 +32,7 @@ const problemParam = (problem_id, req, res, callback)  => {
         } else {
           User.populate(problem, {
             path: 'official_soln.author official_soln.comments.author ' +
-                  'alternate_soln.author official_soln.comments.author ' +
+                  'alternate_soln.author alternate_soln.comments.author ' +
                   'comments.author',
             select: 'name'
           }, (err, problem) => {
@@ -132,6 +132,52 @@ router.post('/comment/problem', auth.verifyJWT, (req, res) => {
           })(req, res);
         });
       }
+    });
+  });
+});
+
+router.post('/comment/solution', auth.verifyJWT, (req, res) => {
+  const { solution_id, body, issue } = req.body;
+  Problem.findOne({ alternate_soln: solution_id }, (err, problem) => {
+    problemParam(problem._id, req, res, problem => {
+      let comment = Object.assign(new Comment(), {
+        author: req.user,
+        body,
+        issue: !!issue
+      });
+      comment.save(err => {
+        if (err) handler(false, 'Failed to save comment.', 503)(req, res);
+        else {
+          let soln = _.find(problem.alternate_soln, 
+            soln => soln._id.toString() === solution_id
+          );
+          problem.alternate_soln.pull(solution_id);
+          soln.comments.push(comment);
+          problem.alternate_soln.push(soln);
+          const alternate_soln = problem.alternate_soln;
+          soln.save(err => {
+            if (err) handler(false, 'Failed to save comment to problem.', 503)(req, res);
+            else {
+              Comment.populate(alternate_soln, 'comments', (err, alternate_soln) => {
+                if (err) {
+                  return handler(false, 'Failed to populate comments.', 503)(req, res);
+                }
+                User.populate(alternate_soln, {
+                  path: 'comments.author',
+                  select: 'name'
+                }, (err, alternate_soln) => {
+                  if (err) {
+                    return handler(false, 'Failed to populate comment authors.', 503)(req, res);
+                  }
+                  handler(true, 'Successfully posted comment.', 200, { 
+                    alternate_soln
+                  })(req, res);
+                });
+              });
+            }
+          });
+        }
+      });
     });
   });
 });

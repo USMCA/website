@@ -6,7 +6,8 @@ import {
   PROB_UPVOTE,
   PROB_DATABASE,
   PROB_TEST_SOLVE,
-  PROB_PROB_COMMENT
+  PROB_PROB_COMMENT,
+  PROB_SOLN_COMMENT
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -28,6 +29,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
     case PROB_UPVOTE:
     case PROB_GET:
       return { ...state, proposal: payload };
+    case PROB_SOLN_COMMENT:
     case PROB_TEST_SOLVE:
       return (requestStatus !== SUCCESS) ? { 
         ...state,

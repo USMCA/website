@@ -3,17 +3,26 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 
-import { probComment } from "../../actions";
-import { PROB_PROB_COMMENT, requestStatuses } from "../../actions/types";
+import { probComment, solnComment } from "../../actions";
+import { 
+  PROB_PROB_COMMENT, 
+  PROB_SOLN_COMMENT, 
+  requestStatuses 
+} from "../../actions/types";
 import { KaTeXInput } from "./utilities";
 
 const { SUBMIT, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 class CommentForm extends React.Component {
   onSubmit = ({ body }) => {
-    const { problem_id, probComment, errorHandler, afterSubmit } = this.props;
+    const { 
+      problem_id, probComment, 
+      solution_id, solnComment,
+      errorHandler, afterSubmit 
+    } = this.props;
     if (!body) return errorHandler("Empty comment submitted.");
-    probComment(problem_id, body);
+    if (problem_id) probComment(problem_id, body);
+    if (solution_id) solnComment(solution_id, body);
     if (afterSubmit) afterSubmit();
   }
   
@@ -38,7 +47,8 @@ class CommentForm extends React.Component {
 }
 
 CommentForm.propTypes = {
-  problem_id: PropTypes.string.isRequired,
+  problem_id: PropTypes.string,
+  solution_id: PropTypes.string,
   probData: PropTypes.object.isRequired,
   probComment: PropTypes.func.isRequired,
   errorHandler: PropTypes.func.isRequired,
@@ -52,6 +62,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   probComment: (problem_id, body) => {
     probComment(problem_id, body)(dispatch);
+  },
+  solnComment: (solution_id, body) => {
+    solnComment(solution_id, body)(dispatch);
   },
   errorHandler: message => {
     dispatch({ 
