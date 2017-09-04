@@ -74,6 +74,7 @@
   name: String,
   date: Date,
   tests: [ Tests ],
+  requested_test_solvers: Number,
   test_solvers: [ User ],
   test_solve_deadline: Date,
   czars: [ User ],

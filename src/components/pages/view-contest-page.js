@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { getContest } from "../../actions";
 import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
+import RequestTSForm from "../forms/request-test-solvers";
 
 const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
   "tests": {
@@ -41,7 +42,7 @@ const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
     title: () => "Czars",
     view: () => (
       <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button>
+        <Button className="teal darken-3" waves="light">Invite</Button>
         <h3>Czars</h3>
         <Table>
           <thead>
@@ -58,7 +59,7 @@ const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
                 <tr key={key}>
                   <td>{czar}</td>
                   <td>ctj@math.cmu.edu</td>
-                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
                 </tr>
               ))
             }
@@ -69,12 +70,12 @@ const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
         </RightButtonPanel>
       </div>
     )
-  },
+ },
   "test-solvers": {
     title: () => "Test Solvers",
     view: () => (
       <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button> <Button className="teal darken-3" waves="light">Request</Button>
+        <Button className="teal darken-3" waves="light">Invite</Button> <Modal trigger={<Button className="teal darken-3" waves="light">Request</Button>}><RequestTSForm /></Modal>
         <h3>Test Solvers</h3>
         <Table>
           <thead>
