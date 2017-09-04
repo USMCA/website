@@ -52,6 +52,6 @@ export function getContest(contest_id) {
     type: CONTEST_GET,
     url: `/api/contests/${contest_id}`,
     opts: { method: 'get' },
-    formatData: ({ success, message, contest }) => ({ success, message: content: contest })  
+    formatData: ({ success, message, contest }) => ({ success, message, content: contest })  
   });
 }

@@ -12,6 +12,7 @@ import ViewContestPage from "./pages/view-contest-page";
 import ViewTestPage from "./pages/view-test-page";
 import ViewDatabasePage from "./pages/view-database-page";
 import ViewProblemPage from "./pages/view-problem-page";
+import PublicDatabasePage from "./pages/public-database-page";
 import NotFoundPage from "./pages/not-found-page";
 import requireAuth from "./auth/require-auth";
 
@@ -22,6 +23,7 @@ const Routes = ({ authenticated }) => (
     <Route exact path="/login" component={ LoginPage }/>
     <Route exact path="/propose" component={ requireAuth(ProposePage) }/>
     <Route exact path="/test-solve" component={ requireAuth(TestSolvePage) }/>
+    <Route exact path="/public-database" component={ requireAuth(PublicDatabasePage) }/>
     <Route path="/view-contest/:id" component={ requireAuth(ViewContestPage) }/>
     <Route path="/view-database/:id" component={ requireAuth(ViewDatabasePage) }/>
     <Route path="/view-test/:id" component={ requireAuth(ViewTestPage) }/>

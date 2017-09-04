@@ -1,5 +1,6 @@
 import { 
   CONTEST_POST,
+  CONTEST_GET,
   requestStatuses
 } from '../actions/types';
 

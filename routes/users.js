@@ -98,6 +98,7 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
       console.log(err);
       return handler(false, 'Database failed to load the associated competition.', 503)(req, res);
     } else {
+      competition = competition || {};
       const official_soln = solution ? Object.assign(new Solution(), {
               author: req.user._id,
               body: solution
@@ -105,6 +106,7 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
             problem = Object.assign(new Problem(), {
               author: req.user._id,
               competition: competition._id,
+              publicDatabase: competition._id ? false : true,
               subject,
               difficulty,
               statement, 

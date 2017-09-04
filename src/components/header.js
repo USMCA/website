@@ -15,6 +15,7 @@ const Header = ({ authenticated, logout }) => (
         { authenticated && (<li><Link to="/">Home</Link></li>) }
         { authenticated && (<li><Link to="/propose">Propose</Link></li>) }
         { authenticated && (<li><Link to="/test-solve">Test Solve</Link></li>) }
+        { authenticated && (<li><Link to="/public-database">Public Database</Link></li>) }
         { authenticated && (<li><Link to="/" onClick={ logoutUser }>Log Out</Link></li>) }
         { !authenticated && (<li><Link to="/login">Log In</Link></li>) }
       </ul>
