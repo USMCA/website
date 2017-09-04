@@ -9,6 +9,8 @@ import {
   PROB_UPVOTE,
   PROB_COMMENT,
   PROB_DATABASE,
+  PROB_PUBLIC_DATABASE,
+  PROB_TAKE,
   PROB_TEST_SOLVE,
   PROB_PROB_COMMENT,
   PROB_SOLN_COMMENT,
@@ -217,6 +219,40 @@ export function testSolve(problem_id, solution) {
   });
 }
 
+export function publicDatabase() {
+  return authAPIAction({
+    type: PROB_PUBLIC_DATABASE, 
+    url: '/api/problems/public', 
+    opts: {
+      method: 'get',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problems }) => {
+      return { success, message, content: problems };
+    }
+  });
+}
+
+export function takeProblem(problem_id, competition_id) {
+  return authAPIAction({
+    type: PROB_TAKE, 
+    url: '/api/problems/public', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id, competition_id }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problem }) => {
+      return { success, message, content: problem };
+    }
+  });
+}
+
 export function probComment(problem_id, body) {
   return authAPIAction({
     type: PROB_PROB_COMMENT, 
@@ -248,7 +284,6 @@ export function solnComment(solution_id, body) {
       }
     }, 
     formatData: ({ success, message, alternate_soln }) => {
-      console.log(alternate_soln);
       return { success, message, content: alternate_soln };
     }
   });

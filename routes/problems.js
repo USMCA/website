@@ -9,7 +9,8 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 const User = require('../database/user'),
       Problem = require('../database/problem'),
       Solution = require('../database/solution'),
-      Comment = require('../database/comment');
+      Comment = require('../database/comment'),
+      Competition = require('../database/competition');
 
 const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
@@ -50,6 +51,34 @@ const problemParam = (problem_id, req, res, callback)  => {
 /*******************************************************************************
  * Generic routes.
  ******************************************************************************/
+
+//@TODO check auths
+router.get('/public', auth.verifyJWT, (req, res) => {
+  Problem.find({ publicDatabase: true }, (err, problems) => {
+    if (err) handler(false, 'Failed to load public database.', 503)(req, res);
+    else handler(true, 'Successfully loaded public database.', 200, { problems })(req, res);
+  });
+});
+
+router.post('/public', auth.verifyJWT, (req, res) => {
+  const { problem_id, competition_id } = req.body;
+  Competition.findById(competition_id, (err, competition) => {
+    if (err) handler(false, 'Failed to load competition.', 503)(req, res);
+    else if (!competition) handler(false, 'Competition does not exist.', 400)(req, res);
+    else {
+      Problem.findByIdAndUpdate(problem_id, { 
+        publicDatabase: false, 
+        borrowed: true, 
+        competition: competition_id 
+      }, (err, problem) => {
+        console.log(err, problem);
+        if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
+        else if (!problem) handler(false, 'Problem does not exist.', 503)(req, res);
+        else handler(true, 'Problem taken.', 200, { problem })(req, res);
+      });
+    }
+  });
+});
 
 /* info that anyone can see */
 router.get('/:problem_id', auth.verifyJWT, (req, res) => {

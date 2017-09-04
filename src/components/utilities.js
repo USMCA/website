@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 import CommentForm from "./forms/comment";
+import TakeProblemForm from "./forms/take-problem";
 
 import renderKaTeX from "../katex";
 import { respondRequest, userPut } from "../actions";
@@ -169,17 +170,20 @@ class CommentList extends React.Component {
 
 class ProblemPreview extends React.Component  {
   render() {
-    const { problem } = this.props;
+    const { problem, publicDatabase } = this.props;
     return (
       <Row className="problem">
         <Col s={12}>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
-          <ul className="problem-options">
-            <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
-            <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
-          </ul>
+          { !publicDatabase && (
+              <ul className="problem-options">
+                <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
+                <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+              </ul>
+            )
+          }
         </Col>
-        <Col s={12}>
+        <Col m={ publicDatabase ? 6 : 12 } s={12}>
           <div className="katex-preview">
             <Link
               to={ "/view-problem/" + problem._id.toString() }
@@ -190,10 +194,20 @@ class ProblemPreview extends React.Component  {
             </Link>
           </div>
         </Col>
+        { publicDatabase && (
+            <Col m={6} s={12}>
+              <TakeProblemForm problem_id={ problem._id }/>
+            </Col> 
+          )
+        }
       </Row>
     );
   }
 }
+ProblemPreview.propTypes = {
+  problem: PropTypes.object.isRequired,
+  publicDatabase: PropTypes.bool // input for taking shared problem
+};
 
 class ExtendedProblemPreview extends React.Component  {
   render() {

@@ -7,6 +7,7 @@ const problemSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   competition: { type: Schema.Types.ObjectId, ref: 'Competition' },
   publicDatabase: { type: Boolean, required: true, default: false },
+  borrowed: { type: Boolean, required: true, default: false },
   statement: { type: String, required: true },
   answer: String,
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],

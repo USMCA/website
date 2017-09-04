@@ -5,6 +5,8 @@ import {
   PROB_GET,
   PROB_UPVOTE,
   PROB_DATABASE,
+  PROB_PUBLIC_DATABASE,
+  PROB_TAKE,
   PROB_TEST_SOLVE,
   PROB_PROB_COMMENT,
   PROB_SOLN_COMMENT
@@ -16,7 +18,8 @@ const INITIAL_STATE = {
   postProposal: { requestStatus: IDLE, message: '' },
   myProposals: { content: [], requestStatus: IDLE, message: '' },
   proposal: { content: null, requestStatus: IDLE, message: '' },
-  database: { content: [], requestStatus: IDLE, message: '' }
+  database: { content: [], requestStatus: IDLE, message: '' },
+  publicDatabase: { content: [], requestStatus: IDLE, message: '' }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -42,7 +45,6 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: Object.assign({}, state.proposal.content, { alternate_soln: content })
         }
       };
-      return newState;
     case PROB_PROB_COMMENT:
       return (requestStatus !== SUCCESS) ? { 
         ...state,
@@ -55,9 +57,22 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: Object.assign({}, state.proposal.content, { comments: content  })
         }
       };
-      return newState;
     case PROB_DATABASE:
       return { ...state, database: payload };
+    case PROB_PUBLIC_DATABASE:
+      return { ...state, publicDatabase: payload };
+    case PROB_TAKE: 
+      return (requestStatus !== SUCCESS) ? { 
+        ...state,
+        publicDatabase: Object.assign({}, state.publicDatabase, { requestStatus, message })
+      } : { 
+        ...state, 
+        publicDatabase: {
+          requestStatus, 
+          message, 
+          content: state.publicDatabase.content.filter(prob => prob._id !== content._id)
+        }
+      };
     default:
       return state;
   }
