@@ -8,13 +8,14 @@ import { getContest } from "../../actions";
 import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
 import RequestTSForm from "../forms/request-test-solvers";
+import CreateTestForm from "../forms/create-test";
 
 const contestTabs = ({ name, date, locations, tests, czars, testSolvers }) => ({
   "tests": {
     title: () => "Tests",
     view: () => (
       <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button>
+        <Modal trigger={<Button className="teal darken-3" waves="light">Add</Button>}><CreateTestForm /></Modal>
         <Table>
           <thead>
             <tr>
