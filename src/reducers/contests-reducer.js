@@ -2,6 +2,7 @@ import {
   CONTEST_POST,
   CONTEST_GET,
   CONTEST_TEST_POST,
+  CONTEST_TEST_GET,
   requestStatuses
 } from '../actions/types';
 
@@ -9,7 +10,8 @@ const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const INITIAL_STATE = { 
   createContest: { content: null, message: '', requestStatus: IDLE },
   contest: { content: null, message: '', requestStatus: IDLE },
-  postTestData: { requestStatus: IDLE, message: '' }
+  postTestData: { requestStatus: IDLE, message: '' },
+  test: { content: null, message: '', requestStatue: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -34,7 +36,9 @@ export default function (state = INITIAL_STATE, { type, payload }) {
             })
           ) : ( state.contest.content )
         }
-      }
+      };
+    case CONTEST_TEST_GET:
+      return { ...state, test: payload };
     default:
       return state;
   }

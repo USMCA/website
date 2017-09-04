@@ -1,7 +1,16 @@
 import React, {Component} from "react";
-import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { Row, Col, Modal } from "react-materialize";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+
 import {  } from "../utilities";
+import Error from "../error";
+import Spinner from "../spinner";
+import { getTest } from "../../actions";
+import { requestStatuses } from "../../actions/types";
+
+const { SUCCESS, PENDING, ERROR, IDLE } = requestStatuses;
 
 function removeProblem(key, removeElem) {
   $('#problem' + key).fadeOut(300, function(){ $(this).remove();});
@@ -94,12 +103,39 @@ class TestProblems extends Component {
   }
 }
 
-const ViewTestPage = () => (
-  <Row className="container">
-    <h2 className="teal-text text-darken-4">CMIMC 2018 Geometry (Individuals)</h2>
-    <p>This test consists of 10 problems.</p>
-    <TestProblems />
-  </Row>
-);
+class ViewTestPage extends React.Component {
+  componentWillMount() {
+    const { match, getTest } = this.props;
+    getTest(match.params.id);
+  }
 
-export default ViewTestPage;
+  render() {
+    const { testData: { content, requestStatus, message } } = this.props,
+          test = content;
+    console.log(test);
+    return (
+      <div>
+        { test && (
+            <Row className="container">
+              <h2 className="teal-text text-darken-4"><Link to={ `/view-contest/${test.contest._id}` } className="teal-text text-darken-3 underline-hover">{ test.contest.name }</Link></h2>
+              <h3 className="teal-text text-darken-4">{ test.name }</h3>
+              <p>This test consists of 10 problems.</p>
+              <TestProblems />
+            </Row>
+          )
+        }
+        <Error error={ requestStatus === ERROR } message={ message }/>
+        { (requestStatus === PENDING) && <Spinner /> }
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  testData: state.contests.test
+});
+const mapDispatchToProps = dispatch => ({
+  getTest: id => { getTest(id)(dispatch); }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewTestPage);

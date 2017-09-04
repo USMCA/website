@@ -49,7 +49,7 @@ router.post('/', auth.verifyJWT, (req, res) => {
   });
 });
 
-router.get('/:contest_id', (req, res) => {
+router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params;
   Contest.findById(contest_id)
   .populate('czars', 'name email')
@@ -66,6 +66,7 @@ router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
   const { test_id } = req.params;
   Test.findById(test_id)
   .populate('problems')
+  .populate('contest', 'name')
   .exec((err, test) => {
     if (err) handler(false, 'Failed to load test.', 503)(req, res);
     else if (!test) handler(false, 'Test does not exist.', 400)(req, res);

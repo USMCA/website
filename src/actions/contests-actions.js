@@ -4,6 +4,7 @@ import {
   CONTEST_POST,
   CONTEST_GET,
   CONTEST_TEST_POST,
+  CONTEST_TEST_GET,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -49,10 +50,13 @@ export function postContest({ competition_id, name, date, locations }) {
 }
 
 export function getContest(contest_id) {
-  return APIAction({
+  return authAPIAction({
     type: CONTEST_GET,
     url: `/api/contests/${contest_id}`,
-    opts: { method: 'get' },
+    opts: { 
+      method: 'get',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    },
     formatData: ({ success, message, contest }) => ({ success, message, content: contest })  
   });
 }
@@ -70,5 +74,17 @@ export function postTest({ name, num_problems, contest_id }) {
       }
     },
     formatData: ({ success, message, test }) => ({ success, message, content: test })
+  });
+}
+
+export function getTest(test_id) {
+  return authAPIAction({
+    type: CONTEST_TEST_GET,
+    url: `/api/contests/tests/${test_id}`,
+    opts: { 
+      method: 'get',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    },
+    formatData: ({ success, message, test }) => ({ success, message, content: test })  
   });
 }
