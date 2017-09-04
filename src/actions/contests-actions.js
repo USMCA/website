@@ -2,12 +2,13 @@ import fetch from 'isomorphic-fetch';
 
 import { 
   CONTEST_POST,
+  CONTEST_GET,
   requestStatuses,
   requestPayloads
 } from './types';
 import { requestTypes } from '../../constants';
 import auth from '../auth';
-import { authenticate } from './utilities';
+import { authenticate, APIAction, authAPIAction } from './utilities';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const {
@@ -44,4 +45,13 @@ export function postContest({ competition_id, name, date, locations }) {
       );
     });    
   }
+}
+
+export function getContest(contest_id) {
+  return APIAction({
+    type: CONTEST_GET,
+    url: `/api/contests/${contest_id}`,
+    opts: { method: 'get' },
+    formatData: ({ success, message, contest }) => ({ success, message: content: contest })  
+  });
 }

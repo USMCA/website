@@ -62,7 +62,8 @@ export const COMP_REQ = 'comp_req', // request to create competition
              COMP_REQ_JOIN = 'comp_req_join'; // request to join competition
 
 /* contests */
-export const CONTEST_POST = 'contest_post'; // post a contest
+export const CONTEST_POST = 'contest_post', // post a contest
+             CONTEST_GET = 'contest_get'; // get a contest
 
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user

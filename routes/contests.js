@@ -48,4 +48,16 @@ router.post('/', auth.verifyJWT, (req, res) => {
   });
 });
 
+router.get('/:contest_id', (req, res) => {
+  const { contest_id } = req.params;
+  Contest.findById(contest_id)
+  .populate('czars', 'name email')
+  .populate('test_solvers', 'name email')
+  .exec((err, contest) => {
+    if (err) handler(false, 'Failed to load contest.', 503)(req, res);
+    else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
+    else handler(true, 'Succesfully loaded contest.', 200, { contest })(req, res);
+  });
+});
+
 module.exports = router;

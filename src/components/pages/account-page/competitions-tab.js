@@ -72,7 +72,7 @@ class CompetitionsTab extends React.Component {
         <div style={{borderBottom: "1px solid #cfd8dc"}} key={idx}>
           <h3>{ contest.name }<a className="right black-text"><i className="fa fa-times" aria-hidden="true" /></a><Modal header="Update Contest" trigger={<a className="right right-space black-text"><i className="fa fa-pencil" aria-hidden="true" /></a>}><CreateContestForm contest={ contest } competition_id={ competition._id } /></Modal></h3>
           <ul>
-            <li><a href="/view-contest" className="teal-text text-darken-3 underline-hover">View contest</a></li>
+            <li><Link to={ `/view-contest/${competition._id}` } className="teal-text text-darken-3 underline-hover">View contest</Link></li>
             <li>Date: { contest.date ? moment(contest.date).format('ll') : "N/A" }</li>
             <li>Test solve deadline: { contest.test_solve_deadline ? moment(contest.test_solve_deadline) : "N/A" }</li>
             <li>Location(s): { locationsString(contest.locations) }</li>

@@ -22,9 +22,9 @@ const Routes = ({ authenticated }) => (
     <Route exact path="/login" component={ LoginPage }/>
     <Route exact path="/propose" component={ requireAuth(ProposePage) }/>
     <Route exact path="/test-solve" component={ requireAuth(TestSolvePage) }/>
-    <Route exact path="/view-contest" component={ requireAuth(ViewContestPage) }/>
+    <Route path="/view-contest/:id" component={ requireAuth(ViewContestPage) }/>
     <Route path="/view-database/:id" component={ requireAuth(ViewDatabasePage) }/>
-    <Route exact path="/view-test" component={ requireAuth(ViewTestPage) }/>
+    <Route path="/view-test/:id" component={ requireAuth(ViewTestPage) }/>
     <Route path="/view-problem/:id" component={ requireAuth(ViewProblemPage) }/>
     <Route path="*" component={ NotFoundPage } />
   </Switch>

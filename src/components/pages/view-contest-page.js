@@ -1,6 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Row, Col, Button, Table, Modal, Input } from "react-materialize";
+import { Link } from "react-router-dom";
 
+import { getContest } from "../../actions";
 import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
 
@@ -25,7 +29,7 @@ const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers 
                 <tr key={key}>
                   <td>{test.name}</td>
                   <td>{test.problems}</td>
-                  <td><a href="/view-test" className="teal-text text-darken-3 underline-hover">Manage</a></td>
+                  <td><Link to={ `/view-test/${test._id}` } className="teal-text text-darken-3 underline-hover">Manage</Link></td>
                 </tr>
               ))
             }
@@ -121,5 +125,14 @@ const ViewContestPage = () => (
     <ContestPreview name="CMIMC 2018" date="January 28th, 2018" locations={["Carnegie Mellon University", "CMU Qatar Campus"]} status="Active" tests={tests} czars={["Taisuke Yasuda", "Cody Johnson"]} testSolvers={["Taisuke Yasuda", "Cody Johnson"]} />
   </Row>
 );
+
+const mapStateToProps = state => ({
+  data: state.contests.contest
+});
+const mapDispatchToProps = dispatch => ({
+  getContest: id => {
+    getContest(id)(dispatch);
+  }
+});
 
 export default ViewContestPage;
