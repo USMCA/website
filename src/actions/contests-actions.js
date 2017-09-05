@@ -7,6 +7,7 @@ import {
   CONTEST_TEST_GET,
   CONTEST_TEST_PROB,
   CONTEST_RM_PROB,
+  CONTEST_REORDER_PROBS,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -109,11 +110,27 @@ export function addTestProb(test_id, problem_id) {
 
 export function removeTestProb(test_id, problem_id) {
   return authAPIAction({
-    type: CONTEST_TEST_PROB,
+    type: CONTEST_RM_PROB,
     url: `/api/contests/tests/${test_id}`,
     opts: { 
       method: 'delete',
       body: JSON.stringify({ problem_id }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message })  
+  });
+}
+
+export function reorderTestProbs(test_id, problem_ids) {
+  return authAPIAction({
+    type: CONTEST_REORDER_PROBS,
+    url: `/api/contests/tests/${test_id}`,
+    opts: { 
+      method: 'put',
+      body: JSON.stringify({ problem_ids }),
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}` 

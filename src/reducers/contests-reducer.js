@@ -5,6 +5,7 @@ import {
   CONTEST_TEST_GET,
   CONTEST_TEST_PROB,
   CONTEST_RM_PROB,
+  CONTEST_REORDER_PROBS,
   requestStatuses
 } from '../actions/types';
 
@@ -54,6 +55,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return newState;
     case CONTEST_RM_PROB:
       return { ...state, removeTestProb: payload };
+    case CONTEST_REORDER_PROBS:
     default:
       return state;
   }

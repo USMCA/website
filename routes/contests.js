@@ -65,6 +65,7 @@ router.get('/:contest_id', auth.verifyJWT, (req, res) => {
 });
 
 router.param('test_id', (req, res, next, test_id) => {
+  /* @TODO check auths */
   Test.findById(test_id)
   .populate('problems')
   .populate('contest', 'name competition')
@@ -124,6 +125,22 @@ router.delete('/tests/:test_id', auth.verifyJWT, (req, res) => {
     if (err) handler(false, 'Failed to save test.', 503)(req, res);
     else handler(true, 'Deleted problem from test.', 200)(req, res);
   });
+});
+
+/* reorder problems in a test */
+router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
+  const { problem_ids } = req.body;
+  const testProblemIds = req.test.problems.map(problem => problem._id.toString()).sort(),
+        newProblemIds = problem_ids.map(problem => problem).sort();
+  if (!_.isEqual(testProblemIds, newProblemIds)) {
+    handler(false, 'New problems are not a permutation of the test.', 400)(req, res);
+  } else {
+    req.test.problems = problem_ids;
+    req.test.save(err => {
+      if (err) handler(false, 'Failed to save test.', 503)(req, res);
+      else handler(true, 'Reordered the test.', 200)(req, res);
+    });
+  }
 });
 
 /* post a new test */
