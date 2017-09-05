@@ -9,7 +9,8 @@ const { REQUEST, ACCEPT, REJECT } = requestTypes;
 const User = require('../database/user'),
       Competition = require('../database/competition'),
       Contest = require('../database/contest'),
-      Test = require('../database/test');
+      Test = require('../database/test'),
+      Problem = require('../database/problem');
 
 router.post('/', auth.verifyJWT, (req, res) => {
   const { competition_id, name, date, locations } = req.body;
@@ -49,6 +50,7 @@ router.post('/', auth.verifyJWT, (req, res) => {
   });
 });
 
+/* get a contest */
 router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params;
   Contest.findById(contest_id)
@@ -62,18 +64,59 @@ router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   });
 });
 
-router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
-  const { test_id } = req.params;
+router.param('test_id', (req, res, next, test_id) => {
   Test.findById(test_id)
   .populate('problems')
-  .populate('contest', 'name')
+  .populate('contest', 'name competition')
   .exec((err, test) => {
     if (err) handler(false, 'Failed to load test.', 503)(req, res);
     else if (!test) handler(false, 'Test does not exist.', 400)(req, res);
-    else handler(true, 'Succesffully loaded test.', 200, { test })(req, res);
+    else {
+      req.test = test;
+      next();
+    }
   });
 });
 
+/* get a test */
+router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
+  handler(true, 'Successfully loaded test.', 200, { test: req.test })(req, res);
+});
+
+/* add a problem to a test */
+router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
+  const { problem_id } = req.body;
+  Problem.findById(problem_id)
+  .populate('competition')
+  .exec((err, problem) => {
+    if (err) handler(false, 'Failed to load problem.', 503)(req, res);
+    else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
+    else {
+      /* check if problem belongs to competition */
+      if (!problem.competition.equals(req.test.contest.competition)) {
+        handler(false, 'The problem does not belong to the competition.', 400)(req, res);
+      /* check if problem is in the test already */
+      } else if (
+        _.find(
+          req.test.problems, 
+          problem => problem._id.toString() === problem._id.toString()
+        )
+      ) {
+        handler(false, 'The problem is already in the test.', 400)(req, res);
+      } else {
+        req.test.problems.push(problem);
+        req.test.save(err => {
+          if (err) handler(false, 'Failed to save test.', 503)(req, res);
+          else handler(true, 'Successfully added problem to test.', 200, {
+            problem
+          })(req, res);
+        });
+      }
+    }
+  });
+});
+
+/* post a new test */
 router.post('/:contest_id/tests', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params,
         { name, num_problems } = req.body;

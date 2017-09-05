@@ -176,10 +176,10 @@ class CommentList extends React.Component {
 
 class ProblemPreview extends React.Component  {
   render() {
-    const { problem, publicDatabase } = this.props;
+    const { problem, publicDatabase, includeClipboard } = this.props;
     return (
       <Row className="problem">
-        <Col offset="s2" s={10}>
+        <Col offset={ includeClipboard && "s2" } s={ includeClipboard ? 10 : 12 }>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
           { !publicDatabase && (
               <ul className="problem-options">
@@ -189,12 +189,17 @@ class ProblemPreview extends React.Component  {
             )
           }
         </Col>
-        <Col s={2} className="center-align">
-          <div className="upvote upvoted">
-            <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
-          </div>
-        </Col>
-        <Col m={ publicDatabase ? 5 : 10 } s={10}>
+        { includeClipboard && ( 
+            <Col s={2} className="center-align">
+              <div className="upvote upvoted">
+                <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
+              </div>
+            </Col>
+          )
+        }
+        <Col 
+          m={ includeClipboard ? (publicDatabase ? 5 : 10) : (publicDatabase ? 6 : 12) } 
+          s={ includeClipboard ? 10 : 12 }>
           <div className="katex-preview">
             <Link
               to={ "/view-problem/" + problem._id.toString() }
@@ -206,7 +211,7 @@ class ProblemPreview extends React.Component  {
           </div>
         </Col>
         { publicDatabase && (
-            <Col m={5} s={12}>
+            <Col m={ includeClipboard ? 5 : 6 } s={12}>
               <TakeProblemForm problem_id={ problem._id }/>
             </Col> 
           )

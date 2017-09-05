@@ -5,6 +5,7 @@ import {
   CONTEST_GET,
   CONTEST_TEST_POST,
   CONTEST_TEST_GET,
+  CONTEST_TEST_PROB,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -86,5 +87,21 @@ export function getTest(test_id) {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     },
     formatData: ({ success, message, test }) => ({ success, message, content: test })  
+  });
+}
+
+export function addTestProb(test_id, problem_id) {
+  return authAPIAction({
+    type: CONTEST_TEST_PROB,
+    url: `/api/contests/tests/${test_id}`,
+    opts: { 
+      method: 'put',
+      body: JSON.stringify({ problem_id }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      }
+    },
+    formatData: ({ success, message, problem }) => ({ success, message, content: problem })  
   });
 }

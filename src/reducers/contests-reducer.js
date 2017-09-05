@@ -3,6 +3,7 @@ import {
   CONTEST_GET,
   CONTEST_TEST_POST,
   CONTEST_TEST_GET,
+  CONTEST_TEST_PROB,
   requestStatuses
 } from '../actions/types';
 
@@ -11,7 +12,8 @@ const INITIAL_STATE = {
   createContest: { content: null, message: '', requestStatus: IDLE },
   contest: { content: null, message: '', requestStatus: IDLE },
   postTestData: { requestStatus: IDLE, message: '' },
-  test: { content: null, message: '', requestStatue: IDLE }
+  test: { content: null, message: '', requestStatue: IDLE },
+  addTestProb: { message: '', requestStatue: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -39,6 +41,15 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       };
     case CONTEST_TEST_GET:
       return { ...state, test: payload };
+    case CONTEST_TEST_PROB:
+      const problem = content;
+      let newState = { 
+        ...state, 
+        contest: Object.assign({}, state.contest, { requestStatus, message }),
+        addTestProb: { requestStatus, message }
+      };
+      if (requestStatus === SUCCESS) newState.test.content.problems.push(problem);
+      return newState;
     default:
       return state;
   }

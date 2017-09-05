@@ -1,14 +1,14 @@
 import React, {Component} from "react";
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { Row, Col, Modal } from "react-materialize";
+import { Row, Col, Modal, Input } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import {  } from "../utilities";
 import Error from "../error";
 import Spinner from "../spinner";
 import { getTest } from "../../actions";
 import { requestStatuses } from "../../actions/types";
+import AddProblemForm from "../forms/add-problem";
 
 const { SUCCESS, PENDING, ERROR, IDLE } = requestStatuses;
 
@@ -93,10 +93,12 @@ class TestProblems extends Component {
 
   render() {
     let {problems} = this.state;
+    const { test } = this.props;
 
     return <div>
       <SortableProblemList problems={problems} removeElem={this.removeElem} onSortEnd={this.onSortEnd} useDragHandle={true} />
       <Modal header='Add Problem' trigger={<a className="teal-text text-darken-3"><i className="fa fa-plus" aria-hidden="true"></i></a>}>
+        <AddProblemForm test_id={ test._id } />
       	<a onClick={() => this.addElem("hello")}>Click me, u wont</a>
       </Modal>
     </div>;
@@ -120,7 +122,7 @@ class ViewTestPage extends React.Component {
               <h2 className="teal-text text-darken-4"><Link to={ `/view-contest/${test.contest._id}` } className="teal-text text-darken-3 underline-hover">{ test.contest.name }</Link></h2>
               <h3 className="teal-text text-darken-4">{ test.name }</h3>
               <p>This test consists of 10 problems.</p>
-              <TestProblems />
+              <TestProblems test={ test } />
             </Row>
           )
         }
@@ -132,10 +134,10 @@ class ViewTestPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  testData: state.contests.test
+  testData: state.contests.test,
 });
 const mapDispatchToProps = dispatch => ({
-  getTest: id => { getTest(id)(dispatch); }
+  getTest: id => { getTest(id)(dispatch); },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewTestPage);

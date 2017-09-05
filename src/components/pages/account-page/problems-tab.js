@@ -24,7 +24,7 @@ class ProblemsTab extends React.Component {
         {
           content.map((proposal, key) => (
             <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
-              <ProblemPreview problem={proposal} />
+              <ProblemPreview problem={proposal} includeClipboard={true} />
             </div>
           ))
         }
