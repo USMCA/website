@@ -16,7 +16,7 @@ class AccountTab extends React.Component {
         <h2 className="teal-text text-darken-4" style={{marginTop: "36px"}}>Account
           <Modal header="Edit Account" trigger={<a className="teal-text text-darken-4 right"><i className="fa fa-pencil" aria-hidden="true"></i></a>}>
             <Row>
-              <form s={12}>
+              <form className="s12">
                 <Input s={12} label="Name" defaultValue={name} />
                 <Input s={12} label="Email" defaultValue={email} />
                 <Input s={12} label="University" defaultValue={university} />
