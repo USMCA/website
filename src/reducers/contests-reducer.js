@@ -4,6 +4,7 @@ import {
   CONTEST_TEST_POST,
   CONTEST_TEST_GET,
   CONTEST_TEST_PROB,
+  CONTEST_RM_PROB,
   requestStatuses
 } from '../actions/types';
 
@@ -13,7 +14,8 @@ const INITIAL_STATE = {
   contest: { content: null, message: '', requestStatus: IDLE },
   postTestData: { requestStatus: IDLE, message: '' },
   test: { content: null, message: '', requestStatue: IDLE },
-  addTestProb: { message: '', requestStatue: IDLE }
+  addTestProb: { message: '', requestStatue: IDLE },
+  removeTestProb: { message: '', requestStatue: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -50,6 +52,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       };
       if (requestStatus === SUCCESS) newState.test.content.problems.push(problem);
       return newState;
+    case CONTEST_TEST_PROB:
+      return { ...state, removeTestProb: payload };
     default:
       return state;
   }

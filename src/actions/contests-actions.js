@@ -6,6 +6,7 @@ import {
   CONTEST_TEST_POST,
   CONTEST_TEST_GET,
   CONTEST_TEST_PROB,
+  CONTEST_RM_PROB,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -103,5 +104,21 @@ export function addTestProb(test_id, problem_id) {
       }
     },
     formatData: ({ success, message, problem }) => ({ success, message, content: problem })  
+  });
+}
+
+export function removeTestProb(test_id, problem_id) {
+  return authAPIAction({
+    type: CONTEST_TEST_PROB,
+    url: `/api/contests/tests/${test_id}`,
+    opts: { 
+      method: 'delete',
+      body: JSON.stringify({ problem_id }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message })  
   });
 }

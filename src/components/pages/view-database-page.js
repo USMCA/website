@@ -7,14 +7,12 @@ import { fetchDatabase } from "../../actions";
 
 class DatabasePage extends React.Component {
   componentWillMount() {
-    console.log(this.props);
     const { match, fetchDatabase } = this.props;
     fetchDatabase(match.params.id);
   }
 
   render() {
     const { database } = this.props;
-    console.log(database);
     return (
       <Row className="container">
         <Col s={12}>
@@ -63,7 +61,7 @@ class DatabasePage extends React.Component {
           {
             (database.content) && (database.content.map((proposal, key) => (
               <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
-                <ProblemPreview problem={proposal} />
+                <ProblemPreview problem={proposal} includeClipboard={true}/>
               </div>)
             ))
           }

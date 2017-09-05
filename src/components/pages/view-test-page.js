@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 import Error from "../error";
 import Spinner from "../spinner";
-import { getTest } from "../../actions";
+import renderKaTeX from "../../katex";
+import { getTest, removeTestProb } from "../../actions";
 import { requestStatuses } from "../../actions/types";
 import AddProblemForm from "../forms/add-problem";
 
@@ -27,11 +28,8 @@ const SortableProblem = SortableElement(({ problem, myKey, removeElem }) => (
         <Col s={1}>
           <DragHandle />
         </Col>
-        <Col s={8}>
-          { problem }
-        </Col>
-        <Col s={2}>
-          Stats!
+        <Col s={10}>
+          <Link to={ `/view-problem/${problem._id}` } className="teal-text text-darken-3 underline-hover"><div ref={ renderKaTeX }>{ problem.statement }</div></Link>
         </Col>
         <Col s={1}>
           <a className="grey-text text-darken-1 right" onClick={() => removeProblem(myKey, removeElem)}><i className="fa fa-times" aria-hidden="true"></i></a>
@@ -61,9 +59,12 @@ function removeElementWithIndex(arr, index) {
 }
 
 class TestProblems extends Component {
-  state = {
-    problems: [],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      problems: props.test.problems
+    };
+  }
 
   onSortEnd = ({oldIndex, newIndex}) => {
     let {problems} = this.state;
@@ -75,7 +76,10 @@ class TestProblems extends Component {
 
   removeElem = (i) => {
     let {problems} = this.state;
-
+    const { removeTestProb, test } = this.props,
+          test_id = test._id,
+          problem_id = problems[i];
+    removeTestProb(test_id, problem_id);
     this.setState({
       problems: removeElementWithIndex(problems, i),
     });
@@ -92,7 +96,7 @@ class TestProblems extends Component {
   }
 
   render() {
-    let {problems} = this.state;
+    const { problems } = this.state;
     const { test } = this.props;
 
     return <div>
@@ -112,7 +116,10 @@ class ViewTestPage extends React.Component {
   }
 
   render() {
-    const { testData: { content, requestStatus, message } } = this.props,
+    const { 
+            testData: { content, requestStatus, message },
+            removeTestProb
+          } = this.props,
           test = content;
     console.log(test);
     return (
@@ -122,7 +129,7 @@ class ViewTestPage extends React.Component {
               <h2 className="teal-text text-darken-4"><Link to={ `/view-contest/${test.contest._id}` } className="teal-text text-darken-3 underline-hover">{ test.contest.name }</Link></h2>
               <h3 className="teal-text text-darken-4">{ test.name }</h3>
               <p>This test consists of 10 problems.</p>
-              <TestProblems test={ test } />
+              <TestProblems test={ test } removeTestProb={ removeTestProb } />
             </Row>
           )
         }
@@ -138,6 +145,9 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   getTest: id => { getTest(id)(dispatch); },
+  removeTestProb: (test_id, problem_id) => { 
+    removeTestProb(test_id, problem_id)(dispatch);
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewTestPage);

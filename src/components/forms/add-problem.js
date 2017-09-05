@@ -36,7 +36,7 @@ class AddProblemForm extends React.Component {
     const { 
             handleSubmit, 
             probData: { content, requestStatus, message },
-            postData: { requestStatus: postStatus, message: errMessage },
+            postData: { requestStatus: postStatus, message: postMessage },
             getProposal
           } = this.props,
           proposal = content;
@@ -48,7 +48,10 @@ class AddProblemForm extends React.Component {
           </div>
           { proposal && <ProblemPreview problem={ proposal } /> }
           <Col s={12}>
-            <Error error={ postStatus === ERROR } message={ errMessage }/>
+            <Error error={ postStatus === ERROR } message={ postMessage }/>
+          </Col>
+          <Col s={12}>
+            { (postStatus === SUCCESS) && <p>Added problem to the test!</p> }
           </Col>
           <RightButtonPanel>
             <Button waves="light" className="teal darken-3" type="submit">Add</Button>

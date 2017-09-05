@@ -99,7 +99,7 @@ router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
       } else if (
         _.find(
           req.test.problems, 
-          problem => problem._id.toString() === problem._id.toString()
+          existingProblem => existingProblem._id.toString() === problem._id.toString()
         )
       ) {
         handler(false, 'The problem is already in the test.', 400)(req, res);
@@ -113,6 +113,16 @@ router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
         });
       }
     }
+  });
+});
+
+/* delete problem from a test */
+router.delete('/tests/:test_id', auth.verifyJWT, (req, res) => {
+  const { problem_id } = req.body;
+  req.test.problems.pull(problem_id);
+  req.test.save(err => {
+    if (err) handler(false, 'Failed to save test.', 503)(req, res);
+    else handler(true, 'Deleted problem from test.', 200)(req, res);
   });
 });
 
