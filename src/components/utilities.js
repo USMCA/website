@@ -20,6 +20,10 @@ import {
 } from "../actions/types";
 import { requestTypes } from "../../constants";
 
+const clipboardRef = elem => {
+  if (elem) { new Clipboard(elem) }
+};
+
 const datify = (created, updated) => (
   updated ?
   ((created === updated) ? moment(created).format("MMM Do, YYYY, h:mm a") : "Edited " + moment(updated).format("MMM Do, YYYY, h:mm a")) :
@@ -187,7 +191,7 @@ class ProblemPreview extends React.Component  {
         </Col>
         <Col s={2} className="center-align">
           <div className="upvote upvoted">
-            <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ elem => { new Clipboard(elem); } } data-clipboard-text={ problem._id }>Copy ID</a>
+            <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
           </div>
         </Col>
         <Col m={ publicDatabase ? 5 : 10 } s={10}>
@@ -237,7 +241,7 @@ class ExtendedProblemPreview extends React.Component  {
         </Col>
         <Col m={3} s={12} className="problem-stats">
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
-          <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ elem => { new Clipboard(elem); } } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
+          <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>
         </Col>
