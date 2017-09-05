@@ -4,6 +4,8 @@ import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import $ from "jquery";
+import Clipboard from "clipboard";
 
 import CommentForm from "./forms/comment";
 import TakeProblemForm from "./forms/take-problem";
@@ -173,17 +175,22 @@ class ProblemPreview extends React.Component  {
     const { problem, publicDatabase } = this.props;
     return (
       <Row className="problem">
-        <Col s={12}>
+        <Col offset="s2" s={10}>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
           { !publicDatabase && (
               <ul className="problem-options">
-                <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
-                <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
+                <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></a></li>
+                <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true" /></a></li>
               </ul>
             )
           }
         </Col>
-        <Col m={ publicDatabase ? 6 : 12 } s={12}>
+        <Col s={2} className="center-align">
+          <div className="upvote upvoted">
+            <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ elem => { new Clipboard(elem); } } data-clipboard-text={ problem._id }>Copy ID</a>
+          </div>
+        </Col>
+        <Col m={ publicDatabase ? 5 : 10 } s={10}>
           <div className="katex-preview">
             <Link
               to={ "/view-problem/" + problem._id.toString() }
@@ -195,7 +202,7 @@ class ProblemPreview extends React.Component  {
           </div>
         </Col>
         { publicDatabase && (
-            <Col m={6} s={12}>
+            <Col m={5} s={12}>
               <TakeProblemForm problem_id={ problem._id }/>
             </Col> 
           )
@@ -230,6 +237,7 @@ class ExtendedProblemPreview extends React.Component  {
         </Col>
         <Col m={3} s={12} className="problem-stats">
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ elem => { new Clipboard(elem); } } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>
         </Col>
