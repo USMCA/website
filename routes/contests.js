@@ -84,7 +84,7 @@ router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
 });
 
 /* add a problem to a test */
-router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
+router.post('/tests/:test_id', auth.verifyJWT, (req, res) => {
   const { problem_id } = req.body;
   Problem.findById(problem_id)
   .populate('competition')

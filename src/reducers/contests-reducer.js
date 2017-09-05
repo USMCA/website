@@ -47,12 +47,12 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       const problem = content;
       let newState = { 
         ...state, 
-        contest: Object.assign({}, state.contest, { requestStatus, message }),
+        test: Object.assign({}, state.test, { requestStatus, message }),
         addTestProb: { requestStatus, message }
       };
       if (requestStatus === SUCCESS) newState.test.content.problems.push(problem);
       return newState;
-    case CONTEST_TEST_PROB:
+    case CONTEST_RM_PROB:
       return { ...state, removeTestProb: payload };
     default:
       return state;

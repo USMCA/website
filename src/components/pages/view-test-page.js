@@ -66,6 +66,10 @@ class TestProblems extends Component {
     };
   }
 
+  componentDidReceiveProps() {
+    this.setState({ problems: this.props.test.problems });
+  }
+
   onSortEnd = ({oldIndex, newIndex}) => {
     let {problems} = this.state;
 

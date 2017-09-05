@@ -96,7 +96,7 @@ export function addTestProb(test_id, problem_id) {
     type: CONTEST_TEST_PROB,
     url: `/api/contests/tests/${test_id}`,
     opts: { 
-      method: 'put',
+      method: 'post',
       body: JSON.stringify({ problem_id }),
       headers: { 
         'Content-Type': 'application/json',
