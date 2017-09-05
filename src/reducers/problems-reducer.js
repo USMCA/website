@@ -18,7 +18,7 @@ const INITIAL_STATE = {
   postProposal: { requestStatus: IDLE, message: '' },
   myProposals: { content: [], requestStatus: IDLE, message: '' },
   proposal: { content: null, requestStatus: IDLE, message: '' },
-  database: { content: [], requestStatus: IDLE, message: '' },
+  database: { content: {}, requestStatus: IDLE, message: '' },
   publicDatabase: { content: [], requestStatus: IDLE, message: '' }
 };
 

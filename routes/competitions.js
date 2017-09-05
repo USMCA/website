@@ -259,7 +259,7 @@ router.get('/database', auth.verifyJWT, (req, res) => {
         if (err) {
           handler(false, 'Failed to load database problems.', 503)(req, res);
         } else {
-          handler(true, 'Succesfully loaded database problems.', 200, { problems })(req, res);
+          handler(true, 'Succesfully loaded database problems.', 200, { competition, problems })(req, res);
         }
       });
     }

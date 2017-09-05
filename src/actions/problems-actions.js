@@ -163,12 +163,12 @@ export function fetchDatabase(id) {
         method: 'get',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       }).then(
-        res => res.json().then(({ success, message, problems }) => {
+        res => res.json().then(({ success, message, competition, problems }) => {
           if (!success) {
             dispatch(Object.assign(action, errorPayload(message)));
           } else {
             dispatch(Object.assign(action, successPayload({
-              content: problems
+              content: { competition, problems }
             })));
           }
         }),

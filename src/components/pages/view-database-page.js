@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, Input } from "react-materialize";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { ProblemPreview } from "../utilities";
 import { fetchDatabase } from "../../actions";
@@ -13,10 +14,12 @@ class DatabasePage extends React.Component {
 
   render() {
     const { database } = this.props;
+    if (!database.content || !database.content.problems) return <div />;
+    const { problems, competition } = database.content;
     return (
       <Row className="container">
         <Col s={12}>
-          <h2 className="teal-text text-darken-4">Database</h2>
+          <h2 className="teal-text text-darken-4">{ competition.short_name } Database</h2>
           <Row>
             <form className="col s12">
               <Row>
@@ -59,11 +62,11 @@ class DatabasePage extends React.Component {
           </Row>
           <h3>Results</h3>
           {
-            (database.content) && (database.content.map((proposal, key) => (
+            problems.map((proposal, key) => (
               <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
                 <ProblemPreview problem={proposal} includeClipboard={true}/>
               </div>)
-            ))
+            )
           }
           <div style={{padding: "24px 0"}}>
             <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
