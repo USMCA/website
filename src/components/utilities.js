@@ -176,12 +176,12 @@ class CommentList extends React.Component {
 
 class ProblemPreview extends React.Component  {
   render() {
-    const { problem, publicDatabase, includeClipboard } = this.props;
+    const { problem, publicDatabase, includeClipboard, editable } = this.props;
     return (
       <Row className="problem">
         <Col offset={ includeClipboard && "s2" } s={ includeClipboard ? 10 : 12 }>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
-          { !publicDatabase && (
+          { editable && (
               <ul className="problem-options">
                 <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></a></li>
                 <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true" /></a></li>
