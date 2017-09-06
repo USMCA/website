@@ -5,13 +5,16 @@ import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 import { Link } from "react-router-dom";
 
-import { takeProblem } from "../../actions";
+import { requestTS } from "../../actions";
+import { requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
 import Error from "../error";
 import {
   competitionsInputOptions,
   CompetitionsSelect,
 } from "./utilities";
+
+const { SUCCESS, PENDING, ERROR, IDLE } = requestStatuses;
 
 const NumberField = ({ input, meta, ...rest }) => (
         <Input 
@@ -24,15 +27,19 @@ const NumberField = ({ input, meta, ...rest }) => (
 
 class RequestTSForm extends React.Component {
   onSubmit = ({ number }) => {
-    const { takeProblem, contest_id } = this.props;
-    console.log(number); return;
-    if (!competition_id) return;
-    takeProblem(problem_id, competition_id);
+    const { requestTS, contest_id } = this.props;
+    if (!contest_id) return;
+    requestTS(contest_id, number);
   }
 
   render() {
-    const { handleSubmit } = this.props;
-    return (
+    const { 
+      handleSubmit, 
+      requestTSData: { requestStatus, message } 
+    } = this.props;
+    return (requestStatus === SUCCESS) ? (
+      <p>Request submitted!</p>
+    ) : (
       <form className="col s12" onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
           <div>
@@ -42,17 +49,19 @@ class RequestTSForm extends React.Component {
             <Button waves="light" className="teal darken-3" type="submit">Request</Button>
           </Col>
         </Row>
+        <Error error={ requestStatus === ERROR } message={ message } />
+        { (requestStatus === PENDING) && <Spinner /> }
       </form>
     );
   }
 }
 
 const mapStateToProps = state => ({
-        probStatus: state.problems.postProposal,
+        requestTSData: state.contests.requestTS,
       }),
       mapDispatchToProps = dispatch => ({
-        takeProblem: (problem_id, competition_id) => {
-          takeProblem(problem_id, competition_id)(dispatch);
+        requestTS: (contest_id, number) => {
+          requestTS(contest_id, number)(dispatch);
         }
       });
 

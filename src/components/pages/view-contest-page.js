@@ -70,7 +70,7 @@ class ContestPreviewDumb extends React.Component {
                   content.czars.map((czar, key) => (
                     <tr key={key}>
                       <td>{czar}</td>
-                      <td>ctj@math.cmu.edu</td>
+                      <td>{czar.email}</td>
                       <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
                     </tr>
                   ))
@@ -87,7 +87,7 @@ class ContestPreviewDumb extends React.Component {
         if (!content) return <div />;
         return (
           <div className="round-container">
-            <Button className="teal darken-3" waves="light">Invite</Button> <Modal trigger={<Button className="teal darken-3" waves="light">Request</Button>}><RequestTSForm /></Modal>
+            <Modal trigger={<Button className="teal darken-3" waves="light">Request</Button>}><RequestTSForm contest_id={ content._id } /></Modal>
             <Table>
               <thead>
                 <tr>
@@ -99,10 +99,10 @@ class ContestPreviewDumb extends React.Component {
 
               <tbody>
                 {
-                  content.test_solvers.map((czar, key) => (
+                  content.test_solvers.map((ts, key) => (
                     <tr key={key}>
-                      <td>{czar}</td>
-                      <td>ctj@math.cmu.edu</td>
+                      <td>{ts}</td>
+                      <td>{ts.email}</td>
                       <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
                     </tr>
                   ))
@@ -118,7 +118,6 @@ class ContestPreviewDumb extends React.Component {
   render() {
     const { data } = this.props,
           contest = data.content;
-    console.log(contest);
     if (!contest) return <div />;
 
     const childProps = {

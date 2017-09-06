@@ -68,7 +68,8 @@ export const CONTEST_POST = 'contest_post', // post a contest
              CONTEST_TEST_GET = 'contest_test_get', // post a test
              CONTEST_TEST_PROB = 'content_test_prob', // add a problem to a test
              CONTEST_RM_PROB = 'content_rm_prob', // remove a problem from a test
-             CONTEST_REORDER_PROBS = 'content_reorder_probs'; // change order of problems
+             CONTEST_REORDER_PROBS = 'content_reorder_probs', // change order of problems
+             CONTEST_REQUEST_TS = 'contest_request_ts'; // request for test solvers
 
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user

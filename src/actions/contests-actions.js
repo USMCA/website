@@ -8,6 +8,7 @@ import {
   CONTEST_TEST_PROB,
   CONTEST_RM_PROB,
   CONTEST_REORDER_PROBS,
+  CONTEST_REQUEST_TS,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -131,6 +132,22 @@ export function reorderTestProbs(test_id, problem_ids) {
     opts: { 
       method: 'put',
       body: JSON.stringify({ problem_ids }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message })  
+  });
+}
+
+export function requestTS(contest_id, num) {
+  return authAPIAction({
+    type: CONTEST_REQUEST_TS,
+    url: `/api/contests/${contest_id}/test-solvers`,
+    opts: { 
+      method: 'post',
+      body: JSON.stringify({ requested_test_solvers: num }),
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}` 

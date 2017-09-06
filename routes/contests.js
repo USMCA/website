@@ -64,7 +64,7 @@ router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   });
 });
 
-router.param('test_id', (req, res, next, test_id) => {
+router.param('test_id', auth.verifyJWT, (req, res, next, test_id) => {
   /* @TODO check auths */
   Test.findById(test_id)
   .populate('problems')
@@ -80,12 +80,12 @@ router.param('test_id', (req, res, next, test_id) => {
 });
 
 /* get a test */
-router.get('/tests/:test_id', auth.verifyJWT, (req, res) => {
+router.get('/tests/:test_id', (req, res) => {
   handler(true, 'Successfully loaded test.', 200, { test: req.test })(req, res);
 });
 
 /* add a problem to a test */
-router.post('/tests/:test_id', auth.verifyJWT, (req, res) => {
+router.post('/tests/:test_id', (req, res) => {
   const { problem_id } = req.body;
   Problem.findById(problem_id)
   .populate('competition')
@@ -118,7 +118,7 @@ router.post('/tests/:test_id', auth.verifyJWT, (req, res) => {
 });
 
 /* delete problem from a test */
-router.delete('/tests/:test_id', auth.verifyJWT, (req, res) => {
+router.delete('/tests/:test_id', (req, res) => {
   const { problem_id } = req.body;
   req.test.problems.pull(problem_id);
   req.test.save(err => {
@@ -128,7 +128,7 @@ router.delete('/tests/:test_id', auth.verifyJWT, (req, res) => {
 });
 
 /* reorder problems in a test */
-router.put('/tests/:test_id', auth.verifyJWT, (req, res) => {
+router.put('/tests/:test_id', (req, res) => {
   const { problem_ids } = req.body;
   const testProblemIds = req.test.problems.map(problem => problem._id.toString()).sort(),
         newProblemIds = problem_ids.map(problem => problem).sort();
@@ -174,6 +174,19 @@ router.post('/:contest_id/tests', auth.verifyJWT, (req, res) => {
         });
       }
     }
+  });
+});
+
+/* request test solvers */
+router.post('/:contest_id/test-solvers', auth.verifyJWT, (req, res) => {
+  const { contest_id } = req.params,
+        { requested_test_solvers } = req.body;
+  Contest.findByIdAndUpdate(contest_id, { 
+    requested_test_solvers 
+  }, (err, contest) => {
+    if (err) handler(false, 'Failed to load contest.', 503)(req, res);
+    else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
+    else handler(true, 'Updated request for test solvers.', 200)(req, res);
   });
 });
 
