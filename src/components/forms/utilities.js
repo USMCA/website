@@ -354,14 +354,6 @@ class KaTeXInput extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col s={6}>
-            How difficult did you find this problem?
-          </Col>
-          <Col s={6}>
-            <FlameInput n={ 5 } value={ 0 } />
-          </Col>
-        </Row>
-        <Row>
           {
             includeSubmit ? (
               <div>
