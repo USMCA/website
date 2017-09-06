@@ -18,6 +18,7 @@ import {
   CompetitionsSelect,
   SubjectsInput
 } from "./utilities";
+import { FlameInput } from "../utilities";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -32,14 +33,7 @@ const CompetitionField = ({ input, meta, ...rest }) => (
       SubjectField = ({ input, meta, ...rest }) => (
         <SubjectsInput s={4} { ...input } { ...rest } />),
       DifficultyField = ({ input, meta, ...rest }) => (
-        <Input type="select" label="Difficulty (optional)" s={4} { ...input } { ...rest }>
-          <option value="">Select a difficulty</option>
-          <option value={1}>1 (Easy)</option>
-          <option value={2}>2 (Easy Medium)</option>
-          <option value={3}>3 (Medium)</option>
-          <option value={4}>4 (Medium Hard)</option>
-          <option value={5}>5 (Hard)</option>
-        </Input>
+        <div><p style={{color: "#9e9e9e", fontSize: ".8rem"}}>Difficulty</p><FlameInput value={0} /></div>
       );
 
 class ProposeForm extends React.Component {

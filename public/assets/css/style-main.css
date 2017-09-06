@@ -334,3 +334,13 @@ li.urgent-announcement {
   margin-top: 24px;
   text-align: center;
 }
+
+.flame  {
+  padding: 0 2px;
+}
+
+.flame-value  {
+  margin: 0;
+  font-size: 10px;
+  color: #9e9e9e;
+}

@@ -154,6 +154,52 @@ class ProblemPreview extends React.Component  {
   }
 }
 
+const Flame = ({ color }) => {
+  color = color || "#9e9e9e";
+  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path fill={color} d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>;
+}
+
+class FlameInput extends React.Component  {
+  constructor(props) {
+    super(props);
+    this.state = {
+      labels: ["early-mid AMC", "mid-late AMC", "late AMC-early AIME", "mid AIME", "late AIME-early Olympiad", "Olympiad"],
+      value: this.props.value || 0
+    };
+  }
+
+  change(i) {
+    if(this.state.value == i+1)
+      this.setState({value: 0});
+    else
+      this.setState({value: i+1});
+  }
+
+  shade(t) {
+    var color1 = [255,235,59],
+    color2 = [244,67,54],
+    color = "";
+
+    for(var i = 0; i < 3; i++)
+      color += "," + Math.trunc(color1[i] * (1-t) + color2[i] * t);
+
+    return "rgb(" + color.substr(1) + ")";
+  }
+
+  render() {
+    const { labels, value } = this.state;
+    const n = labels.length;
+    return <div>
+      {
+        Array(n).fill(0).map((a, key) => (
+          <a className="flame" onClick={() => this.change(key)} key={key}><Flame color={(key <= value-1) ? this.shade((value-1)/(n-1)) : "#9e9e9e"} /></a>
+        ))
+      }
+      { (value > 0) && <p className="flame-value">{ labels[value-1] }</p> }
+    </div>;
+  }
+}
+
 class ExtendedProblemPreview extends React.Component  {
   render() {
     const { problem } = this.props;
@@ -174,9 +220,11 @@ class ExtendedProblemPreview extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
-          <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>
+          <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
+          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span>
+          <p>Rate difficulty:</p>
+          <FlameInput value={0} />
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} />
@@ -317,6 +365,7 @@ export {
   Notification,
   RightButtonPanel,
   ProblemPreview,
+  FlameInput,
   ExtendedProblemPreview,
   Solution,
   LoadMore,

@@ -17,7 +17,7 @@ import Autocomplete from "../react-materialize-custom/Autocomplete";
 import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
-import { RightButtonPanel } from "../utilities";
+import { RightButtonPanel, FlameInput } from "../utilities";
 
 const { SUCCESS, ERROR, PENDING, SUBMITTED, IDLE } = requestStatuses;
 
@@ -299,31 +299,6 @@ const SubjectsInput = props => {
 /*******************************************************************************
  * KaTeX input fields.
  ******************************************************************************/
-
-const Flame = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>
-)
-
-class FlameInput extends React.Component  {
-  constructor(props) {
-    super(props);
-    this.state = {
-      n: this.props.n || 5,
-      value: this.props.value || 0
-    };
-  }
-
-  render() {
-    const { n, value } = this.state;
-    return <div>
-      {
-        Array(n).fill(0).map((a, key) => (
-          <a style={{padding: "0 3px"}} id={"flame-" + key} key={key}><Flame /></a>
-        ))
-      }
-    </div>;
-  }
-}
 
 class KaTeXInput extends React.Component {
   previewKaTeX = () => {
