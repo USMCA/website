@@ -69,7 +69,7 @@ class ContestPreviewDumb extends React.Component {
                 {
                   content.czars.map((czar, key) => (
                     <tr key={key}>
-                      <td>{czar}</td>
+                      <td>{czar.name}</td>
                       <td>{czar.email}</td>
                       <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
                     </tr>
@@ -101,7 +101,7 @@ class ContestPreviewDumb extends React.Component {
                 {
                   content.test_solvers.map((ts, key) => (
                     <tr key={key}>
-                      <td>{ts}</td>
+                      <td>{ts.name}</td>
                       <td>{ts.email}</td>
                       <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
                     </tr>
