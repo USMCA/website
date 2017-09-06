@@ -1,125 +1,161 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Row, Col, Button, Table, Modal, Input } from "react-materialize";
+import { Link } from "react-router-dom";
 
+import { getContest } from "../../actions";
 import { RightButtonPanel, VerticalNav } from "../utilities";
 import CreateContestForm from "../forms/create-contest";
+import RequestTSForm from "../forms/request-test-solvers";
+import CreateTestForm from "../forms/create-test";
 
-const contestTabs = ({ name, date, locations, status, tests, czars, testSolvers }) => ({
-  "tests": {
-    title: () => "Tests",
-    view: () => (
-      <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button>
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Problems</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {
-              tests.map((test, key) => (
-                <tr key={key}>
-                  <td>{test.name}</td>
-                  <td>{test.problems}</td>
-                  <td><a href="/view-test" className="teal-text text-darken-3 underline-hover">Manage</a></td>
-                </tr>
-              ))
+class ContestPreviewDumb extends React.Component {
+  contestTabs = {
+    "tests": {
+      title: () => "Tests",
+      view: ({ data: { content } }) => {
+        if (!content) return <div />;
+        const contest = content;
+        return (
+          <div className="round-container">
+            <Modal trigger={<Button className="teal darken-3" waves="light">Create</Button>}>
+              <CreateTestForm contest_id={ contest._id } />
+            </Modal>
+            { (content.tests.length > 0) ? (
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Target Number of Problems</th>
+                      <th>Added Problems</th>
+                    </tr>
+                  </thead> 
+                  <tbody>
+                  {
+                    content.tests.map((test, key) => (
+                      <tr key={key}>
+                        <td><Link to={ `/view-test/${test._id}` } className="teal-text text-darken-3 underline-hover">{test.name}</Link></td>
+                        <td>{test.num_problems}</td>
+                        <td>{test.problems.length}</td>
+                      </tr>
+                    ))
+                  }
+                  </tbody>
+                </Table>
+              ) : ( <p>No tests created yet.</p> )
             }
-          </tbody>
-        </Table>
-      </div>
-    )
-  },
-  "czars": {
-    title: () => "Czars",
-    view: () => (
-      <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button>
-        <h3>Czars</h3>
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th className="center-align">Remove</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {
-              czars.map((czar, key) => (
-                <tr key={key}>
-                  <td>{czar}</td>
-                  <td>ctj@math.cmu.edu</td>
-                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+          </div>
+        );
+      }
+    },
+    "czars": {
+      title: () => "Czars",
+      view: ({ data: { content } }) => {
+        if (!content) return <div />;
+        return (
+          <div className="round-container">
+            <Button className="teal darken-3" waves="light">Invite</Button>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th className="center-align">Remove</th>
                 </tr>
-              ))
-            }
-          </tbody>
-        </Table><br />
-        <RightButtonPanel>
-          <a className="btn teal darken-3 waves-effect waves-light">Leave as czar</a>
-        </RightButtonPanel>
-      </div>
-    )
-  },
-  "test-solvers": {
-    title: () => "Test Solvers",
-    view: () => (
-      <div className="round-container">
-        <Button className="teal darken-3" waves="light">Add</Button> <Button className="teal darken-3" waves="light">Request</Button>
-        <h3>Test Solvers</h3>
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th className="center-align">Remove</th>
-            </tr>
-          </thead>
+              </thead>
 
-          <tbody>
-            {
-              testSolvers.map((czar, key) => (
-                <tr key={key}>
-                  <td>{czar}</td>
-                  <td>ctj@math.cmu.edu</td>
-                  <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+              <tbody>
+                {
+                  content.czars.map((czar, key) => (
+                    <tr key={key}>
+                      <td>{czar.name}</td>
+                      <td>{czar.email}</td>
+                      <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </Table><br />
+          </div>
+        );
+      }
+   },
+    "test-solvers": {
+      title: () => "Test Solvers",
+      view: ({ data: { content } }) => {
+        if (!content) return <div />;
+        return (
+          <div className="round-container">
+            <Modal trigger={<Button className="teal darken-3" waves="light">Request</Button>}><RequestTSForm contest_id={ content._id } /></Modal>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th className="center-align">Remove</th>
                 </tr>
-              ))
-            }
-          </tbody>
-        </Table>
-      </div>
-    )
+              </thead>
+
+              <tbody>
+                {
+                  content.test_solvers.map((ts, key) => (
+                    <tr key={key}>
+                      <td>{ts.name}</td>
+                      <td>{ts.email}</td>
+                      <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true"></i></a></td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </Table>
+          </div>
+        );
+      }
+    }
+  };
+
+  render() {
+    const { data } = this.props,
+          contest = data.content;
+    if (!contest) return <div />;
+
+    const childProps = {
+            "tests": { data },
+            "czars": { data },
+            "test-solvers": { data }
+          };
+
+    return (
+      <Col s={12}>
+        <h2 className="teal-text text-darken-3">{contest.name}</h2>
+        <VerticalNav tabs={ this.contestTabs } childProps={ childProps } active="tests" />
+      </Col>
+    );
   }
+}
+const mapStateToProps = state => ({
+  data: state.contests.contest
 });
 
-const tests = [
-  {name: "Algebra (Individuals)", problems: 10},
-  {name: "Combinatorics (Individuals)", problems: 10},
-  {name: "Computer Science (Individuals)", problems: 10},
-  {name: "Geometry (Individuals)", problems: 10},
-  {name: "Number Theory (Individuals)", problems: 10},
-  {name: "Team", problems: 10},
-  {name: "Algebra (Individuals)", problems: 1}
-]
+const ContestPreview = connect(mapStateToProps)(ContestPreviewDumb);
 
-const ContestPreview = ({ name, date, locations, status, tests, czars, testSolvers }) => (
-  <Col s={12}>
-    <h2 className="teal-text text-darken-3">{name}</h2>
-    <VerticalNav tabs={ contestTabs({ name, date, locations, status, tests, czars, testSolvers })} active="tests" />
-  </Col>
-)
+class ViewContestPage extends React.Component {
+  componentWillMount() {
+    const { match, getContest } = this.props;
+    getContest(match.params.id);
+  }
+  
+  render() {
+    return (
+      <Row className="container">
+        <ContestPreview />
+      </Row>
+    );
+  }
+}
+const mapDispatchToProps = dispatch => ({
+  getContest: id => { getContest(id)(dispatch); }
+});
 
-const ViewContestPage = () => (
-  <Row className="container">
-    <ContestPreview name="CMIMC 2018" date="January 28th, 2018" locations={["Carnegie Mellon University", "CMU Qatar Campus"]} status="Active" tests={tests} czars={["Taisuke Yasuda", "Cody Johnson"]} testSolvers={["Taisuke Yasuda", "Cody Johnson"]} />
-  </Row>
-);
-
-export default ViewContestPage;
+export default connect(null, mapDispatchToProps)(ViewContestPage);

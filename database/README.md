@@ -74,6 +74,7 @@
   name: String,
   date: Date,
   tests: [ Tests ],
+  requested_test_solvers: Number,
   test_solvers: [ User ],
   test_solve_deadline: Date,
   czars: [ User ],
@@ -119,7 +120,6 @@
   author: User,
   body: String,
   issue: Boolean,
-  upvotes: [ User ],
   created: Date,
   updated: Date
 }
@@ -131,6 +131,7 @@
   author: User,
   body: String,
   comments: [ Comment ],
+  upvotes: [ User ],
   created: Date,
   updated: Date
 }

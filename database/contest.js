@@ -12,6 +12,7 @@ const contestSchema = new Schema({
   date: Date,
   test_solve_deadline: Date,
   tests: [ { type: Schema.Types.ObjectId, ref: 'Test' } ],
+  requested_test_solvers: { type: Number, default: 0 },
   test_solvers: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   czars: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   created: { type: Date, required: true },
@@ -19,6 +20,9 @@ const contestSchema = new Schema({
 });
 
 contestSchema.pre('validate', function(next) {
+  if (!this.test_solve_deadline && this.date) 
+    this.test_solve_deadline = this.date;
+
   const now = new Date();
   if (!this.created) this.created = now;
   if (!this.updated) this.updated = now;

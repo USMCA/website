@@ -6,11 +6,14 @@ import _ from "lodash"
 import auth from "../../auth";
 import renderKaTeX from "../../katex";
 import { getProposal, upvoteProblem } from "../../actions";
+import { requestStatuses } from "../../actions/types";
 import { ProblemPreview, ExtendedProblemPreview, Solution, HorizontalNav, Counter } from "../utilities";
 import TestSolveForm from "../forms/test-solve";
 import SolutionForm from "../forms/solution";
 import CommentForm from "../forms/comment";
 import Spinner from "../spinner";
+import Error from "../error";
+const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
 class Vote extends React.Component {
   toggle = () => {
@@ -42,7 +45,7 @@ class ViewProbPage extends React.Component {
           <ul>
             <li>Author: { problem.author.name }</li>
             <li>Subject: { problem.subject }</li>
-            <li>Competition: { problem.competition.short_name }</li>
+            <li>Competition: { problem.publicDatabase ? <span className="bold-text">Public Database</span> : problem.competition.short_name }</li>
             <li>Difficulty: { problem.author.difficulty || 'N/A' }</li>
           </ul>
         )
@@ -105,7 +108,10 @@ class ViewProbPage extends React.Component {
   }
 
   render() {
-    const { proposal: { content, message }, upvote } = this.props,
+    const { 
+            proposal: { content, requestStatus, message }, 
+            upvoteProblem 
+          } = this.props,
           problem = content;
 
     const childProps = {
@@ -119,39 +125,53 @@ class ViewProbPage extends React.Component {
             "test-solves": problem
           }
 
-    return problem ? (
-      <Row className="container">
-        <div style={{marginTop: "36px"}}>
-          <ExtendedProblemPreview problem={problem} />
-        </div>
-        <Col s={12}>
-          {
-            this.state.showDiscussion ? (
-              <div className="toggle-discussion">
-                <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
-                  <h3><i className="fa fa-caret-up" aria-hidden="true"/> Hide Discussion</h3>
-                </a>
-                <HorizontalNav 
-                  tabs={ this.problemTabs() } 
-                  active="info"
-                  childProps={ childProps }
-                  headerProps={ headerProps }/>
-              </div>
-            ) : (
-              <div className="toggle-discussion">
-                <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
-                  <h3><i className="fa fa-caret-down" aria-hidden="true"/> Show Discussion</h3>
-                </a>
-              </div>
-            )
-          }
-        </Col>
-      </Row>
-    ) : (
-      <Row className="container">
-        <Spinner />
-      </Row>
-    );
+    return (
+      <div>
+      { (requestStatus === PENDING) && <Spinner /> }
+      { 
+        problem ? (
+          <Row className="container">
+            <div style={{marginTop: "36px"}}>
+              <Error error={ requestStatus === ERROR } message={ message }/>
+            </div>
+            <div style={{marginTop: "36px"}}>
+              <ExtendedProblemPreview 
+                problem={problem} 
+                onUpvote={ () => { upvoteProblem(problem._id); } } />
+            </div>
+            <Col s={12}>
+              {
+                this.state.showDiscussion ? (
+                  <div className="toggle-discussion">
+                    <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
+                      <h3><i className="fa fa-caret-up" aria-hidden="true"/> Hide Discussion</h3>
+                    </a>
+                    <HorizontalNav 
+                      tabs={ this.problemTabs() } 
+                      active="info"
+                      childProps={ childProps }
+                      headerProps={ headerProps }/>
+                  </div>
+                ) : (
+                  <div className="toggle-discussion">
+                    <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
+                      <h3><i className="fa fa-caret-down" aria-hidden="true"/> Show Discussion</h3>
+                    </a>
+                  </div>
+                )
+              }
+            </Col>
+          </Row>
+        ) : (
+          <Row className="container">
+            <div style={{marginTop: "36px"}}>
+              <Error error={ requestStatus === ERROR } message={ message }/>
+            </div>
+          </Row>
+        )
+      }
+      </div>
+    )
   }
 }
 
@@ -162,7 +182,7 @@ const mapStateToProps = state => ({
         getProposal: id => {
           getProposal(id)(dispatch);
         },
-        upvote: id => {
+        upvoteProblem: id => {
           upvoteProblem(id)(dispatch);
         }
       });

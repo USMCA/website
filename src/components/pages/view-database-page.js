@@ -1,29 +1,25 @@
 import React from "react";
 import { Row, Col, Input } from "react-materialize";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { ProblemPreview } from "../utilities";
 import { fetchDatabase } from "../../actions";
 
-const results = [
-  {_id: 123, upvotes: [], alternate_soln: [], official_soln: [], views: [], subject: "Algebra", contest: "CMIMC 2017", statement: "Let $n>1$ be an integer, and let $f:[a,b]\\to\\mathbb R$ be a continuous function, $n$-times differentiable on $(a,b)$, with the property that the graph of $f$ has $n+1$ collinear points. Prove that there exists a point $c\\in(a,b)$ with the property that $f^{(n)}(c)=0$."},
-  {_id: 123, upvotes: [], alternate_soln: [], official_soln: [], views: [], subject: "Calculus", contest: "CMIMC 2017", statement: "Let $f$ be a three-times differentiable function (defined on $\\mathbb R$ and real-valued) such that $f$ has at least five distinct real zeros. Prove that $f+6f'+12f''+8f'''$ has at least two distinct real zeros."}
-]
-
 class DatabasePage extends React.Component {
   componentWillMount() {
-    console.log(this.props);
     const { match, fetchDatabase } = this.props;
     fetchDatabase(match.params.id);
   }
 
   render() {
     const { database } = this.props;
-    console.log(database);
+    if (!database.content || !database.content.problems) return <div />;
+    const { problems, competition } = database.content;
     return (
       <Row className="container">
         <Col s={12}>
-          <h2 className="teal-text text-darken-4">Database</h2>
+          <h2 className="teal-text text-darken-4">{ competition.short_name } Database</h2>
           <Row>
             <form className="col s12">
               <Row>
@@ -66,11 +62,11 @@ class DatabasePage extends React.Component {
           </Row>
           <h3>Results</h3>
           {
-            (database.content) && (database.content.map((proposal, key) => (
+            problems.map((proposal, key) => (
               <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
-                <ProblemPreview problem={proposal} />
+                <ProblemPreview problem={proposal} includeClipboard={true}/>
               </div>)
-            ))
+            )
           }
           <div style={{padding: "24px 0"}}>
             <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>

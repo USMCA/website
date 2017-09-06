@@ -6,7 +6,9 @@ const router = require('express').Router(),
 const User = require('../database/user'),
       Problem = require('../database/problem'),
       Solution = require('../database/solution'),
-      Competition = require('../database/competition');
+      Competition = require('../database/competition'),
+      Contest = require('../database/contest'),
+      Test = require('../database/test');
 
 /*******************************************************************************
  * Generic requests
@@ -50,7 +52,7 @@ router.put('/', auth.verifyJWT, (req, res) => {
 });
 
 /*******************************************************************************
- * Admin
+ * User info
  ******************************************************************************/
 
 router.get('/admin', (req, res) => {
@@ -61,6 +63,13 @@ router.get('/admin', (req, res) => {
         admins: admins
       })(req, res);
     }
+  });
+});
+
+router.get('/all', (req, res) => {
+  User.find({}, 'name email', (err, user) => {
+    if (err) handler(false, 'Failed to load all users.', 503)(req, res);
+    else handler(true, 'Successfully loaded all users.', 200, { user })(req, res);
   });
 });
 
@@ -98,6 +107,7 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
       console.log(err);
       return handler(false, 'Database failed to load the associated competition.', 503)(req, res);
     } else {
+      competition = competition || {};
       const official_soln = solution ? Object.assign(new Solution(), {
               author: req.user._id,
               body: solution
@@ -105,6 +115,7 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
             problem = Object.assign(new Problem(), {
               author: req.user._id,
               competition: competition._id,
+              publicDatabase: competition._id ? false : true,
               subject,
               difficulty,
               statement, 
@@ -149,7 +160,7 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
   .exec((err, competitions) => {
     if (err) {
       console.log(err);
-      handler(false, 'Database failed to search for user competitions.', 503)(req, res);
+      handler(false, 'Failed to search for user competitions.', 503)(req, res);
     } else {
       handler(true, 'Successfully loaded user competitions.', 200, { competitions })(req, res);
     }
@@ -164,11 +175,66 @@ router.get('/director', auth.verifyJWT, (req, res) => {
   }, 'short_name name _id', (err, directorCompetitions) => {
     if (err) {
       console.log(err);
-      return handler(false, 'Database failed to search for director competitions.', 503)(req, res);
+      return handler(false, 'Failed to search for director competitions.', 503)(req, res);
     } else {
       return handler(true, 'Succesfully loaded director competitions.', 200, {
         competitions: directorCompetitions
       })(req, res);
+    }
+  });
+});
+
+/*******************************************************************************
+ * Test solving.
+ ******************************************************************************/
+
+/* test solving info */
+router.get('/test-solving', auth.verifyJWT, (req, res) => {
+  /* get all requested */
+  Contest.find({ 
+    active: true, 
+    test_solve_deadline: { $exists: true },
+    requested_test_solvers: { $gt: 0 }
+  }, (err, contests) => {
+    if (err) handler(false, 'Failed to load contests for test solving.', 503)(req, res);
+    else {
+      /* contests where user is test solver */
+      Contest.find({ 
+        $or: [
+          { test_solvers: req.user._id },
+          { czars: req.user._id }
+        ]
+      })
+      .populate('tests')
+      .exec((err, myContests) => {
+        if (err) handler(false, 'Failed to load contests for my test solving.', 503)(req, res);
+        else {
+          Competition.find({ 
+            $or: [
+              { directors: req.user._id },
+              { secure_members: req.user._id }
+            ]
+          }, (err, competitions) => {
+            if (err) handler(false, 'Failed to load secure member competitions.', 503)(req, res);
+            else { 
+              Contest.find({ 
+                active: true, 
+                competition: { $in: competitions } 
+              })
+              .populate('tests')
+              .exec((err, memberContests) => {
+                if (err) handler(false, 'Failed to load secure member competition contests.', 503)(req, res);
+                else {
+                  handler(true, 'Successfully loaded test solving.', 200, {
+                    general: contests,
+                    user: _.concat(myContests, memberContests)
+                  })(req, res);
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 });

@@ -29,14 +29,12 @@ class TestSolveForm extends React.Component {
   );
 
   render() { 
-    const { handleSubmit, userData: { requestStatus, message } } = this.props;
+    const { handleSubmit, probData: { requestStatus, message } } = this.props;
     return (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <div style={{marginTop: "12px"}}>
           <Field name="solution" component={ this.solutionField } />
         </div>
-        <Error error={ requestStatus === ERROR } message={ message }/>
-        { requestStatus === PENDING && <Spinner /> }
       </form>
     );
   }
@@ -50,7 +48,7 @@ TestSolveForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  userData: state.users.user
+  probData: state.problems.proposal
 });
 const mapDispatchToProps = dispatch => ({
   testSolve: (problem_id, solution) => {

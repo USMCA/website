@@ -27,6 +27,7 @@ const CompetitionField = ({ input, meta, ...rest }) => (
         <CompetitionsSelect
           s={4}
           type={ competitionsInputOptions.MEMBER }
+          publicDatabase={ true }
           { ...input }
           { ...rest } />
       ),
@@ -41,7 +42,7 @@ class ProposeForm extends React.Component {
     competition_id, subject, difficulty, statement, answer, solution
   }) => {
     const { errorHandler, postProposal } = this.props;
-    if (!competition_id || !subject || !statement) {
+    if (!subject || !statement) {
       errorHandler('Please fill out required fields.');
     } else {
       postProposal({

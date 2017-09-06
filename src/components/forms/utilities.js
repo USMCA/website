@@ -135,13 +135,16 @@ class CompetitionsSelectDumb extends React.Component {
       memberCompetitions,
       directorCompetitions,
       type,
+      publicDatabase,
       input,
       meta,
       ...rest
     } = this.props;
     return competitions[type].requestStatus === SUCCESS ? (
       <Input s={12} type="select" label="Competition" { ...input } { ...rest }>
-        <option value="">Select a Competition</option>
+        <option value="">
+          { publicDatabase ? "Public Database" : "Select a Competition" }
+        </option>
         {
           competitions[type].content.map(({ _id, short_name }, idx) => (
             <option key={ idx } value={ _id }>{ short_name }</option>
@@ -323,14 +326,6 @@ class KaTeXInput extends React.Component {
             onChange={ onChange } />
           <Col s={6}>
             <div ref={ elem => { this.renderField = elem; } }></div>
-          </Col>
-        </Row>
-        <Row>
-          <Col s={6}>
-            How difficult did you find this problem?
-          </Col>
-          <Col s={6}>
-            <FlameInput n={ 5 } value={ 0 } />
           </Col>
         </Row>
         <Row>

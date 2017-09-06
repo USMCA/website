@@ -9,8 +9,11 @@ import {
   PROB_UPVOTE,
   PROB_COMMENT,
   PROB_DATABASE,
+  PROB_PUBLIC_DATABASE,
+  PROB_TAKE,
   PROB_TEST_SOLVE,
-  PROB_PUT
+  PROB_PROB_COMMENT,
+  PROB_SOLN_COMMENT,
 } from './types'; import auth from '../auth';
 import { 
   authenticate, 
@@ -160,12 +163,12 @@ export function fetchDatabase(id) {
         method: 'get',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       }).then(
-        res => res.json().then(({ success, message, problems }) => {
+        res => res.json().then(({ success, message, competition, problems }) => {
           if (!success) {
             dispatch(Object.assign(action, errorPayload(message)));
           } else {
             dispatch(Object.assign(action, successPayload({
-              content: problems
+              content: { competition, problems }
             })));
           }
         }),
@@ -205,6 +208,76 @@ export function testSolve(problem_id, solution) {
     opts: {
       method: 'post',
       body: JSON.stringify({ problem_id, solution }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, alternate_soln }) => {
+      return { success, message, content: alternate_soln };
+    }
+  });
+}
+
+export function publicDatabase() {
+  return authAPIAction({
+    type: PROB_PUBLIC_DATABASE, 
+    url: '/api/problems/public', 
+    opts: {
+      method: 'get',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problems }) => {
+      return { success, message, content: problems };
+    }
+  });
+}
+
+export function takeProblem(problem_id, competition_id) {
+  return authAPIAction({
+    type: PROB_TAKE, 
+    url: '/api/problems/public', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id, competition_id }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problem }) => {
+      return { success, message, content: problem };
+    }
+  });
+}
+
+export function probComment(problem_id, body) {
+  return authAPIAction({
+    type: PROB_PROB_COMMENT, 
+    url: '/api/problems/comment/problem', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id, body }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, comments }) => {
+      return { success, message, content: comments };
+    }
+  });
+}
+
+export function solnComment(solution_id, body) {
+  return authAPIAction({
+    type: PROB_SOLN_COMMENT, 
+    url: '/api/problems/comment/solution', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ solution_id, body }),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`

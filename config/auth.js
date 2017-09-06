@@ -27,7 +27,7 @@ module.exports = {
         } else {
           User.findById(decoded.user_id, (err, user) => {
             if (err) {
-              handler(false, 'Database failed to find user.', 503)(req, res);
+              handler(false, 'Failed to load user.', 503)(req, res);
             } else {
               req.payload = decoded;
               req.user = user;

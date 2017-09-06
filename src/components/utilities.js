@@ -4,16 +4,27 @@ import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import $ from "jquery";
+import Clipboard from "clipboard";
+
+import CommentForm from "./forms/comment";
+import TakeProblemForm from "./forms/take-problem";
 
 import renderKaTeX from "../katex";
 import { respondRequest, userPut } from "../actions";
 import {
   USER_COMP_RES,
   USER_JOIN_RES,
+  USER_TS_RES,
   COMP_REQ,
-  COMP_REQ_JOIN
+  COMP_REQ_JOIN,
+  CONTEST_JOIN_TS,
 } from "../actions/types";
 import { requestTypes } from "../../constants";
+
+const clipboardRef = elem => {
+  if (elem) { new Clipboard(elem) }
+};
 
 const datify = (created, updated) => (
   updated ?
@@ -61,10 +72,13 @@ const RequestDumb = ({ request, respondRequest }) => {
     },
     [COMP_REQ_JOIN]: response => {
       return () => { respondRequest(request, response, USER_JOIN_RES); };
+    },
+    [CONTEST_JOIN_TS]: response => {
+      return () => { respondRequest(request, response, USER_TS_RES); };
     }
   };
   const makeHandleClick = responseHandleClick[request.action_type];
-  if (!makeHandleClick) return <div></div>;
+  if (!makeHandleClick) return <div />;
   return (
     <li className="white">
       <Row>
@@ -72,18 +86,28 @@ const RequestDumb = ({ request, respondRequest }) => {
           { request.body }
         </Col>
         <Col s={2}>
-          <Modal header="Confirm Reject" trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} actions={<div>
-            <Button flat modal="close" waves="light">Cancel</Button>
-            <Button flat modal="close" waves="light"
-              onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
-          </div>}>
+          <Modal 
+            header="Confirm Reject" 
+            trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} 
+            actions={
+              <div>
+                <Button flat modal="close" waves="light">Cancel</Button>
+                <Button flat modal="close" waves="light"
+                  onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
+              </div>
+            }>
             Are you sure you want to reject this request?
           </Modal>
-          <Modal header="Confirm Accept" trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}actions={<div>
-            <Button flat modal="close" waves="light">Cancel</Button>
-            <Button flat modal="close" waves="light"
-              onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
-          </div>}>
+          <Modal 
+            header="Confirm Accept" 
+            trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}
+            actions={
+              <div>
+                <Button flat modal="close" waves="light">Cancel</Button>
+                <Button flat modal="close" waves="light"
+                  onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
+              </div>
+            }>
             Are you sure you want to accept this request?
           </Modal>
         </Col>
@@ -105,7 +129,7 @@ const mapStateToProps = state => ({
 const Request = connect(mapStateToProps, mapDispatchToProps)(RequestDumb);
 
 const Comment = ({ comment }) => (
-  <li>{ comment.body }
+  <li ref={ renderKaTeX }>{ comment.body }
   &mdash; <span className="comment-author">
     <span className="author-name">{ comment.author.name }</span>
     <i>{ datify(comment.created, comment.updated) }</i>
@@ -114,31 +138,83 @@ const Comment = ({ comment }) => (
   </span></li>
 )
 
-const CommentList = ({ comments }) => (
-  <ul>
-    { (comments.length > 0) && <li><a className="teal-text text-darken-3"><i className="fa fa-caret-down" aria-hidden="true"></i> <span className="underline-hover">Show comments ({ comments.length })</span></a></li>}
-    {
-      comments.map((comment, key) => (
-        <Comment comment={comment} />
-      ))
-    }
-    <li><a className="teal-text text-darken-3 underline-hover">Add a comment</a></li>
-  </ul>
-)
+class CommentList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { showCommentForm: false, showComments: false };
+  }
+
+  toggleCommentForm = () => {
+    this.setState({ showCommentForm: !this.state.showCommentForm });
+  }
+
+  toggleComments = () => {
+    this.setState({ showComments: !this.state.showComments });
+  }
+
+  render() {
+    const { comments, problem_id, solution_id } = this.props;
+    return (
+      <ul>
+        <li>
+          <a className="teal-text text-darken-3" onClick={ this.toggleComments }>
+            <i className={ this.state.showComments ? "fa fa-caret-up" : "fa fa-caret-down" } aria-hidden="true"/> <span className="underline-hover">{ this.state.showComments ? "Hide comments" : "Show comments" } ({ comments.length })</span>
+          </a>
+        </li>
+        {
+          this.state.showComments && (
+            (comments.length > 0) ? (
+              comments.map((comment, key) => (
+                <Comment comment={comment} key={key}/>
+              ))
+            ) : (<p>No comments.</p>)
+          )
+        }
+        <li>
+          {
+            this.state.showCommentForm ? 
+              <CommentForm 
+                problem_id={ problem_id } 
+                solution_id={ solution_id }
+                afterSubmit={ () => { this.state.showCommentForm = false; } } /> :
+              <a 
+                className="teal-text text-darken-3 underline-hover" 
+                onClick={ this.toggleCommentForm }>
+                Add a comment
+              </a>
+          }
+        </li>
+      </ul>
+    )
+  }
+}
 
 class ProblemPreview extends React.Component  {
   render() {
-    const { problem } = this.props;
+    const { problem, publicDatabase, includeClipboard, editable } = this.props;
     return (
       <Row className="problem">
-        <Col s={12}>
+        <Col offset={ includeClipboard && "s2" } s={ includeClipboard ? 10 : 12 }>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
-          <ul className="problem-options">
-            <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"></i></a></li>
-            <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"></i></a></li>
-          </ul>
+          { editable && (
+              <ul className="problem-options">
+                <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></a></li>
+                <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true" /></a></li>
+              </ul>
+            )
+          }
         </Col>
-        <Col s={12}>
+        { includeClipboard && ( 
+            <Col s={2} className="center-align">
+              <div className="upvote upvoted">
+                <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
+              </div>
+            </Col>
+          )
+        }
+        <Col 
+          m={ includeClipboard ? (publicDatabase ? 5 : 10) : (publicDatabase ? 6 : 12) } 
+          s={ includeClipboard ? 10 : 12 }>
           <div className="katex-preview">
             <Link
               to={ "/view-problem/" + problem._id.toString() }
@@ -149,10 +225,20 @@ class ProblemPreview extends React.Component  {
             </Link>
           </div>
         </Col>
+        { publicDatabase && (
+            <Col m={ includeClipboard ? 5 : 6 } s={12}>
+              <TakeProblemForm problem_id={ problem._id }/>
+            </Col> 
+          )
+        }
       </Row>
     );
   }
 }
+ProblemPreview.propTypes = {
+  problem: PropTypes.object.isRequired,
+  publicDatabase: PropTypes.bool // input for taking shared problem
+};
 
 const Flame = ({ color }) => {
   color = color || "#9e9e9e";
@@ -202,7 +288,7 @@ class FlameInput extends React.Component  {
 
 class ExtendedProblemPreview extends React.Component  {
   render() {
-    const { problem } = this.props;
+    const { problem, onUpvote } = this.props;
     return (
       <Row className="problem">
         <Col s={12}>
@@ -220,6 +306,8 @@ class ExtendedProblemPreview extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
+          <span><div className="upvote upvoted" onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote</a></div></span><br />
+          <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
           <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span>
@@ -227,7 +315,7 @@ class ExtendedProblemPreview extends React.Component  {
           <FlameInput value={0} />
         </Col>
         <Col m={9} s={12} className="comments">
-          <CommentList comments={problem.comments} />
+          <CommentList comments={problem.comments} problem_id={ problem._id } />
         </Col>
       </Row>
     );
@@ -259,7 +347,7 @@ class Solution extends React.Component  {
           <span className="small-stat"><i>{ datify(solution.created, solution.updated) }</i></span>
         </Col>
         <Col m={9} s={12} className="comments">
-          <CommentList comments={[]} />
+          <CommentList comments={solution.comments} solution_id={ solution._id } />
         </Col>
       </Row>
     );

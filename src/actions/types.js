@@ -52,7 +52,9 @@ export const USER_INFO = 'user_info', // get user info
              USER_COMP_RES = 'comp_res', // respond to create competition
              USER_JOIN_RES = 'user_join_res', // respond to join competition
              USER_NOTIF_TOGGLE = 'notif_toggle', // toggle between unread, read, and urgent
-             USER_PUT = 'user_put'; // generic put request
+             USER_PUT = 'user_put', // generic put request
+             USER_TS = 'user_ts', // get test solving info
+             USER_TS_RES = 'user_ts_res'; // respond to test solve request
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
@@ -62,7 +64,15 @@ export const COMP_REQ = 'comp_req', // request to create competition
              COMP_REQ_JOIN = 'comp_req_join'; // request to join competition
 
 /* contests */
-export const CONTEST_POST = 'contest_post'; // post a contest
+export const CONTEST_POST = 'contest_post', // post a contest
+             CONTEST_GET = 'contest_get', // get a contest
+             CONTEST_TEST_POST = 'contest_test_post', // post a test
+             CONTEST_TEST_GET = 'contest_test_get', // post a test
+             CONTEST_TEST_PROB = 'content_test_prob', // add a problem to a test
+             CONTEST_RM_PROB = 'content_rm_prob', // remove a problem from a test
+             CONTEST_REORDER_PROBS = 'content_reorder_probs', // change order of problems
+             CONTEST_REQUEST_TS = 'contest_request_ts', // request for test solvers
+             CONTEST_JOIN_TS = 'contest_join_ts'; // request to be a test solver
 
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
@@ -71,5 +81,8 @@ export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by 
              PROB_UPVOTE = 'prob_upvote', // upvote a problem
              PROB_COMMENT = 'prob_comment', // comment on a problem
              PROB_DATABASE = 'prob_database', // fetch database of a competition
+             PROB_PUBLIC_DATABASE = 'prob_public_database', // fetch public database
+             PROB_TAKE = 'prob_take', // take problem from shared database
              PROB_TEST_SOLVE = 'prob_test_solve', // post a test solve
-             PROB_PUT = 'prob_put'; // generic put request
+             PROB_PROB_COMMENT = 'prob_prob_coment', // comment on a problem
+             PROB_SOLN_COMMENT = 'prob_soln_comment'; // comment on a solution
