@@ -108,9 +108,9 @@ class ViewProbPage extends React.Component {
   }
 
   render() {
-    const { 
-            proposal: { content, requestStatus, message }, 
-            upvoteProblem 
+    const {
+            proposal: { content, requestStatus, message },
+            upvoteProblem
           } = this.props,
           problem = content;
 
@@ -119,7 +119,7 @@ class ViewProbPage extends React.Component {
             "answer": problem,
             "solutions": problem,
             "test-solves": problem
-          }, 
+          },
           headerProps = {
             "solutions": problem,
             "test-solves": problem
@@ -128,15 +128,16 @@ class ViewProbPage extends React.Component {
     return (
       <div>
       { (requestStatus === PENDING) && <Spinner /> }
-      { 
+      {
         problem ? (
           <Row className="container">
             <div style={{marginTop: "36px"}}>
               <Error error={ requestStatus === ERROR } message={ message }/>
             </div>
             <div style={{marginTop: "36px"}}>
-              <ExtendedProblemPreview 
-                problem={problem} 
+              <ExtendedProblemPreview
+                problem={problem}
+                upvoted={true}
                 onUpvote={ () => { upvoteProblem(problem._id); } } />
             </div>
             <Col s={12}>
@@ -146,8 +147,8 @@ class ViewProbPage extends React.Component {
                     <a className="teal-text text-darken-3 underline-hover" onClick={ this.toggleDiscussion }>
                       <h3><i className="fa fa-caret-up" aria-hidden="true"/> Hide Discussion</h3>
                     </a>
-                    <HorizontalNav 
-                      tabs={ this.problemTabs() } 
+                    <HorizontalNav
+                      tabs={ this.problemTabs() }
                       active="info"
                       childProps={ childProps }
                       headerProps={ headerProps }/>
