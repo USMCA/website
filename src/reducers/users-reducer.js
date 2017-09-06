@@ -5,13 +5,15 @@ import {
   USER_ADMIN,
   USER_COMP_RES,
   USER_JOIN_RES,
-  USER_PUT
+  USER_PUT,
+  USER_TS
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const INITIAL_STATE = { 
   user: { content: null, message: '', requestStatus: IDLE },
-  admins: { content: [], message: '', requestStatus: IDLE }
+  admins: { content: [], message: '', requestStatus: IDLE },
+  test_solve: { content: null, message: '', requestStatus: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
@@ -42,6 +44,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: Object.assign({}, state.user.content, { requests })
         }
       };
+    case USER_TS: 
+      return { ...state, test_solve: payload };
     default:
       return state;
   }

@@ -20,6 +20,9 @@ const contestSchema = new Schema({
 });
 
 contestSchema.pre('validate', function(next) {
+  if (!this.test_solve_deadline && this.date) 
+    this.test_solve_deadline = this.date;
+
   const now = new Date();
   if (!this.created) this.created = now;
   if (!this.updated) this.updated = now;

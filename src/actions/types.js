@@ -52,7 +52,8 @@ export const USER_INFO = 'user_info', // get user info
              USER_COMP_RES = 'comp_res', // respond to create competition
              USER_JOIN_RES = 'user_join_res', // respond to join competition
              USER_NOTIF_TOGGLE = 'notif_toggle', // toggle between unread, read, and urgent
-             USER_PUT = 'user_put'; // generic put request
+             USER_PUT = 'user_put', // generic put request
+             USER_TS = 'user_ts'; // get test solving info
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition

@@ -10,10 +10,11 @@ import {
   USER_ADMIN,
   USER_COMP_RES,
   USER_JOIN_RES,
-  USER_PUT
+  USER_PUT,
+  USER_TS
 } from './types';
 import { requestTypes } from '../../constants';
-import { authenticate, serverError } from './utilities';
+import { authenticate, serverError, APIAction, authAPIAction } from './utilities';
 
 const {
   successPayload,
@@ -113,4 +114,18 @@ export function userPut(query) {
       ); 
     });
   }
+}
+
+export function userTS() {
+  return authAPIAction({
+    type: USER_TS,
+    url: '/api/users/test-solving',
+    opts: {
+      method: 'get',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    },
+    formatData: ({ success, message, general, user }) => ({
+      success, message, content: { general, user }
+    })
+  });
 }
