@@ -64,18 +64,20 @@ router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   });
 });
 
-router.param('test_id', auth.verifyJWT, (req, res, next, test_id) => {
+router.param('test_id', (req, res, next, test_id) => {
   /* @TODO check auths */
-  Test.findById(test_id)
-  .populate('problems')
-  .populate('contest', 'name competition')
-  .exec((err, test) => {
-    if (err) handler(false, 'Failed to load test.', 503)(req, res);
-    else if (!test) handler(false, 'Test does not exist.', 400)(req, res);
-    else {
-      req.test = test;
-      next();
-    }
+  auth.verifyJWT(req, res, () => {
+    Test.findById(test_id)
+    .populate('problems')
+    .populate('contest', 'name competition')
+    .exec((err, test) => {
+      if (err) handler(false, 'Failed to load test.', 503)(req, res);
+      else if (!test) handler(false, 'Test does not exist.', 400)(req, res);
+      else {
+        req.test = test;
+        next();
+      }
+    });
   });
 });
 
