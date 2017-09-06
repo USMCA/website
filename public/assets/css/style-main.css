@@ -205,24 +205,25 @@ li.urgent-announcement {
   font-size: 12px;
 }
 
-.upvote {
-  display: block;
-  width: 100px;
-  margin: 0 auto;
+.prob-btn {
+  display: inline-block;
+  width: 80px;
+  margin: 0 auto 6px;
   padding: 3px 0;
   border: 1px solid #cfd8dc;
   border-radius: 3px;
+  font-size: 12px;
 }
 
-.upvote i {
+.prob-btn i {
   margin-right: 6px;
 }
 
-.upvoted, .upvoted a  {
+.unvoted, .unvoted a  {
   color: black;
 }
 
-.unvoted, .unvoted a  {
+.upvoted, .upvoted a  {
   color: #2196f3;
 }
 
@@ -333,4 +334,14 @@ li.urgent-announcement {
   width: 100%;
   margin-top: 24px;
   text-align: center;
+}
+
+.flame  {
+  padding: 0 2px;
+}
+
+.flame-value  {
+  margin: 0;
+  font-size: 10px;
+  color: #9e9e9e;
 }

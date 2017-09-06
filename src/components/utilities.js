@@ -86,9 +86,9 @@ const RequestDumb = ({ request, respondRequest }) => {
           { request.body }
         </Col>
         <Col s={2}>
-          <Modal 
-            header="Confirm Reject" 
-            trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} 
+          <Modal
+            header="Confirm Reject"
+            trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>}
             actions={
               <div>
                 <Button flat modal="close" waves="light">Cancel</Button>
@@ -98,8 +98,8 @@ const RequestDumb = ({ request, respondRequest }) => {
             }>
             Are you sure you want to reject this request?
           </Modal>
-          <Modal 
-            header="Confirm Accept" 
+          <Modal
+            header="Confirm Accept"
             trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}
             actions={
               <div>
@@ -172,13 +172,13 @@ class CommentList extends React.Component {
         }
         <li>
           {
-            this.state.showCommentForm ? 
-              <CommentForm 
-                problem_id={ problem_id } 
+            this.state.showCommentForm ?
+              <CommentForm
+                problem_id={ problem_id }
                 solution_id={ solution_id }
                 afterSubmit={ () => { this.state.showCommentForm = false; } } /> :
-              <a 
-                className="teal-text text-darken-3 underline-hover" 
+              <a
+                className="teal-text text-darken-3 underline-hover"
                 onClick={ this.toggleCommentForm }>
                 Add a comment
               </a>
@@ -204,7 +204,7 @@ class ProblemPreview extends React.Component  {
             )
           }
         </Col>
-        { includeClipboard && ( 
+        { includeClipboard && (
             <Col s={2} className="center-align">
               <div className="upvote upvoted">
                 <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
@@ -212,8 +212,8 @@ class ProblemPreview extends React.Component  {
             </Col>
           )
         }
-        <Col 
-          m={ includeClipboard ? (publicDatabase ? 5 : 10) : (publicDatabase ? 6 : 12) } 
+        <Col
+          m={ includeClipboard ? (publicDatabase ? 5 : 10) : (publicDatabase ? 6 : 12) }
           s={ includeClipboard ? 10 : 12 }>
           <div className="katex-preview">
             <Link
@@ -228,7 +228,7 @@ class ProblemPreview extends React.Component  {
         { publicDatabase && (
             <Col m={ includeClipboard ? 5 : 6 } s={12}>
               <TakeProblemForm problem_id={ problem._id }/>
-            </Col> 
+            </Col>
           )
         }
       </Row>
@@ -240,9 +240,55 @@ ProblemPreview.propTypes = {
   publicDatabase: PropTypes.bool // input for taking shared problem
 };
 
+const Flame = ({ color }) => {
+  color = color || "#9e9e9e";
+  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path fill={color} d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>;
+}
+
+class FlameInput extends React.Component  {
+  constructor(props) {
+    super(props);
+    this.state = {
+      labels: ["early-mid AMC", "mid-late AMC", "late AMC-early AIME", "mid AIME", "late AIME-early Olympiad", "Olympiad"],
+      value: this.props.value || 0
+    };
+  }
+
+  change(i) {
+    if(this.state.value == i+1)
+      this.setState({value: 0});
+    else
+      this.setState({value: i+1});
+  }
+
+  shade(t) {
+    var color1 = [255,235,59],
+    color2 = [244,67,54],
+    color = "";
+
+    for(var i = 0; i < 3; i++)
+      color += "," + Math.trunc(color1[i] * (1-t) + color2[i] * t);
+
+    return "rgb(" + color.substr(1) + ")";
+  }
+
+  render() {
+    const { labels, value } = this.state;
+    const n = labels.length;
+    return <div>
+      {
+        Array(n).fill(0).map((a, key) => (
+          <a className="flame" onClick={() => this.change(key)} key={key}><Flame color={(key <= value-1) ? this.shade((value-1)/(n-1)) : "#9e9e9e"} /></a>
+        ))
+      }
+      { (value > 0) && <p className="flame-value">{ labels[value-1] }</p> }
+    </div>;
+  }
+}
+
 class ExtendedProblemPreview extends React.Component  {
   render() {
-    const { problem, onUpvote } = this.props;
+    const { problem, onUpvote, upvoted } = this.props;
     return (
       <Row className="problem">
         <Col s={12}>
@@ -260,10 +306,12 @@ class ExtendedProblemPreview extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span><div className="upvote upvoted" onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote</a></div></span><br />
-          <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
-          <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>
+          <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
+          <span style={{marginRight: "6px"}}><div className={"prob-btn " + (upvoted ? "upvoted" : "unvoted")} onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote{ upvoted && "d"}</a></div></span>
+          <span><div className="prob-btn unvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
+          <p style={{fontSize: ".8rem"}}>Rate difficulty:</p>
+          <FlameInput value={0} />
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} problem_id={ problem._id } />
@@ -404,6 +452,7 @@ export {
   Notification,
   RightButtonPanel,
   ProblemPreview,
+  FlameInput,
   ExtendedProblemPreview,
   Solution,
   LoadMore,
