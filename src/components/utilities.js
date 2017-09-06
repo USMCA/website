@@ -242,7 +242,7 @@ ProblemPreview.propTypes = {
 
 class ExtendedProblemPreview extends React.Component  {
   render() {
-    const { problem } = this.props;
+    const { problem, onUpvote } = this.props;
     return (
       <Row className="problem">
         <Col s={12}>
@@ -260,7 +260,7 @@ class ExtendedProblemPreview extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span><div className="upvote upvoted" onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote</a></div></span><br />
           <span><div className="upvote upvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
           <span className="bold-text">{ problem.author.name }</span><br />
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span>

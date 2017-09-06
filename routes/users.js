@@ -52,7 +52,7 @@ router.put('/', auth.verifyJWT, (req, res) => {
 });
 
 /*******************************************************************************
- * Admin
+ * User info
  ******************************************************************************/
 
 router.get('/admin', (req, res) => {
@@ -63,6 +63,13 @@ router.get('/admin', (req, res) => {
         admins: admins
       })(req, res);
     }
+  });
+});
+
+router.get('/all', (req, res) => {
+  User.find({}, 'name email', (err, user) => {
+    if (err) handler(false, 'Failed to load all users.', 503)(req, res);
+    else handler(true, 'Successfully loaded all users.', 200, { user })(req, res);
   });
 });
 

@@ -108,7 +108,10 @@ class ViewProbPage extends React.Component {
   }
 
   render() {
-    const { proposal: { content, requestStatus, message }, upvote } = this.props,
+    const { 
+            proposal: { content, requestStatus, message }, 
+            upvoteProblem 
+          } = this.props,
           problem = content;
 
     const childProps = {
@@ -132,7 +135,9 @@ class ViewProbPage extends React.Component {
               <Error error={ requestStatus === ERROR } message={ message }/>
             </div>
             <div style={{marginTop: "36px"}}>
-              <ExtendedProblemPreview problem={problem} />
+              <ExtendedProblemPreview 
+                problem={problem} 
+                onUpvote={ () => { upvoteProblem(problem._id); } } />
             </div>
             <Col s={12}>
               {
@@ -177,7 +182,7 @@ const mapStateToProps = state => ({
         getProposal: id => {
           getProposal(id)(dispatch);
         },
-        upvote: id => {
+        upvoteProblem: id => {
           upvoteProblem(id)(dispatch);
         }
       });
