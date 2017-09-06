@@ -9,6 +9,7 @@ import {
   CONTEST_RM_PROB,
   CONTEST_REORDER_PROBS,
   CONTEST_REQUEST_TS,
+  CONTEST_JOIN_TS,
   requestStatuses,
   requestPayloads
 } from './types';
@@ -156,3 +157,24 @@ export function requestTS(contest_id, num) {
     formatData: ({ success, message }) => ({ success, message })  
   });
 }
+
+export function joinTestSolve(contest_id) {
+  return authAPIAction({
+    type: CONTEST_JOIN_TS,
+    url: '/api/contests/test-solve',
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ 
+        type: requestTypes.REQUEST, 
+        action_type: CONTEST_JOIN_TS,
+        contest_id
+      }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message })
+  });
+}
+

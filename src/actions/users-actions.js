@@ -10,6 +10,7 @@ import {
   USER_ADMIN,
   USER_COMP_RES,
   USER_JOIN_RES,
+  USER_TS_RES,
   USER_PUT,
   USER_TS
 } from './types';
@@ -61,7 +62,8 @@ export function adminInfo() {
 
 const requestURLs = {
   [USER_COMP_RES]: '/api/competitions',
-  [USER_JOIN_RES]: '/api/competitions/join'
+  [USER_JOIN_RES]: '/api/competitions/join',
+  [USER_TS_RES]: '/api/contests/test-solve'
 };
 
 /* respond to a request */

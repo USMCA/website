@@ -75,6 +75,7 @@ const replyRequest = (users, request, notification, req, res, callback) => {
   removeRequests(users, request, req, res, () => {
     request.remove(err => {
       if (err) {
+        console.log(err);
         handler(false, 'Failed to remove request.', 503)(req, res);
       } else {
         notification.save(err => {

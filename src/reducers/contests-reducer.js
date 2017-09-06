@@ -7,6 +7,7 @@ import {
   CONTEST_RM_PROB,
   CONTEST_REORDER_PROBS,
   CONTEST_REQUEST_TS,
+  CONTEST_JOIN_TS,
   requestStatuses
 } from '../actions/types';
 
@@ -18,7 +19,8 @@ const INITIAL_STATE = {
   test: { content: null, message: '', requestStatue: IDLE },
   addTestProb: { message: '', requestStatue: IDLE },
   removeTestProb: { message: '', requestStatue: IDLE },
-  requestTS: { message: '', requestStatue: IDLE }
+  requestTS: { message: '', requestStatue: IDLE },
+  joinTS: { message: '', requestStatue: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -59,6 +61,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, removeTestProb: payload };
     case CONTEST_REQUEST_TS:
       return { ...state, requestTS: payload };
+    case CONTEST_JOIN_TS:
+      return { ...state, joinTS: payload };
     case CONTEST_REORDER_PROBS:
     default:
       return state;

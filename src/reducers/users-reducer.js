@@ -6,14 +6,16 @@ import {
   USER_COMP_RES,
   USER_JOIN_RES,
   USER_PUT,
-  USER_TS
+  USER_TS,
+  USER_TS_RES
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const INITIAL_STATE = { 
   user: { content: null, message: '', requestStatus: IDLE },
   admins: { content: [], message: '', requestStatus: IDLE },
-  test_solve: { content: null, message: '', requestStatus: IDLE }
+  test_solve: { content: null, message: '', requestStatus: IDLE },
+  join_test_solve: { message: '', requestStatus: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
@@ -23,6 +25,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, user: payload };
     case USER_ADMIN:
       return { ...state, admins: payload };
+    case USER_TS_RES:
     case USER_JOIN_RES:
     case USER_COMP_RES:
       const { requestStatus, message } = payload;

@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col } from "react-materialize";
+import { Row, Col, Modal, Button } from "react-materialize";
 import { ProblemPreview, LoadMore } from "../utilities";
 import { connect } from "react-redux";
 import moment from "moment";
 
-import { userTS, getTest } from "../../actions";
+import { userTS, getTest, joinTestSolve } from "../../actions";
 
 class TestSolvePage extends React.Component {
   componentWillMount() {
@@ -13,13 +13,26 @@ class TestSolvePage extends React.Component {
   }
 
   generalTS = general => {
+    const { joinTestSolve } = this.props;
     if (!general) return <div />;
     if (general.length === 0) 
       return <li className="transparent">No test solve requests found.</li>;
     return general.map((contest, idx) => (
       <li key={idx}>
         <a><span className="select-circle"></span></a>
-        <span className="bold-text">{ contest.name }</span> requests <span className="bold-text">{ contest.requested_test_solvers }</span> test solvers. Their deadline is <span className="bold-text">{ moment(contest.test_solve_deadline).format('ll') }</span>. <a className="underline-hover">Apply</a>
+        <span className="bold-text">{ contest.name }</span> requests <span className="bold-text">{ contest.requested_test_solvers }</span> test solvers. Their deadline is <span className="bold-text">{ moment(contest.test_solve_deadline).format('ll') }</span>.  
+        <Modal 
+          header="Confirm Application" 
+          trigger={<a className="underline-hover">Apply</a>} 
+          actions={
+            <div>
+              <Button flat modal="close" waves="light">Cancel</Button>
+              <Button flat modal="close" waves="light"
+                onClick={ () => joinTestSolve(contest._id) }>Confirm</Button>
+            </div>
+          }>
+          Are you sure you want to apply to be a test solver for { contest.name }?
+        </Modal>
       </li>
     ))
   }
@@ -95,7 +108,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   userTS: () => { userTS()(dispatch); },
-  getTest: id => { getTest(id)(dispatch); }
+  getTest: id => { getTest(id)(dispatch); },
+  joinTestSolve: id => { joinTestSolve(id)(dispatch); }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TestSolvePage);

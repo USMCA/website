@@ -53,7 +53,8 @@ export const USER_INFO = 'user_info', // get user info
              USER_JOIN_RES = 'user_join_res', // respond to join competition
              USER_NOTIF_TOGGLE = 'notif_toggle', // toggle between unread, read, and urgent
              USER_PUT = 'user_put', // generic put request
-             USER_TS = 'user_ts'; // get test solving info
+             USER_TS = 'user_ts', // get test solving info
+             USER_TS_RES = 'user_ts_res'; // respond to test solve request
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
@@ -70,7 +71,8 @@ export const CONTEST_POST = 'contest_post', // post a contest
              CONTEST_TEST_PROB = 'content_test_prob', // add a problem to a test
              CONTEST_RM_PROB = 'content_rm_prob', // remove a problem from a test
              CONTEST_REORDER_PROBS = 'content_reorder_probs', // change order of problems
-             CONTEST_REQUEST_TS = 'contest_request_ts'; // request for test solvers
+             CONTEST_REQUEST_TS = 'contest_request_ts', // request for test solvers
+             CONTEST_JOIN_TS = 'contest_join_ts'; // request to be a test solver
 
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user

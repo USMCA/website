@@ -3,14 +3,22 @@ const router = require('express').Router(),
       async = require('async'),
       auth = require('../config/auth'),
       handler = require('../utils/handler'),
-      { requestTypes, requestEnum } = require('../constants');
-const { REQUEST, ACCEPT, REJECT } = requestTypes;
+      { requestTypes, requestEnum } = require('../constants'),
+      { 
+        sendRequests, 
+        removeRequests,
+        sendNotifications,
+        replyRequest
+      } = require('../utils/requests'),
+      { REQUEST, ACCEPT, REJECT } = requestTypes;
 
 const User = require('../database/user'),
       Competition = require('../database/competition'),
       Contest = require('../database/contest'),
       Test = require('../database/test'),
-      Problem = require('../database/problem');
+      Request = require('../database/request'),
+      Problem = require('../database/problem'),
+      Notification = require('../database/notification');
 
 router.post('/', auth.verifyJWT, (req, res) => {
   const { competition_id, name, date, locations } = req.body;
@@ -189,6 +197,83 @@ router.post('/:contest_id/test-solvers', auth.verifyJWT, (req, res) => {
     if (err) handler(false, 'Failed to load contest.', 503)(req, res);
     else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
     else handler(true, 'Updated request for test solvers.', 200)(req, res);
+  });
+});
+
+/* apply to test solve */
+router.post('/test-solve', auth.verifyJWT, (req, res) => {
+  let { type, action_type, contest_id, requestId } = req.body;
+  Request.findById(requestId)
+  .populate('author contest')
+  .exec((err, request) => {
+    if (err) return handler(false, 'Failed to load request_id.', 503)(req, res);
+    else if (request && (type === ACCEPT || type === REJECT)) {
+      contest_id = request.contest;
+    } else if (!request && type === REQUEST) {
+    } else return handler(false, 'Invalid request.', 400)(req, res);
+    Contest.findById(contest_id)
+    .populate('competition', 'directors')
+    .exec((err, contest) => {
+      if (err) handler(false, 'Failed to load contest.', 503)(req, res);
+      else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
+      else {
+        User.populate(contest, 'competition.directors czars', (err, contest) => {
+          if (err) handler(false, 'Failed to populate authorities.', 503)(req, res);
+          else {
+            const authorities = _.concat(contest.competition.directors, contest.czars);
+            switch(type) {
+              case REQUEST:
+                const newRequest = Object.assign(new Request(), {
+                  author: req.user._id,
+                  body: `${req.user.name} requests to test solve for the contest \"${contest.name}\".`,
+                  action_type,
+                  type: requestEnum.REQUEST,
+                  contest: contest_id
+                });
+                sendRequests(authorities, newRequest, req, res, () => {
+                  handler(true, 'Successfully requested to be a test solver.', 200)(req, res);
+                });
+                break;
+              case ACCEPT:
+                contest.test_solvers.push(request.author);
+                contest.save(err => {
+                  if (err) handler(false, 'Failed to add user as test solver.', 503)(req, res);
+                  else {
+                    const notification = Object.assign(new Notification(), {
+                      admin_author: false,
+                      author: contest.competition,
+                      title: 'Test Solver request approved',
+                      body: `Your request to become a test solver for ${contest.name} has been approved.`
+                    });
+                    /* send notification to user and delete request from authorities */
+                    replyRequest(authorities, request, notification, req, res, () => {
+                      handler(true, 'Successfully added user as test solver.', 200)(req, res);
+                    });
+                  }
+                });
+                break;
+              case REJECT:
+                if (!request) handler(false, 'Request does not exist.', 400)(req, res);
+                else {
+                  const notification = Object.assign(new Notification(), {
+                    admin_author: false,
+                    author: contest.competition,
+                    title: 'Test Solver request rejected',
+                    body: `Your request to become a test solver for ${contest.name} has been rejected.`
+                  });
+                  /* send notification to user and delete request from authorities */
+                  replyRequest(authorities, request, notification, req, res, () => {
+                    handler(true, 'Successfully rejected user as test solver.', 200)(req, res);
+                  });
+                }
+                break;
+              default:
+                handler(false, 'Invalid test solve post.', 400)(req, res);
+            }
+          }
+        });
+      }
+    });
   });
 });
 

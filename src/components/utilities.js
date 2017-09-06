@@ -15,8 +15,10 @@ import { respondRequest, userPut } from "../actions";
 import {
   USER_COMP_RES,
   USER_JOIN_RES,
+  USER_TS_RES,
   COMP_REQ,
-  COMP_REQ_JOIN
+  COMP_REQ_JOIN,
+  CONTEST_JOIN_TS,
 } from "../actions/types";
 import { requestTypes } from "../../constants";
 
@@ -70,10 +72,13 @@ const RequestDumb = ({ request, respondRequest }) => {
     },
     [COMP_REQ_JOIN]: response => {
       return () => { respondRequest(request, response, USER_JOIN_RES); };
+    },
+    [CONTEST_JOIN_TS]: response => {
+      return () => { respondRequest(request, response, USER_TS_RES); };
     }
   };
   const makeHandleClick = responseHandleClick[request.action_type];
-  if (!makeHandleClick) return <div></div>;
+  if (!makeHandleClick) return <div />;
   return (
     <li className="white">
       <Row>
@@ -81,18 +86,28 @@ const RequestDumb = ({ request, respondRequest }) => {
           { request.body }
         </Col>
         <Col s={2}>
-          <Modal header="Confirm Reject" trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} actions={<div>
-            <Button flat modal="close" waves="light">Cancel</Button>
-            <Button flat modal="close" waves="light"
-              onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
-          </div>}>
+          <Modal 
+            header="Confirm Reject" 
+            trigger={<a className="right"><i className="fa fa-times" aria-hidden="true" /></a>} 
+            actions={
+              <div>
+                <Button flat modal="close" waves="light">Cancel</Button>
+                <Button flat modal="close" waves="light"
+                  onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
+              </div>
+            }>
             Are you sure you want to reject this request?
           </Modal>
-          <Modal header="Confirm Accept" trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}actions={<div>
-            <Button flat modal="close" waves="light">Cancel</Button>
-            <Button flat modal="close" waves="light"
-              onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
-          </div>}>
+          <Modal 
+            header="Confirm Accept" 
+            trigger={<a className="right right-space"><i className="fa fa-check" aria-hidden="true" /></a>}
+            actions={
+              <div>
+                <Button flat modal="close" waves="light">Cancel</Button>
+                <Button flat modal="close" waves="light"
+                  onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
+              </div>
+            }>
             Are you sure you want to accept this request?
           </Modal>
         </Col>

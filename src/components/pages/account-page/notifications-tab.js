@@ -120,7 +120,7 @@ class NotificationsTab extends React.Component {
                   return (
                     <Notification 
                       className={label} 
-                      author={admin_author ? 'Admin' : author.short_name } 
+                      author={admin_author ? 'Admin' : author ? (author.short_name || 'N/A') : 'N/A' } 
                       title={title} 
                       message={body} 
                       key={key}
