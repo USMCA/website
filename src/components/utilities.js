@@ -349,7 +349,7 @@ class Solution extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span><div className="upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span><div className="prob-btn upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ solution.author.name }</span><br />
           <span className="small-stat"><i>{ datify(solution.created, solution.updated) }</i></span>
         </Col>
