@@ -57,7 +57,7 @@ export const USER_INFO = 'user_info', // get user info
              USER_TS = 'user_ts', // get test solving info
              USER_TS_RES = 'user_ts_res', // respond to test solve request
              USER_COMP_INV_RES = 'user_comp_inv_res', // respond to join competition invite
-             USER_CHANGE_PERM = 'user_change_perm'; // change permissions
+             USER_CHANGE_PERM = 'prob_change_perm'; // change permissions
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
@@ -87,6 +87,7 @@ export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by 
              PROB_DATABASE = 'prob_database', // fetch database of a competition
              PROB_PUBLIC_DATABASE = 'prob_public_database', // fetch public database
              PROB_TAKE = 'prob_take', // take problem from shared database
+             PROB_PUBLICIZE = 'prob_publicize', // put problem to the shared database
              PROB_TEST_SOLVE = 'prob_test_solve', // post a test solve
              PROB_PROB_COMMENT = 'prob_prob_coment', // comment on a problem
              PROB_SOLN_COMMENT = 'prob_soln_comment'; // comment on a solution

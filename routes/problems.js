@@ -10,6 +10,7 @@ const User = require('../database/user'),
       Problem = require('../database/problem'),
       Solution = require('../database/solution'),
       Comment = require('../database/comment'),
+      Test = require('../database/test'),
       Competition = require('../database/competition');
 
 const problemParam = (problem_id, req, res, callback)  => {
@@ -198,6 +199,33 @@ router.post('/comment/solution', auth.verifyJWT, (req, res) => {
         }
       });
     });
+  });
+});
+
+router.post('/publicize', auth.verifyJWT, (req, res) => {
+  const { problem_id } = req.body;
+  Problem.findById(problem_id, (err, problem) => {
+    if (err) handler(false, 'Failed to load problem.', 503)(req, res);
+    else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
+    else {
+      if (!problem.author.equals(req.user._id))
+        handler(false, 'User is not the author.', 401)(req, res);
+      else {
+        Test.findOne({ problems: problem }, (err, test) => {
+          if (err) handler(false, 'Failed to check for tests that use the problem.', 503)(req, res);
+          else if (test) 
+            handler(false, `The problem is in use by the test ${test.name}.`, 400)(req, res);
+          else {
+            problem.publicDatabase = true;
+            problem.competition = null;
+            problem.save(err => {
+              if (err) handler(false, 'Failed to publicize problem.', 503)(req, res);
+              else handler(true, 'Successfully publicized problem.', 200, { problem_id: problem._id })(req, res);
+            });
+          }
+        });
+      } 
+    }
   });
 });
 

@@ -153,9 +153,11 @@ class CompetitionsTab extends React.Component {
       "contests": {
         title: () => "Contests",
         view: () => <div className="round-container">
-          <Modal header="Create Contest" trigger={ <Button className="teal darken-3" waves="light">Create contest</Button> }>
-            <CreateContestForm competition_id={ competition._id } />
-          </Modal>
+          { membership === DIRECTOR && 
+            <Modal header="Create Contest" trigger={ <Button className="teal darken-3" waves="light">Create contest</Button> }>
+              <CreateContestForm competition_id={ competition._id } />
+            </Modal>
+          }
           {
             competition.contests.length > 0 ? (
               _.reverse(_.sortBy(competition.contests,
