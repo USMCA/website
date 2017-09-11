@@ -13,7 +13,8 @@ import {
   USER_TS_RES,
   USER_PUT,
   USER_TS,
-  USER_COMP_INV_RES
+  USER_COMP_INV_RES,
+  USER_CHANGE_PERM
 } from './types';
 import { requestTypes } from '../../constants';
 import { authenticate, serverError, APIAction, authAPIAction } from './utilities';
@@ -144,3 +145,18 @@ export function userTS() {
   });
 }
 
+export function changePermissions({ competition_id, user_id, permission }) {
+  return authAPIAction({
+    type: USER_CHANGE_PERM,
+    url: '/api/competitions/permissions',
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ competition_id, user_id, permission }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message, content: user_id })
+  });
+}

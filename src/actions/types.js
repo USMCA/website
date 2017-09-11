@@ -56,7 +56,8 @@ export const USER_INFO = 'user_info', // get user info
              USER_PUT = 'user_put', // generic put request
              USER_TS = 'user_ts', // get test solving info
              USER_TS_RES = 'user_ts_res', // respond to test solve request
-             USER_COMP_INV_RES = 'user_comp_inv_res'; // respond to join competition invite
+             USER_COMP_INV_RES = 'user_comp_inv_res', // respond to join competition invite
+             USER_CHANGE_PERM = 'user_change_perm'; // change permissions
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition

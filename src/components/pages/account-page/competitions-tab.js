@@ -14,11 +14,14 @@ import JoinCompetitionForm from "../../forms/join-competition";
 import * as Forms from "../../forms";
 import { permissionsDisplay } from "../../../../constants";
 
-const PermissionsModal = ({ defaultValue }) => (
+const PermissionsModal = ({ defaultValue, competition_id, user_id }) => (
   <Modal
     header="Change Permissions"
     trigger={<a className="teal-text text-darken-3 underline-hover">change permissions</a>}>
-    <Forms.ChangePermissions defaultValue={ defaultValue } />
+    <Forms.ChangePermissions 
+      defaultValue={ defaultValue } 
+      competition_id={ competition_id } 
+      user_id = { user_id } />
   </Modal>
 );
 
@@ -76,7 +79,7 @@ class CompetitionsTab extends React.Component {
         <tr key={ idx }>
           <td>{ user.name }</td>
           <td>{ user.email }</td>
-          <td>{ permissionsDisplay[userMembership] } (<PermissionsModal defaultValue={ userMembership }/>)</td>
+          <td>{ permissionsDisplay[userMembership] } (<PermissionsModal defaultValue={ userMembership } user_id={ user._id } competition_id={ competition._id } />)</td>
           <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
         </tr>
       ) : (
@@ -127,7 +130,7 @@ class CompetitionsTab extends React.Component {
       "members": {
         title: () => "Members",
         view: () => <div className="round-container">
-          <AddUserModal competition_id={ competition._id } />
+          { membership === DIRECTOR && <AddUserModal competition_id={ competition._id } /> }
           <h3>Roster</h3>
           <Table className="roster">
             <thead>

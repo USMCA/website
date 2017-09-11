@@ -9,7 +9,8 @@ import {
   USER_PUT,
   USER_TS,
   USER_TS_RES,
-  USER_COMP_INV_RES
+  USER_COMP_INV_RES,
+  USER_CHANGE_PERM
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -18,7 +19,8 @@ const INITIAL_STATE = {
   admins: { content: [], message: '', requestStatus: IDLE },
   all: { content: [], message: '', requestStatus: IDLE },
   test_solve: { content: null, message: '', requestStatus: IDLE },
-  join_test_solve: { message: '', requestStatus: IDLE }
+  join_test_solve: { message: '', requestStatus: IDLE },
+  changePermission: { content: null, message: '', requestStatus: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
@@ -55,6 +57,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       };
     case USER_TS: 
       return { ...state, test_solve: payload };
+    case USER_CHANGE_PERM:
+      return { ...state, changePermission: payload };
     default:
       return state;
   }
