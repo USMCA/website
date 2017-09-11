@@ -67,9 +67,9 @@ router.get('/admin', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-  User.find({}, 'name email', (err, user) => {
+  User.find({}, 'name email', (err, users) => {
     if (err) handler(false, 'Failed to load all users.', 503)(req, res);
-    else handler(true, 'Successfully loaded all users.', 200, { user })(req, res);
+    else handler(true, 'Successfully loaded all users.', 200, { users })(req, res);
   });
 });
 

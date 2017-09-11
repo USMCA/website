@@ -8,13 +8,15 @@ import renderKaTeX from "../../katex.js";
 import {
   allCompetitions,
   memberCompetitions,
-  directorCompetitions
+  directorCompetitions,
+  allUsersInfo,
 } from "../../actions";
 import { requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
 import Error from "../error";
 import Autocomplete from "../react-materialize-custom/Autocomplete";
-import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
+import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect"; 
+import DoubleAutocompleteSelect from "../react-materialize-custom/DoubleAutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 import { RightButtonPanel, FlameInput } from "../utilities";
@@ -365,11 +367,53 @@ KaTeXInput.propTypes = {
   includeSubmit: PropTypes.bool
 };
 
+/*******************************************************************************
+ * Autocomplete for all users.
+ ******************************************************************************/
+
+class UsersAutocompleteInputDumb extends React.Component {
+  componentWillMount() {
+    const { allUsersInfo } = this.props;
+    allUsersInfo();
+  }
+
+  render() {
+    const { 
+      allUsersInfo,
+      allUsersData: { requestStatus, message, content: users },
+      input,
+      meta,
+      ...rest
+    } = this.props;
+    if (requestStatus !== SUCCESS) return <div />;
+    const data = _.reduce(users, (o, user) => Object.assign(o, {
+      [user.email]: user._id
+    }), {});
+    //@TODO also display user name
+    return (
+      <DoubleAutocompleteSelect 
+        title="User Email" data={ data } 
+        { ...input } { ...rest } />
+    );
+  }
+}
+const mapStateToPropsUsersAutocompleteInputDumb = state => ({
+        allUsersData: state.users.all
+      }),
+      mapDispatchToPropsUsersAutocompleteInputDumb = dispatch => ({
+        allUsersInfo: () => { allUsersInfo()(dispatch); }
+      });
+const UsersAutocompleteInput = connect(
+        mapStateToPropsUsersAutocompleteInputDumb,
+        mapDispatchToPropsUsersAutocompleteInputDumb
+      )(UsersAutocompleteInputDumb);
+
 export {
   competitionsInputOptions,
   CompetitionsInput,
   CompetitionsSelect,
   LocationArrayInput,
   SubjectsInput,
-  KaTeXInput
+  KaTeXInput,
+  UsersAutocompleteInput
 };

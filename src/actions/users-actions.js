@@ -8,6 +8,7 @@ import {
   requestStatuses,
   USER_INFO,
   USER_ADMIN,
+  USER_ALL,
   USER_COMP_RES,
   USER_JOIN_RES,
   USER_TS_RES,
@@ -58,6 +59,16 @@ export function adminInfo() {
       serverError(action, dispatch)
     );
   }
+}
+
+/* get all users */
+export function allUsersInfo() {
+  return APIAction({
+    type: USER_ALL,
+    url: '/api/users/all',
+    opts: { method: 'get' },
+    formatData: ({ success, message, users }) => ({ success, message, content: users })
+  });
 }
 
 const requestURLs = {

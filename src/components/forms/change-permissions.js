@@ -9,7 +9,7 @@ import Input from "../react-materialize-custom/ControlledInput";
 import { RightButtonPanel } from "../utilities";
 import { permissionsEnum } from "../../../constants";
 
-class PermissionsForm extends React.Component {
+class ChangePermissions extends React.Component {
   onSubmit = ({ permission }) => {
     console.log(permission);
   }
@@ -37,11 +37,11 @@ class PermissionsForm extends React.Component {
           <Field name="permission" component={ this.permissionField } />
         </div>
         <RightButtonPanel>
-          <Button type="submit">Apply</Button>
+          <Button type="submit" className="teal darken-2">Apply</Button>
         </RightButtonPanel>
       </form>
     );
   }
 }
 
-export default reduxForm({ form: 'change-permission' })(PermissionsForm);
+export default reduxForm({ form: 'change-permissions' })(ChangePermissions);

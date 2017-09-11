@@ -11,14 +11,21 @@ import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
 import CreateCompetitionForm from "../../forms/create-competition";
 import JoinCompetitionForm from "../../forms/join-competition";
-import ChangePermissionsForm from "../../forms/change-permissions";
+import * as Forms from "../../forms";
 import { permissionsDisplay } from "../../../../constants";
 
 const PermissionsModal = ({ defaultValue }) => (
   <Modal
     header="Change Permissions"
     trigger={<a className="teal-text text-darken-3 underline-hover">change permissions</a>}>
-    <ChangePermissionsForm defaultValue={ defaultValue } />
+    <Forms.ChangePermissions defaultValue={ defaultValue } />
+  </Modal>
+);
+
+const AddUserModal = () => (
+  <Modal
+    trigger={<Button className="teal darken-3" waves="light">Add new member</Button>}>
+    <Forms.InviteUser />
   </Modal>
 );
 
@@ -120,7 +127,7 @@ class CompetitionsTab extends React.Component {
       "members": {
         title: () => "Members",
         view: () => <div className="round-container">
-          <Button className="teal darken-3" waves="light">Add new member</Button>
+          <AddUserModal />
           <h3>Roster</h3>
           <Table className="roster">
             <thead>

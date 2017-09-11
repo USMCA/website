@@ -3,6 +3,7 @@ import {
   requestStatuses,
   USER_INFO,
   USER_ADMIN,
+  USER_ALL,
   USER_COMP_RES,
   USER_JOIN_RES,
   USER_PUT,
@@ -14,6 +15,7 @@ const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const INITIAL_STATE = { 
   user: { content: null, message: '', requestStatus: IDLE },
   admins: { content: [], message: '', requestStatus: IDLE },
+  all: { content: [], message: '', requestStatus: IDLE },
   test_solve: { content: null, message: '', requestStatus: IDLE },
   join_test_solve: { message: '', requestStatus: IDLE }
 };
@@ -25,6 +27,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, user: payload };
     case USER_ADMIN:
       return { ...state, admins: payload };
+    case USER_ALL:
+      return { ...state, all: payload };
     case USER_TS_RES:
     case USER_JOIN_RES:
     case USER_COMP_RES:
