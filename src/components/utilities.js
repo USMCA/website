@@ -214,7 +214,7 @@ class ProblemPreview extends React.Component  {
         </Col>
         { includeClipboard && (
             <Col s={2} className="center-align">
-              <div className="upvote upvoted">
+              <div className="prob-btn upvote unvoted">
                 <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a>
               </div>
             </Col>
