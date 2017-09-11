@@ -11,6 +11,16 @@ import { RightButtonPanel, VerticalNav } from "../../utilities";
 import CreateContestForm from "../../forms/create-contest";
 import CreateCompetitionForm from "../../forms/create-competition";
 import JoinCompetitionForm from "../../forms/join-competition";
+import ChangePermissionsForm from "../../forms/change-permissions";
+import { permissionsDisplay } from "../../../../constants";
+
+const PermissionsModal = ({ defaultValue }) => (
+  <Modal
+    header="Change Permissions"
+    trigger={<a className="teal-text text-darken-3 underline-hover">change permissions</a>}>
+    <ChangePermissionsForm defaultValue={ defaultValue } />
+  </Modal>
+);
 
 const makeURL = url => {
   if (!url) return url;
@@ -22,8 +32,8 @@ const makeURL = url => {
 }
 
 const DIRECTOR = "director",
-      PENDING_DIRECTOR = "pending director",
-      SECURE = "secure member",
+      PENDING_DIRECTOR = "pending_director",
+      SECURE = "secure_member",
       MEMBER = "member",
       NONMEMBER = "nonmember";
 
@@ -53,20 +63,23 @@ class CompetitionsTab extends React.Component {
 
   competitionTabs = competition => {
     const membership = competitionMembership(competition, auth.userId());
-    const memberView = (user, idx) => membership === DIRECTOR ? (
-      <tr key={ idx }>
-        <td>{ user.name }</td>
-        <td>{ user.email }</td>
-        <td>{ competitionMembership(competition, user._id) } (<a className="teal-text text-darken-3 underline-hover">change permissions</a>)</td>
-        <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
-      </tr>
-    ) : (
-      <tr key={ idx }>
-        <td>{ user.name }</td>
-        <td>{ user.email }</td>
-        <td>{ competitionMembership(competition, user._id) }</td>
-      </tr>
-    );
+    const memberView = (user, idx) => {
+      const userMembership = competitionMembership(competition, user._id);
+      return membership === DIRECTOR ? (
+        <tr key={ idx }>
+          <td>{ user.name }</td>
+          <td>{ user.email }</td>
+          <td>{ permissionsDisplay[userMembership] } (<PermissionsModal defaultValue={ userMembership }/>)</td>
+          <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
+        </tr>
+      ) : (
+        <tr key={ idx }>
+          <td>{ user.name }</td>
+          <td>{ user.email }</td>
+          <td>{ permissionsDisplay[userMembership] }</td>
+        </tr>
+      );
+    }
     const contestView = (contest, idx) => {
       return (
         <div style={{borderBottom: "1px solid #cfd8dc"}} key={idx}>

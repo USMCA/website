@@ -24,6 +24,18 @@ module.exports = {
   requestActionEnum: {
     JOIN: 'join',
     COMP: 'comp'
+  },
+  permissionsEnum: {
+    member: 'Member',
+    secure_member: 'Secure Member',
+    director: 'Director'
+  },
+  permissionsDisplay: {
+    member: 'Member',
+    secure_member: 'Secure Member',
+    director: 'Director',
+    pending_director: 'Pending Director',
+    nonmember: 'Nonmember'
   }
 };
 

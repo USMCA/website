@@ -41,6 +41,7 @@ class Input extends Component {
         value: nextProps.defaultValue
       }, () => $(this.selectInput).material_select());
     }
+    this.setState({ value: nextProps.defaultValue });
   }
 
   componentWillUnmount () {
