@@ -150,6 +150,80 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/invite', auth.verifyJWT, (req, res) => {
+  const { type, action_type, user_id, competition_id, requestId } = req.body;
+  switch (type) {
+    case REQUEST:
+      Competition.findById(competition_id, (err, competition) => {
+        if (err) handler(false, 'Failed to load competition.', 503)(req, res);
+        else if (!competition) handler(false, 'Competition doesn\'t exist.', 400)(req, res);
+        else {
+          /* only directors can invite users */
+          if (competition.directors.indexOf(req.user._id) === -1) {
+            handler(false, 'User is not a director of the competition.', 401)(req, res);
+          } else {
+            User.findById(user_id)
+            .populate('requests')
+            .exec((err, user) => {
+              if (err) handler(false, 'Failed to load user.', 503)(req, res);
+              else if (!user) handler(false, 'User doesn\'t exist.', 400)(req, res);
+              else {
+                /* check if user is a member yet */
+                if (competition.members.indexOf(user._id) > -1 ||
+                    competition.secure_members.indexOf(user._id) > -1 ||
+                    competition.directors.indexOf(user._id) > -1) {
+                  handler(false, 'User is already a member of the competition.', 400)(req, res);
+                } else {
+                  const invite = Object.assign(new Request(), {
+                    author: req.user._id,
+                    body: `${req.user.name} invites you to join their competition ${competition.name}`,
+                    action_type: action_type,
+                    type: requestEnum.INVITE,
+                    competition: competition._id
+                  });
+                  /* send invite to user */
+                  sendRequests([user], invite, req, res, () => {
+                    handler(true, 'Succesfully requested joining of competition.', 200)(req, res);
+                  });
+                }
+              }
+            });
+          }
+        }
+      });
+      break;
+    case ACCEPT:
+      Request.findById(requestId)
+      .populate('competition')
+      .exec((err, invite) => {
+        if (err) handler(false, 'Failed to load invite.', 503)(req, res);
+        else if (!invite) handler(false, 'Invite does not exist.', 400)(req, res);
+        else if (!invite.competition) handler(false, 'Associated competition does not exist.', 400)(req, res);
+        else {
+          invite.competition.members.push(req.user._id);
+          invite.competition.save(err => {
+            if (err) handler(false, 'Failed to save competition.', 503)(req, res);
+            else {
+              invite.remove(err => {
+                if (err) handler(false, 'Failed to remove invite.', 503)(req, res);
+                else handler(true, 'Successfully accepted invite.', 200)(req, res);
+              });
+            }
+          });
+        }
+      });
+      break;
+    case REJECT:
+      Request.findByIdAndRemove(requestId, err => {
+        if (err) handler(false, 'Failed to reject invite.', 503)(req, res);
+        else handler(true, 'Successfully reject invite.', 200)(req, res);
+      });
+      break;
+    default:
+      handler(false, 'Invalid request.', 400)(req, res);
+  }
+});
+
 router.post('/join', auth.verifyJWT, (req, res) => {
   const { type, action_type, competition_id, requestId } = req.body;
   switch(type) {

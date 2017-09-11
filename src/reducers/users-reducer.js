@@ -8,7 +8,8 @@ import {
   USER_JOIN_RES,
   USER_PUT,
   USER_TS,
-  USER_TS_RES
+  USER_TS_RES,
+  USER_COMP_INV_RES
 } from '../actions/types';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
@@ -29,6 +30,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, admins: payload };
     case USER_ALL:
       return { ...state, all: payload };
+    case USER_COMP_INV_RES:
     case USER_TS_RES:
     case USER_JOIN_RES:
     case USER_COMP_RES:

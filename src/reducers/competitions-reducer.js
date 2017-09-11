@@ -4,6 +4,7 @@ import {
   COMP_FETCH_DIR,
   COMP_FETCH_MINE,
   COMP_REQ_JOIN,
+  COMP_INV_JOIN,
   requestStatuses
 } from '../actions/types';
 
@@ -13,7 +14,8 @@ const INITIAL_STATE = {
   allCompetitions: { content: [], message: '', requestStatus: IDLE },
   memberCompetitions: { content: [], message: '', requestStatus: IDLE },
   directorCompetitions: { content: [], message: '', requestStatus: IDLE },
-  joinCompetition: { content: null, message: '', requestStatus: IDLE }
+  joinCompetition: { content: null, message: '', requestStatus: IDLE },
+  inviteCompetition: { content: null, message: '', requestStatus: IDLE }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {  
@@ -28,6 +30,8 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, directorCompetitions: payload };
     case COMP_REQ_JOIN:
       return { ...state, joinCompetition: payload };
+    case COMP_INV_JOIN:
+      return { ...state, inviteCompetition: payload };
     default:
       return state;
   }

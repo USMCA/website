@@ -55,14 +55,16 @@ export const USER_INFO = 'user_info', // get user info
              USER_NOTIF_TOGGLE = 'notif_toggle', // toggle between unread, read, and urgent
              USER_PUT = 'user_put', // generic put request
              USER_TS = 'user_ts', // get test solving info
-             USER_TS_RES = 'user_ts_res'; // respond to test solve request
+             USER_TS_RES = 'user_ts_res', // respond to test solve request
+             USER_COMP_INV_RES = 'user_comp_inv_res'; // respond to join competition invite
 
 /* competitions */
 export const COMP_REQ = 'comp_req', // request to create competition
              COMP_GET = 'comp_get', // get all competitions
              COMP_FETCH_MINE = 'comp_fetch_mine', // get user competition info
              COMP_FETCH_DIR = 'comp_fetch_dir', // get user competition info
-             COMP_REQ_JOIN = 'comp_req_join'; // request to join competition
+             COMP_REQ_JOIN = 'comp_req_join', // request to join competition
+             COMP_INV_JOIN = 'comp_inv_join'; // invite a user to competition
 
 /* contests */
 export const CONTEST_POST = 'contest_post', // post a contest

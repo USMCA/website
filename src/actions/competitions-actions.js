@@ -9,11 +9,12 @@ import {
   COMP_FETCH_MINE,
   COMP_FETCH_DIR,
   COMP_REQ_JOIN,
+  COMP_INV_JOIN,
   requestStatuses
 } from './types';
 import { requestTypes } from '../../constants';
 import auth from '../auth';
-import { authenticate, serverError } from './utilities';
+import { authAPIAction, authenticate, serverError } from './utilities';
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 const {
@@ -147,3 +148,25 @@ export function joinCompetition(competition_id) {
     });    
   }
 }
+
+export function inviteUser({ competition_id, user_id }) {
+  return authAPIAction({
+    type:  COMP_INV_JOIN,
+    url: '/api/competitions/invite',
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ 
+        type: requestTypes.REQUEST, 
+        action_type: COMP_INV_JOIN, 
+        competition_id,
+        user_id
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    },
+    formatData: ({ success, message }) => ({ success, message })
+  });
+}
+

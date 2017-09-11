@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import $ from 'jquery';
-
+import $ from 'jquery'; 
 import auth from '../auth';
 import { memberCompetitions } from './competitions-actions';
 import {
@@ -13,7 +12,8 @@ import {
   USER_JOIN_RES,
   USER_TS_RES,
   USER_PUT,
-  USER_TS
+  USER_TS,
+  USER_COMP_INV_RES
 } from './types';
 import { requestTypes } from '../../constants';
 import { authenticate, serverError, APIAction, authAPIAction } from './utilities';
@@ -74,7 +74,8 @@ export function allUsersInfo() {
 const requestURLs = {
   [USER_COMP_RES]: '/api/competitions',
   [USER_JOIN_RES]: '/api/competitions/join',
-  [USER_TS_RES]: '/api/contests/test-solve'
+  [USER_TS_RES]: '/api/contests/test-solve',
+  [USER_COMP_INV_RES]: '/api/competitions/invite'
 };
 
 /* respond to a request */
@@ -142,3 +143,4 @@ export function userTS() {
     })
   });
 }
+

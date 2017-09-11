@@ -7,23 +7,17 @@ import { Input, Row, Col, Button } from "react-materialize";
 import Spinner from "../spinner";
 import Error from "../error";
 import { RightButtonPanel } from "../utilities";
-import {
-  competitionsInputOptions,
-  CompetitionsInput,
-  CompetitionsSelect,
-  LocationArrayInput,
-  UsersAutocompleteInput
-} from "./utilities";
-import {
-  joinCompetition
-} from "../../actions";
-import { COMP_REQ_JOIN, requestStatuses } from "../../actions/types";
+import { UsersAutocompleteInput } from "./utilities";
+import { inviteUser } from "../../actions";
+import { COMP_INV_JOIN, requestStatuses } from "../../actions/types";
 
 const { SUCCESS, PENDING, ERROR, SUBMITTED, IDLE } = requestStatuses;
 
 class InviteUser extends React.Component {
   onSubmit = ({ user_id }) => {
-    console.log(user_id);
+    const { inviteUser, errorHandler, competition_id } = this.props;
+    if (!user_id) errorHandler("User not specified.");
+    else inviteUser({ competition_id, user_id });
   }
 
   userField = ({ input, meta, ...rest }) => (
@@ -31,12 +25,19 @@ class InviteUser extends React.Component {
   )
 
   render() {
-    const { handleSubmit } = this.props;
-    return (
+    const {
+      handleSubmit,
+      inviteData: { requestStatus, message, content },
+      resetForm
+    } = this.props;
+    return requestStatus === SUCCESS ? (
+      <p>Invite sent to user. Click <a onClick={ resetForm }>here</a> to add another user.</p>
+    ) : (
       <form onSubmit={ handleSubmit(this.onSubmit) }>
         <div>
           <Field name="user_id" component={ this.userField } />
         </div>
+        <Error error={ requestStatus === ERROR } message={ message } />
         <Col l={3} s={12}>
           <RightButtonPanel>
             <Button waves="light" className="teal darken-2" type="submit">
@@ -50,20 +51,26 @@ class InviteUser extends React.Component {
 }
 
 InviteUser.propTypes = {
-  data: PropTypes.object.isRequired,
-  joinCompetition: PropTypes.func.isRequired
+  competition_id: PropTypes.string.isRequired,
+  inviteData: PropTypes.object.isRequired,
+  inviteUser: PropTypes.func.isRequired,
+  errorHandler: PropTypes.func.isRequired,
+  resetForm: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-        data: state.competitions.joinCompetition
+        inviteData: state.competitions.inviteCompetition
       }),
       mapDispatchToProps = dispatch => ({
-        joinCompetition: ({ competition_id }) => {
-          joinCompetition(competition_id)(dispatch);
+        inviteUser: ({ competition_id, user_id }) => {
+          inviteUser({ competition_id, user_id })(dispatch);
+        },
+        resetForm: () => {
+          dispatch({ type: COMP_INV_JOIN, payload: { requestStatus: IDLE } });
         },
         errorHandler: message => {
           dispatch({
-            type: COMP_REQ_JOIN,
+            type: COMP_INV_JOIN,
             payload: {
               requestStatus: ERROR,
               message

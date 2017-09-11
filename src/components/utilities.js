@@ -9,6 +9,7 @@ import Clipboard from "clipboard";
 
 import CommentForm from "./forms/comment";
 import TakeProblemForm from "./forms/take-problem";
+import { requestEnum } from "../../constants";
 
 import renderKaTeX from "../katex";
 import { respondRequest, userPut } from "../actions";
@@ -16,9 +17,11 @@ import {
   USER_COMP_RES,
   USER_JOIN_RES,
   USER_TS_RES,
+  USER_COMP_INV_RES,
   COMP_REQ,
   COMP_REQ_JOIN,
   CONTEST_JOIN_TS,
+  COMP_INV_JOIN
 } from "../actions/types";
 import { requestTypes } from "../../constants";
 
@@ -75,10 +78,15 @@ const RequestDumb = ({ request, respondRequest }) => {
     },
     [CONTEST_JOIN_TS]: response => {
       return () => { respondRequest(request, response, USER_TS_RES); };
+    },
+    [COMP_INV_JOIN]: response => {
+      return () => { respondRequest(request, response, USER_COMP_INV_RES); };
     }
   };
   const makeHandleClick = responseHandleClick[request.action_type];
+  console.log(request);
   if (!makeHandleClick) return <div />;
+  const type = request.type === requestEnum.REQUEST ? "request" : "invite";
   return (
     <li className="white">
       <Row>
@@ -96,7 +104,7 @@ const RequestDumb = ({ request, respondRequest }) => {
                   onClick={ makeHandleClick(requestTypes.REJECT) }>Confirm</Button>
               </div>
             }>
-            Are you sure you want to reject this request?
+            Are you sure you want to reject this { type }?
           </Modal>
           <Modal
             header="Confirm Accept"
@@ -108,7 +116,7 @@ const RequestDumb = ({ request, respondRequest }) => {
                   onClick={ makeHandleClick(requestTypes.ACCEPT) }>Confirm</Button>
               </div>
             }>
-            Are you sure you want to accept this request?
+            Are you sure you want to accept this { type }?
           </Modal>
         </Col>
       </Row>
