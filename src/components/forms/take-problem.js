@@ -54,10 +54,15 @@ const mapStateToProps = state => ({
         }
       });
 
-export default connect(
-  mapStateToProps, mapDispatchToProps
-)(
-  reduxForm({
-    form: 'take-problem'
-  })(TakeProblemForm)
-);
+const TakeProblem = props => {
+  const Component = connect(
+    mapStateToProps, mapDispatchToProps
+  )(
+    reduxForm({
+      form: `take-problem-${props.problem_id}`
+    })(TakeProblemForm)
+  );
+  return <Component { ...props } />;
+};
+
+export default TakeProblem;

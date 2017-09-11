@@ -11,6 +11,7 @@ import {
   PROB_DATABASE,
   PROB_PUBLIC_DATABASE,
   PROB_TAKE,
+  PROB_PUBLICIZE,
   PROB_TEST_SOLVE,
   PROB_PROB_COMMENT,
   PROB_SOLN_COMMENT,
@@ -249,6 +250,24 @@ export function takeProblem(problem_id, competition_id) {
     }, 
     formatData: ({ success, message, problem }) => {
       return { success, message, content: problem };
+    }
+  });
+}
+
+export function publicizeProblem(problem_id) {
+  return authAPIAction({
+    type: PROB_PUBLICIZE, 
+    url: '/api/problems/publicize', 
+    opts: {
+      method: 'post',
+      body: JSON.stringify({ problem_id }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }, 
+    formatData: ({ success, message, problem_id }) => {
+      return { success, message, content: problem_id };
     }
   });
 }

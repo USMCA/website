@@ -7,6 +7,7 @@ import {
   PROB_DATABASE,
   PROB_PUBLIC_DATABASE,
   PROB_TAKE,
+  PROB_PUBLICIZE,
   PROB_TEST_SOLVE,
   PROB_PROB_COMMENT,
   PROB_SOLN_COMMENT
@@ -19,7 +20,8 @@ const INITIAL_STATE = {
   myProposals: { content: [], requestStatus: IDLE, message: '' },
   proposal: { content: null, requestStatus: IDLE, message: '' },
   database: { content: {}, requestStatus: IDLE, message: '' },
-  publicDatabase: { content: [], requestStatus: IDLE, message: '' }
+  publicDatabase: { content: [], requestStatus: IDLE, message: '' },
+  publicizeData: { content: [], requestStatus: IDLE, message: '' }
 };
 
 export default function (state = INITIAL_STATE, { type, payload }) {
@@ -73,6 +75,14 @@ export default function (state = INITIAL_STATE, { type, payload }) {
           content: state.publicDatabase.content.filter(prob => prob._id !== content._id)
         }
       };
+    case PROB_PUBLICIZE:
+      console.log(payload);
+      if (requestStatus === SUCCESS && state.proposal._id === content) {
+        let newState = Object.assign({}, state);
+        newState.proposal.publicDatabase = true;
+        newState.publicizeData = payload;
+        return newState;
+      } else return { ...state, publicizeData: payload };
     default:
       return state;
   }

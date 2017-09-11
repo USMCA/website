@@ -10,9 +10,11 @@ import Clipboard from "clipboard";
 import CommentForm from "./forms/comment";
 import TakeProblemForm from "./forms/take-problem";
 import { requestEnum } from "../../constants";
+import auth from "../auth";
+import Error from "./error";
 
 import renderKaTeX from "../katex";
-import { respondRequest, userPut } from "../actions";
+import { respondRequest, userPut, publicizeProblem } from "../actions";
 import {
   USER_COMP_RES,
   USER_JOIN_RES,
@@ -21,9 +23,12 @@ import {
   COMP_REQ,
   COMP_REQ_JOIN,
   CONTEST_JOIN_TS,
-  COMP_INV_JOIN
+  COMP_INV_JOIN,
+  requestStatuses
 } from "../actions/types";
 import { requestTypes } from "../../constants";
+
+const { SUCCESS, ERROR, IDLE, PENDING } = requestStatuses;
 
 const clipboardRef = elem => {
   if (elem) { new Clipboard(elem) }
@@ -294,6 +299,50 @@ class FlameInput extends React.Component  {
   }
 }
 
+const PublicizeModalDumb = props => {
+  const {
+    problem_id,
+    publicize,
+    publicizeData: { requestStatus, message }
+  } = props;
+  return (
+    <Modal
+      header="Confirm Publicizing Problem"
+      trigger={ <a className="underline-hover">Publicize</a> }>
+      { requestStatus === SUCCESS ? <p>Success!</p> : 
+        <p>Are you sure you want to move this problem to the public database?</p>
+      }
+      <Error error={ requestStatus === ERROR } message={ message } />
+      <RightButtonPanel>
+        <Button 
+          waves="light" className="teal darken-2"  
+          onClick={ () => publicize(problem_id) }>Confirm</Button>
+      </RightButtonPanel>
+    </Modal>
+  );
+}
+const mapStateToPropsPublicizeModalDumb = state => ({
+        publicizeData: state.problems.publicizeData
+      }),
+      mapDispatchToPropsPublicizeModalDumb = dispatch => ({
+        publicize: problem_id => { publicizeProblem(problem_id)(dispatch); }
+      });
+const PublicizeModal = connect(
+  mapStateToPropsPublicizeModalDumb,
+  mapDispatchToPropsPublicizeModalDumb
+)(PublicizeModalDumb);
+
+const PublicizeButton = props => {
+  const { problem_id, user_id, publicDatabase } = props;
+  if (auth.userId() !== user_id || publicDatabase) return <div />;
+  //@TODO modal
+  return (
+    <div className="prob-btn unvoted">
+      <i className="fa fa-unlock" /> <PublicizeModal problem_id={ problem_id } />
+    </div> 
+  ); 
+}
+
 class ExtendedProblemPreview extends React.Component  {
   render() {
     const { problem, onUpvote, upvoted } = this.props;
@@ -314,7 +363,7 @@ class ExtendedProblemPreview extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span className="bold-text">{ problem.author.name }</span><br />
+          <span className="bold-text">{ problem.author.name }</span> <PublicizeButton user_id={ problem.author._id } problem_id={ problem._id } publicDatabase={ problem.publicDatabase } /><br />
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
           <span style={{marginRight: "6px"}}><div className={"prob-btn " + (upvoted ? "upvoted" : "unvoted")} onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote{ upvoted && "d"}</a></div></span>
           <span><div className="prob-btn unvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
