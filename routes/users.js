@@ -153,6 +153,7 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
   Competition.find({ 
     $or: [
       { directors: req.user._id },
+      { czars: req.user._id },
       { secure_members: req.user._id },
       { members: req.user._id }
     ] 

@@ -115,7 +115,7 @@ class CompetitionsTab extends React.Component {
             <li>Short name: { competition.short_name }</li>
             <li>Website: { (competition.website) ? <a href={ makeURL(competition.website) } className="teal-text text-darken-3 underline-hover">{ competition.website }</a> : "N/A"}</li>
             <li><h3>Membership Info</h3></li>
-            <li>Your are a: <span className="bold-text">{ membership }</span></li>
+            <li>Your are a: <span className="bold-text">{ permissionsDisplay[membership] }</span></li>
             { membership === DIRECTOR &&  <li><a className="teal-text text-darken-3 underline-hover">Step down as director</a></li> }
             <li><a className="teal-text text-darken-3 underline-hover">Leave competition</a></li>
             {
