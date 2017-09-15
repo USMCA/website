@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Row, Col, Input, Button } from "react-materialize";
 
 import ProposeForm from "../forms/propose";

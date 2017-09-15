@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Problem proposals page for the United States Mathematics Competition Association.",
   "dependencies": {
+    "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
     "async": "^2.5.0",
     "babel-polyfill": "^6.23.0",
     "bcrypt": "^1.0.2",
@@ -20,6 +22,8 @@
     "socket.io": "^1.7.4"
   },
   "devDependencies": {
+    "@types/jquery": "^3.2.12",
+    "awesome-typescript-loader": "^3.2.3",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-wildcard": "^2.1.2",
@@ -39,6 +43,8 @@
     "redux": "^3.7.2",
     "redux-form": "^7.0.3",
     "redux-thunk": "^2.2.0",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.5.2",
     "webpack": "^3.4.1"
   },
   "scripts": {

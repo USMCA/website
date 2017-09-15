@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Row, Col, Button, Collapsible, CollapsibleItem, Input } from "react-materialize";
 import { connect } from "react-redux";
 import _ from "lodash"

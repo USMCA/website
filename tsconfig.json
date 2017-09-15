@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "outDir": "./public/assets/js",
+        "sourceMap": true,
+        "allowJs": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react",
+        "lib": ["es2015", "es2015.iterable", "dom"]
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}

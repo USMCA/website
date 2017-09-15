@@ -1,10 +1,10 @@
-import React from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import $ from "jquery";
+import * as $ from "jquery";
 import Clipboard from "clipboard";
 
 import CommentForm from "./forms/comment";

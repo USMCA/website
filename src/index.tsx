@@ -1,8 +1,8 @@
 import 'babel-polyfill';
-import $ from 'jquery';
+import * as $ from 'jquery';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
 import Root from './components/root';
 
