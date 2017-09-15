@@ -43,6 +43,7 @@ const makeURL = url => {
 
 const DIRECTOR = "director",
       PENDING_DIRECTOR = "pending_director",
+      CZAR = "czar",
       SECURE = "secure_member",
       MEMBER = "member",
       NONMEMBER = "nonmember";
@@ -53,6 +54,7 @@ const competitionMembership = (competition, userId, populated = true) => {
     user => user === userId; // users are ids themselves
   if (_.find(competition.directors, finder))
     return competition.valid ? DIRECTOR : PENDING_DIRECTOR;
+  else if (_.find(competition.czars, finder)) return CZAR;
   else if (_.find(competition.secure_members, finder)) return SECURE;
   else if (_.find(competition.members, finder)) return MEMBER;
   else return NONMEMBER;
@@ -144,6 +146,7 @@ class CompetitionsTab extends React.Component {
 
             <tbody>
               { competition.directors.map(memberView) }
+              { competition.czars.map(memberView) }
               { competition.secure_members.map(memberView) }
               { competition.members.map(memberView) }
             </tbody>

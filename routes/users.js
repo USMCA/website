@@ -157,7 +157,7 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
       { members: req.user._id }
     ] 
   }, fields)
-  .populate(req.query.info ? 'contests members secure_members directors' : null)
+  .populate(req.query.info ? 'contests members secure_members czars directors' : null)
   .exec((err, competitions) => {
     if (err) {
       console.log(err);
@@ -200,12 +200,7 @@ router.get('/test-solving', auth.verifyJWT, (req, res) => {
     if (err) handler(false, 'Failed to load contests for test solving.', 503)(req, res);
     else {
       /* contests where user is test solver */
-      Contest.find({ 
-        $or: [
-          { test_solvers: req.user._id },
-          { czars: req.user._id }
-        ]
-      })
+      Contest.find({ test_solvers: req.user._id })
       .populate('tests')
       .exec((err, myContests) => {
         if (err) handler(false, 'Failed to load contests for my test solving.', 503)(req, res);
@@ -213,6 +208,7 @@ router.get('/test-solving', auth.verifyJWT, (req, res) => {
           Competition.find({ 
             $or: [
               { directors: req.user._id },
+              { czars: req.user._id },
               { secure_members: req.user._id }
             ]
           }, (err, competitions) => {

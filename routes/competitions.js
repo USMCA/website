@@ -355,21 +355,31 @@ router.post('/permissions', auth.verifyJWT, (req, res) => {
             case "nonmember":
               competition.members.pull(user._id);
               competition.secure_members.pull(user._id);
+              competition.czars.pull(user._id);
               competition.directors.pull(user._id);
               break;
             case "member":
               competition.members.push(user._id);
               competition.secure_members.pull(user._id);
+              competition.czars.pull(user._id);
               competition.directors.pull(user._id);
               break;
             case "secure_member":
               competition.members.pull(user._id);
               competition.secure_members.push(user._id);
+              competition.czars.pull(user._id);
+              competition.directors.pull(user._id);
+              break;
+            case "czar":
+              competition.members.pull(user._id);
+              competition.secure_members.pull(user._id);
+              competition.czars.push(user._id);
               competition.directors.pull(user._id);
               break;
             case "director":
               competition.members.pull(user._id);
               competition.secure_members.pull(user._id);
+              competition.czars.pull(user._id);
               competition.directors.push(user._id);
               break;
           }
