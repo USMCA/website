@@ -7,7 +7,7 @@ import { Card, Modal } from "react-materialize";
 import LoginForm from "./forms/login";
 import { logoutUser } from '../actions';
 
-const Header = ({ authenticated, logout }) => (
+const Header = ({ authenticated, secure, logout }) => (
   <header>
     <nav className="teal darken-4">
       <Link to="/" className="brand-logo left">USMCA</Link>
@@ -15,7 +15,7 @@ const Header = ({ authenticated, logout }) => (
         { authenticated && (<li><Link to="/">Home</Link></li>) }
         { authenticated && (<li><Link to="/propose">Propose</Link></li>) }
         { authenticated && (<li><Link to="/test-solve">Test Solve</Link></li>) }
-        { authenticated && (<li><Link to="/public-database">Public Database</Link></li>) }
+        { authenticated && secure && (<li><Link to="/public-database">Public Database</Link></li>) }
         { authenticated && (<li><Link to="/" onClick={ logoutUser }>Log Out</Link></li>) }
         { !authenticated && (<li><Link to="/login">Log In</Link></li>) }
       </ul>
@@ -29,7 +29,8 @@ Header.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  authenticated: !!state.auth.authenticated.content
+  authenticated: !!state.auth.authenticated.content,
+  secure: state.users.user.content && state.users.user.content.isSecure
 });
 
 const mapDispatchToProps = dispatch => ({
