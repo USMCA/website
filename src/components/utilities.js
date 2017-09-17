@@ -211,7 +211,7 @@ class ProblemPreview extends React.Component  {
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
           { editable && (
               <ul className="problem-options">
-                <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></a></li>
+                <li><Link to={ `/edit-problem/${problem._id}` } className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></Link></li>
                 <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true" /></a></li>
               </ul>
             )
@@ -230,7 +230,7 @@ class ProblemPreview extends React.Component  {
           s={ includeClipboard ? 10 : 12 }>
           <div className="katex-preview">
             <Link
-              to={ "/view-problem/" + problem._id.toString() }
+              to={ `/view-problem/${problem._id}` }
               className="black-text underline-hover">
               <div ref={ renderKaTeX }>
                 { problem.statement }
@@ -351,7 +351,7 @@ class ExtendedProblemPreview extends React.Component  {
         <Col s={12}>
           <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
           <ul className="problem-options">
-            <li><a className="grey-text"><i className="fa fa-pencil" aria-hidden="true"/></a></li>
+            <li><Link to={ `/edit-problem/${problem._id}` } className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></Link></li>
             <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"/></a></li>
           </ul>
         </Col>

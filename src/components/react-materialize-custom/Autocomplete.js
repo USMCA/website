@@ -9,7 +9,7 @@ class Autocomplete extends Component {
     super(props);
 
     this.state = {
-      value: ''
+      value: props.defaultValue || ''
     };
 
     this.renderIcon = this.renderIcon.bind(this);
@@ -56,6 +56,9 @@ class Autocomplete extends Component {
   }
 
   _onChange (evt) {
+    const { onChange } = this.props;
+    console.log(onChange);
+    if (onChange) onChange(evt, evt.target.value);
     this.setState({ value: evt.target.value });
   }
 
@@ -73,6 +76,7 @@ class Autocomplete extends Component {
       minLength,
       limit,
       placeholder,
+      onChange,
       ...props
     } = this.props;
 

@@ -23,20 +23,6 @@ import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
-const CompetitionField = ({ input, meta, ...rest }) => (
-        <CompetitionsSelect
-          s={4}
-          type={ competitionsInputOptions.MEMBER }
-          publicDatabase={ true }
-          { ...input }
-          { ...rest } />
-      ),
-      SubjectField = ({ input, meta, ...rest }) => (
-        <SubjectsInput s={4} { ...input } { ...rest } />),
-      DifficultyField = ({ input, meta, ...rest }) => (
-        <div><p style={{color: "#9e9e9e", fontSize: ".8rem"}}>Difficulty</p><FlameInput value={0} /></div>
-      );
-
 class ProposeForm extends React.Component {
   onSubmit = ({
     competition_id, subject, difficulty, statement, answer, solution
@@ -82,29 +68,47 @@ class ProposeForm extends React.Component {
     }
   }
 
+  competitionField = ({ input, meta, ...rest }) => (
+    <CompetitionsSelect
+      s={4}
+      type={ competitionsInputOptions.MEMBER }
+      publicDatabase={ true }
+      { ...input }
+      { ...rest } />
+  )
+
+  subjectField = ({ input, meta, ...rest }) => (
+    <SubjectsInput s={4} { ...input } { ...rest } />
+  )
+
+  difficultyField = ({ input, meta, ...rest }) => (
+    <div><p style={{color: "#9e9e9e", fontSize: ".8rem"}}>Difficulty</p><FlameInput value={0} /></div>
+  )
+
   statementInput = ({ input, meta, ...rest }) => (
     <ControlledInput
       s={6} type="textarea" label="Problem"
       { ...input } { ...rest }
       ref={ elem => { this.statementField = elem; } } />
-  );
+  )
 
   answerInput = ({ input, meta, ...rest }) => (
     <ControlledInput
       s={6} type="text" label="Answer (optional)"
       { ...input } { ...rest }
       ref={ elem => { this.answerField = elem; } } />
-  );
+  )
 
   solutionInput = ({ input, meta, ...rest }) => (
     <ControlledInput
       s={6} type="textarea" label="Solution (optional)"
       { ...input } { ...rest }
       ref={ elem => { this.solutionField = elem; } } />
-  );
+  )
 
   render() {
     const { handleSubmit, probStatus: { message, requestStatus } } = this.props;
+
     return (requestStatus === SUCCESS) ? (
       <div>
         <p>Problem submitted! Click <Link to="/propose" onClick={ this.resetForm }>here</Link> to propose another problem.</p>
@@ -113,13 +117,13 @@ class ProposeForm extends React.Component {
       <form className="col s12" onSubmit={ handleSubmit(this.onSubmit) }>
         <Row>
           <div>
-            <Field name="competition_id" component={ CompetitionField } />
+            <Field name="competition_id" component={ this.competitionField } />
           </div>
           <div>
-            <Field name="subject" component={ SubjectField } />
+            <Field name="subject" component={ this.subjectField } />
           </div>
           <div>
-            <Field name="difficulty" component={ DifficultyField } />
+            <Field name="difficulty" component={ this.difficultyField } />
           </div>
         </Row>
         <Row>
@@ -174,7 +178,8 @@ ProposeForm.propTypes = {
   postProposal: PropTypes.func.isRequired,
   resetProposalForm: PropTypes.func.isRequired,
   errorHandler: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
+  proposal: PropTypes.object // prefill proposal
 };
 
 const mapStateToProps = state => ({
@@ -199,10 +204,21 @@ const mapStateToProps = state => ({
         }
       });
 
+const Initialized = props => {
+  console.log((props.proposal || {}).subject);
+  const Component = reduxForm({
+    form: 'propose',
+    initialValues: props.proposal ? {
+      statement: props.proposal.statement,
+      answer: props.proposal.answer,
+      solution: (props.proposal.official_soln[0] || {}).body,
+      competition_id: (props.proposal.competition || {})._id,
+      subject: props.proposal.subject
+    } : null
+  })(ProposeForm);
+  return <Component { ...props } />;
+};
+
 export default connect(
   mapStateToProps, mapDispatchToProps
-)(
-  reduxForm({
-    form: 'propose'
-  })(ProposeForm)
-);
+)(Initialized);

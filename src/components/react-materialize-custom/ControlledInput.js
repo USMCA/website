@@ -10,7 +10,8 @@ class Input extends Component {
     super(props);
 
     this.state = {
-      value: props.value || props.defaultValue || ""
+      value: props.value || props.defaultValue || "",
+      edited: false
     };
 
     this._onChange = this._onChange.bind(this);
@@ -41,8 +42,10 @@ class Input extends Component {
         value: nextProps.defaultValue
       }, () => $(this.selectInput).material_select());
     }
-    if (nextProps.defaultValue)
+    // only set if untouched
+    if (nextProps.defaultValue && !this.state.value && !this.state.edited) {
       this.setState({ value: nextProps.defaultValue });
+    }
   }
 
   componentWillUnmount () {
@@ -60,6 +63,7 @@ class Input extends Component {
   }
 
   _onChange (e) {
+    this.state.edited = true;
     const { onChange } = this.props;
     var types = {
       'checkbox': e.target.checked,
@@ -68,7 +72,7 @@ class Input extends Component {
     };
     const value = types[e.target.type] || types['default'];
     if (onChange) { onChange(e, value); }
-
+   
     this.setState({ value });
   }
 
