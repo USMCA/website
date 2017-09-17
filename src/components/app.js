@@ -3,10 +3,7 @@ import { BrowserRouter, Link } from 'react-router-dom';
 
 import Header from './header';
 import Routes from './routes';
-
-const Footer = () => (
-  <footer></footer>
-);
+import Footer from './footer';
 
 const App = () => (
   <BrowserRouter>
