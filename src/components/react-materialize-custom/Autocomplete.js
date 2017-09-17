@@ -77,6 +77,7 @@ class Autocomplete extends Component {
       limit,
       placeholder,
       onChange,
+      disabled,
       ...props
     } = this.props;
 
@@ -97,6 +98,7 @@ class Autocomplete extends Component {
           onChange={this._onChange}
           type='text'
           value={this.state.value}
+          disabled={ disabled }
         />
         <label htmlFor={_id}>{title}</label>
         {this.renderDropdown(data, minLength, limit)}

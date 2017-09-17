@@ -90,7 +90,7 @@ export function respondRequest(request, response, type) {
       dispatch(Object.assign(action, pendingPayload()));
       fetch(requestURLs[type], {
         method: 'post',
-        body: JSON.stringify({ requestId: request._id, type: response }),
+        body: JSON.stringify({ request_id: request._id, type: response }),
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -99,7 +99,7 @@ export function respondRequest(request, response, type) {
         res => res.json().then(({ success, message }) => {
           if (!success) dispatch(Object.assign(action, errorPayload(message)));
           else dispatch(Object.assign(action, successPayload({
-            requestId: request._id
+            request_id: request._id
           })));
         }),
         serverError(action, dispatch)

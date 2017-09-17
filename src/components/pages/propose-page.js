@@ -1,11 +1,11 @@
-import * as React from "react";
+import React, { Component } from "react";
 import { Row, Col, Input, Button } from "react-materialize";
 import { getProposal } from "../../actions";
 import { connect } from "react-redux";
 
 import ProposeForm from "../forms/propose";
 
-class ProposePage extends React.Component {
+class ProposePage extends Component {
   componentWillMount() {
     const { match, getProposal } = this.props;
     if (match.params && match.params.id) getProposal(match.params.id);
@@ -13,13 +13,16 @@ class ProposePage extends React.Component {
 
   render() {
     const { match, proposal } = this.props,
-          initialized = match.params && match.params.id && proposal;
+          edit = !!(match.params && match.params.id),
+          initialized = edit && proposal;
     return (
       <Row className="container">
         <h2 className="teal-text text-darken-4">
-          { match.params && match.params.id ? "Edit a Problem" : "Propose a Problem" }
+          { edit ? "Edit a Problem" : "Propose a Problem" }
         </h2>
-        <ProposeForm proposal={ initialized ? proposal.content : null }/>
+        <ProposeForm
+          edit={ edit }
+          proposal={ initialized ? proposal.content : null }/>
       </Row>
     );
   }
@@ -34,6 +37,4 @@ const mapStateToProps = state => ({
         }
       });
 
-export default connect(
-  mapStateToProps, mapDispatchToProps
-)(ProposePage);
+export default connect(mapStateToProps, mapDispatchToProps)(ProposePage);

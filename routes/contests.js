@@ -202,8 +202,8 @@ router.post('/:contest_id/test-solvers', auth.verifyJWT, (req, res) => {
 
 /* apply to test solve */
 router.post('/test-solve', auth.verifyJWT, (req, res) => {
-  let { type, action_type, contest_id, requestId } = req.body;
-  Request.findById(requestId)
+  let { type, action_type, contest_id, request_id } = req.body;
+  Request.findById(request_id)
   .populate('author contest')
   .exec((err, request) => {
     if (err) return handler(false, 'Failed to load request_id.', 503)(req, res);

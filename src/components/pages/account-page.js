@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import { Row } from "react-materialize";
 import { Link } from "react-router-dom";
 import _ from "lodash";

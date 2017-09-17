@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import { Row, Col, Input } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { ProblemPreview } from "../utilities";
 import { fetchDatabase } from "../../actions";
 
-class DatabasePage extends React.Component {
+class DatabasePage extends Component {
   componentWillMount() {
     const { match, fetchDatabase } = this.props;
     fetchDatabase(match.params.id);

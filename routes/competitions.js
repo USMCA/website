@@ -19,7 +19,7 @@ const User = require('../database/user'),
       Notification = require('../database/notification');
 
 router.post('/', auth.verifyJWT, (req, res) => {
-  const { type, action_type, competition, userId, requestId } = req.body;
+  const { type, action_type, competition, userId, request_id } = req.body;
   if (competition && !competition.name) {
     handler(false, 'Competition name must be filled out.', 400)(req, res);
   }
@@ -69,7 +69,7 @@ router.post('/', auth.verifyJWT, (req, res) => {
       if (!req.payload.admin) {
         return handler(false, 'Unauthorized access to requests.', 401)(req, res);
       }
-      Request.findById(requestId).populate('competition author').exec((err, request) => {
+      Request.findById(request_id).populate('competition author').exec((err, request) => {
         if (err) {
           handler(false, 'Competition request was not found.', 503)(req, res);
         } else if (!request.competition) {
@@ -102,7 +102,7 @@ router.post('/', auth.verifyJWT, (req, res) => {
       if (!req.payload.admin) {
         return handler(false, 'Unauthorized access to requests.', 401)(req, res);
       }
-      Request.findById(requestId).populate('competition author').exec((err, request) => {
+      Request.findById(request_id).populate('competition author').exec((err, request) => {
         if (err) {
           console.log(err);
           handler(false, 'Competition request was not found.', 503)(req, res);
@@ -151,7 +151,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/invite', auth.verifyJWT, (req, res) => {
-  const { type, action_type, user_id, competition_id, requestId } = req.body;
+  const { type, action_type, user_id, competition_id, request_id } = req.body;
   switch (type) {
     case REQUEST:
       Competition.findById(competition_id, (err, competition) => {
@@ -193,7 +193,7 @@ router.post('/invite', auth.verifyJWT, (req, res) => {
       });
       break;
     case ACCEPT:
-      Request.findById(requestId)
+      Request.findById(request_id)
       .populate('competition')
       .exec((err, invite) => {
         if (err) handler(false, 'Failed to load invite.', 503)(req, res);
@@ -214,7 +214,7 @@ router.post('/invite', auth.verifyJWT, (req, res) => {
       });
       break;
     case REJECT:
-      Request.findByIdAndRemove(requestId, err => {
+      Request.findByIdAndRemove(request_id, err => {
         if (err) handler(false, 'Failed to reject invite.', 503)(req, res);
         else handler(true, 'Successfully reject invite.', 200)(req, res);
       });
@@ -225,7 +225,7 @@ router.post('/invite', auth.verifyJWT, (req, res) => {
 });
 
 router.post('/join', auth.verifyJWT, (req, res) => {
-  const { type, action_type, competition_id, requestId } = req.body;
+  const { type, action_type, competition_id, request_id } = req.body;
   switch(type) {
     case REQUEST:
       Competition.findById(competition_id)
@@ -257,7 +257,7 @@ router.post('/join', auth.verifyJWT, (req, res) => {
       });
       break;
     case ACCEPT:
-      Request.findById(requestId)
+      Request.findById(request_id)
       .populate('author competition')
       .exec((err, request) => {
         if (err) {
@@ -289,7 +289,7 @@ router.post('/join', auth.verifyJWT, (req, res) => {
       });
       break;
     case REJECT:
-      Request.findById(requestId)
+      Request.findById(request_id)
       .populate('author competition')
       .exec((err, request) => {
         if (err) {

@@ -1,11 +1,11 @@
-import * as React from "react";
+import React, { Component } from "react";
 import { Row, Col, Input } from "react-materialize";
 import { connect } from "react-redux";
 
 import { ProblemPreview } from "../utilities";
 import { publicDatabase } from "../../actions";
 
-class DatabasePage extends React.Component {
+class DatabasePage extends Component {
   componentWillMount() {
     const { publicDatabase } = this.props;
     publicDatabase();

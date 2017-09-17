@@ -14,24 +14,17 @@ const {
   submittedPayload
 } = requestPayloads;
 
-export function authenticate(action, dispatch, callback) { const userId = auth.userId(); if (!userId) {
+export function authenticate(action, dispatch, callback) {
+  const userId = auth.userId(); 
+  if (!userId) {
     dispatch(Object.assign(action, errorPayload('User is not logged in.')));
-  } else {
-    callback(userId);
-  }
+  } else callback(userId);
 }
 
 export function serverError(action, dispatch) {
   return err => dispatch(Object.assign(action, errorPayload(
     err.message || 'Failed to communicate with server.'
   )));
-}
-
-export function apiAction(type, callback) {
-  let action = { type };
-  return dispatch => {
-    
-  };
 }
 
 export function APIAction({ type, url, opts, formatData }) {
@@ -49,11 +42,11 @@ export function APIAction({ type, url, opts, formatData }) {
   }
 }
 
-export function authAPIAction({ type, url, opts, formatData }) {
+export function authAPIAction({ type, url, opts, formatData, noPending }) {
   let action = { type };
   return dispatch => {
     authenticate(action, dispatch, userId => {
-      dispatch(Object.assign(action, pendingPayload()));
+      if (!noPending) dispatch(Object.assign(action, pendingPayload()));
       fetch(url, opts).then(
         res => res.json().then(data => {
           const { success, message, content } = formatData(data);

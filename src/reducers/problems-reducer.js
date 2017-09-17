@@ -2,6 +2,7 @@ import {
   requestStatuses,
   PROB_FETCH_MINE,
   PROB_POST,
+  PROB_PUT,
   PROB_GET,
   PROB_UPVOTE,
   PROB_DATABASE,
@@ -17,6 +18,7 @@ const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
 const INITIAL_STATE = {
   postProposal: { requestStatus: IDLE, message: '' },
+  putProposal: { requestStatus: IDLE, message: '' },
   myProposals: { content: [], requestStatus: IDLE, message: '' },
   proposal: { content: null, requestStatus: IDLE, message: '' },
   database: { content: {}, requestStatus: IDLE, message: '' },
@@ -31,6 +33,10 @@ export default function (state = INITIAL_STATE, { type, payload }) {
       return { ...state, myProposals: payload };
     case PROB_POST:
       return { ...state, postProposal: payload };
+    case PROB_PUT:
+      return (requestStatus !== SUCCESS) ? 
+        { ...state, putProposal: payload } :
+        { ...state, putProposal: payload, proposal: payload };
     case PROB_UPVOTE:
     case PROB_GET:
       return { ...state, proposal: payload };
