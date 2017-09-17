@@ -3,6 +3,7 @@ const router = require('express').Router(),
       async = require('async'),
       auth = require('../config/auth'),
       handler = require('../utils/handler'),
+      security = require('../utils/security'),
       { requestTypes, requestEnum } = require('../constants');
 const { REQUEST, ACCEPT, REJECT } = requestTypes;
 
@@ -58,9 +59,13 @@ const problemParam = (problem_id, req, res, callback)  => {
 //@TODO check auths
 /* load public database */
 router.get('/public', auth.verifyJWT, (req, res) => {
-  Problem.find({ publicDatabase: true }, (err, problems) => {
-    if (err) handler(false, 'Failed to load public database.', 503)(req, res);
-    else handler(true, 'Successfully loaded public database.', 200, { problems })(req, res);
+  security.isSecure(req, res, isSecure => {
+    if (isSecure) {
+      Problem.find({ publicDatabase: true }, (err, problems) => {
+        if (err) handler(false, 'Failed to load public database.', 503)(req, res);
+        else handler(true, 'Successfully loaded public database.', 200, { problems })(req, res);
+      });
+    } else handler(false, 'User is not secure.', 401)(req, res);
   });
 });
 

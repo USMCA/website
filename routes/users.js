@@ -2,6 +2,7 @@ const router = require('express').Router(),
       _ = require('lodash'),
       auth = require('../config/auth'),
       handler = require('../utils/handler'),
+      security = require('../utils/security'),
       { permissionsEnum } = require('../constants');
 
 const User = require('../database/user'),
@@ -35,7 +36,11 @@ const userPopulate = (user, req, res, callback) => {
 
 router.get('/', auth.verifyJWT, (req, res) => {
   userPopulate(req.user, req, res, user => {
-    handler(true, 'Successfully retrieved user data.', 200, { user })(req, res);
+    security.isSecure(req, res, isSecure => {
+      handler(true, 'Successfully retrieved user data.', 200, {
+        user: Object.assign(user, { isSecure })
+      })(req, res) 
+    });
   });
 });
 
