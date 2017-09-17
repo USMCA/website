@@ -94,27 +94,42 @@ router.post('/public', auth.verifyJWT, (req, res) => {
 router.param('problem_id', (req, res, next, problem_id) => {
   auth.verifyJWT(req, res, () => {
     problemParam(problem_id, req, res, problem => {
-      if (!req.user._id.equals(problem.author._id) && // author
-          problem.competition &&
-          problem.competition.directors.indexOf(req.user._id.toString()) === -1 && // competition director
-          problem.competition.czars.indexOf(req.user._id.toString()) === -1 && // competition czar
-          problem.competition.secure_members.indexOf(req.user._id.toString()) === -1 // competition secure member
-         ) {
-        Contest.findOne({
-          competition: problem.competition._id,
-          test_solvers: req.user._id
-        }, (err, contest) => {
-          if (err) handler(false, 'Failed to load test solvers data.', 503)(req, res);
-          else if (!contest) handler(false, 'Unauthorized access to problem.', 401)(req, res);
-          else {
+      /* authors may access the problem */
+      if (req.user._id.equals(problem.author._id)) {
+        req.problem = problem;
+        next();
+      } else {
+        if (problem.competition) {
+          if (
+            problem.competition.directors.indexOf(req.user._id.toString()) === -1 && // competition director
+            problem.competition.czars.indexOf(req.user._id.toString()) === -1 && // competition czar
+            problem.competition.secure_members.indexOf(req.user._id.toString()) === -1 // competition secure member
+           ) {
+          Contest.findOne({
+            competition: problem.competition._id,
+            test_solvers: req.user._id
+          }, (err, contest) => {
+            if (err) handler(false, 'Failed to load test solvers data.', 503)(req, res);
+            else if (!contest) handler(false, 'Unauthorized access to problem.', 401)(req, res);
+            else {
+              req.problem = problem;
+              next();
+            }
+          });
+          } else {
             req.problem = problem;
             next();
           }
-        });
-      }
-      else {
-        req.problem = problem;
-        next();
+        } else {
+          if (problem.publicDatabase) {
+            security.isSecure(req, res, isSecure => {
+              if (isSecure) {
+                req.problem = problem;
+                next();
+              } else handler(false, 'Unauthorized access to problem.', 401)(req, res);
+            });
+          } else handler(false, 'Invalid request.', 400)(req, res);
+        }
       }
     });
   });
