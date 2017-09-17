@@ -326,8 +326,9 @@ router.get('/database', auth.verifyJWT, (req, res) => {
     } else if (!competition) {
       handler(false, 'Could not find competition.', 400)(req, res);
     } else if (!(competition.directors.indexOf(req.user._id.toString()) > -1) &&
+        !(competition.czars.indexOf(req.user._id.toString()) > -1) &&
         !(competition.secure_members.indexOf(req.user._id.toString()) > -1)) {
-      handler(false, 'Only directors and secure members can see the database.', 401)(req, res);
+      handler(false, 'Only directors, czars, and secure members can see the database.', 401)(req, res);
     } else {
       Problem.find({ competition: competition._id }, (err, problems) => {
         if (err) {

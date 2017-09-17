@@ -61,9 +61,6 @@ A contest can take problems from the shared pool as long as after taking a probl
 #### Issues
 Hack around quota system by creating dummy tests with dummy problems to claim a lot from shared pool.
 
-### Problem Proposal and Sharing (Cody Johnson, better implementation)
-A competition starts off with an initial amount of credits and gains credits by doing favors for other competitions and uses credits as bounty for access to shared problems and requesting favors from other competitions. 
-
 ## For Developers
 
 ### Project Structure

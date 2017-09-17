@@ -14,7 +14,7 @@ const About = () => (
       </p>
 
       <p>
-        Please direct all bug reports, questions, and feature requests to the USMCA admins at <span className="bold-text">taisukey@andrew.cmu.edu</span>, <span className="bold-text">ctj@math.cmu.edu</span>, or <span className="bold-text">bogtro123@gmail.com</span>.
+        Please direct all bug reports, questions, and feature requests to the <a href="https://github.com/USMCA/website/issues">issues page</a> or email the USMCA admins at <span className="bold-text">taisukey@andrew.cmu.edu</span>, <span className="bold-text">ctj@math.cmu.edu</span>, or <span className="bold-text">bogtro123@gmail.com</span>. Remember to check the Github issues page to see if your problem has already been reported. 
       </p>
 
       <h2>Definitions</h2>
