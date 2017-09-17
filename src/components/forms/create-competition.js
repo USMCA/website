@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Input, Button } from "react-materialize";
 import { Field, reduxForm } from "redux-form";
@@ -27,7 +27,7 @@ const NameInput = ({ input, meta, ...rest }) => (
           className="clear-top" { ...input } { ...rest } />
       );
 
-class CreateCompetitionForm extends React.Component {
+class CreateCompetitionForm extends Component {
   onSubmit = ({ name, shortName, website }) => {
     const { requestCompetition, errorHandler } = this.props;
     if (!name) errorHandler('The name field is required.');

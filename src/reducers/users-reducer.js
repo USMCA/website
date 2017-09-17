@@ -44,7 +44,7 @@ export default function (state = INITIAL_STATE, { type, payload }) {
         };
       const requests = _.filter(
         _.cloneDeep(state.user.content.requests), request => (
-          request._id !== payload.requestId
+          request._id !== payload.request_id
         )
       );
       return { 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col, Button, Table, Modal, Input } from "react-materialize";
@@ -10,7 +10,7 @@ import CreateContestForm from "../forms/create-contest";
 import RequestTSForm from "../forms/request-test-solvers";
 import CreateTestForm from "../forms/create-test";
 
-class ContestPreviewDumb extends React.Component {
+class ContestPreviewDumb extends Component {
   contestTabs = {
     "tests": {
       title: () => "Tests",
@@ -108,7 +108,7 @@ const mapStateToProps = state => ({
 
 const ContestPreview = connect(mapStateToProps)(ContestPreviewDumb);
 
-class ViewContestPage extends React.Component {
+class ViewContestPage extends Component {
   componentWillMount() {
     const { match, getContest } = this.props;
     getContest(match.params.id);

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Col, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -17,7 +17,7 @@ import {
 
 const { SUCCESS, IDLE, PENDING, ERROR } = requestStatuses;
 
-class ChangePermissions extends React.Component {
+class ChangePermissions extends Component {
   onSubmit = ({ permission }) => {
     const { competition_id, user_id, changePermissions } = this.props;
     console.log(competition_id, user_id, permission);

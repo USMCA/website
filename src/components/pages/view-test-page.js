@@ -112,7 +112,7 @@ class TestProblems extends Component {
   }
 }
 
-class ViewTestPage extends React.Component {
+class ViewTestPage extends Component {
   componentWillMount() {
     const { match, getTest } = this.props;
     getTest(match.params.id);

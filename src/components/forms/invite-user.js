@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -13,7 +13,7 @@ import { COMP_INV_JOIN, requestStatuses } from "../../actions/types";
 
 const { SUCCESS, PENDING, ERROR, SUBMITTED, IDLE } = requestStatuses;
 
-class InviteUser extends React.Component {
+class InviteUser extends Component {
   onSubmit = ({ user_id }) => {
     const { inviteUser, errorHandler, competition_id } = this.props;
     if (!user_id) errorHandler("User not specified.");

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -13,7 +13,7 @@ import { KaTeXInput } from "./utilities";
 
 const { SUBMIT, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
-class CommentForm extends React.Component {
+class CommentForm extends Component {
   onSubmit = ({ body }) => {
     const { 
       problem_id, probComment, 

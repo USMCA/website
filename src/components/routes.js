@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter, Switch, Route, Redirect } from "react-router-dom";
@@ -16,6 +16,8 @@ import PublicDatabasePage from "./pages/public-database-page";
 import NotFoundPage from "./pages/not-found-page";
 import requireAuth from "./auth/require-auth";
 
+import * as Pages from "./pages";
+
 const Routes = ({ authenticated }) => (
   <Switch>
     <Route exact path="/" component={ authenticated ? AccountPage : IndexPage } />
@@ -28,6 +30,7 @@ const Routes = ({ authenticated }) => (
     <Route path="/view-database/:id" component={ requireAuth(ViewDatabasePage) }/>
     <Route path="/view-test/:id" component={ requireAuth(ViewTestPage) }/>
     <Route path="/view-problem/:id" component={ requireAuth(ViewProblemPage) }/>
+    <Route path="/edit-problem/:id" component={ requireAuth(Pages.ProposePage) }/>
     <Route path="*" component={ NotFoundPage } />
   </Switch>
 );

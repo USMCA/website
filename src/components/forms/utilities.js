@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Input, Row, Col, Button } from "react-materialize";
@@ -33,7 +33,7 @@ const competitionsInputOptions = {
   DIRECTOR: "director"
 }
 
-class CompetitionsInputDumb extends React.Component {
+class CompetitionsInputDumb extends Component {
   componentWillMount() {
     switch (this.props.type) {
       case (competitionsInputOptions.ALL):
@@ -113,7 +113,7 @@ const CompetitionsInput = connect(
  * Select for competitions
  ******************************************************************************/
 
-class CompetitionsSelectDumb extends React.Component {
+class CompetitionsSelectDumb extends Component {
   componentWillMount() {
     switch (this.props.type) {
       case (competitionsInputOptions.ALL):
@@ -195,7 +195,7 @@ const CompetitionsSelect = connect(
  * Array of locations input for contests.
  ******************************************************************************/
 
-class LocationArrayInput extends React.Component {
+class LocationArrayInput extends Component {
   constructor() {
     super();
 
@@ -305,7 +305,7 @@ const SubjectsInput = props => {
  * KaTeX input fields.
  ******************************************************************************/
 
-class KaTeXInput extends React.Component {
+class KaTeXInput extends Component {
   previewKaTeX = () => {
     if (this.inputField && this.inputField.state.value) {
       this.renderField.innerHTML = this.inputField.state.value;
@@ -371,7 +371,7 @@ KaTeXInput.propTypes = {
  * Autocomplete for all users.
  ******************************************************************************/
 
-class UsersAutocompleteInputDumb extends React.Component {
+class UsersAutocompleteInputDumb extends Component {
   componentWillMount() {
     const { allUsersInfo } = this.props;
     allUsersInfo();

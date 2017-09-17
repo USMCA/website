@@ -11,12 +11,14 @@ const User = require('../database/user'),
       Solution = require('../database/solution'),
       Comment = require('../database/comment'),
       Test = require('../database/test'),
-      Competition = require('../database/competition');
+      Competition = require('../database/competition'),
+      Contest = require('../database/contest');
 
+/* getting a problem for displaying */
 const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
-  .populate('competition', 'short_name _id')
+  .populate('competition', 'short_name _id directors czars secure_members')
   .populate('official_soln', 'author body created updated comments upvotes')
   .populate('alternate_soln', 'author body created updated comments upvotes')
   .populate('comments', 'author body created updated')
@@ -54,6 +56,7 @@ const problemParam = (problem_id, req, res, callback)  => {
  ******************************************************************************/
 
 //@TODO check auths
+/* load public database */
 router.get('/public', auth.verifyJWT, (req, res) => {
   Problem.find({ publicDatabase: true }, (err, problems) => {
     if (err) handler(false, 'Failed to load public database.', 503)(req, res);
@@ -61,6 +64,7 @@ router.get('/public', auth.verifyJWT, (req, res) => {
   });
 });
 
+/* take a problem from public database to a competition */
 router.post('/public', auth.verifyJWT, (req, res) => {
   const { problem_id, competition_id } = req.body;
   Competition.findById(competition_id, (err, competition) => {
@@ -75,13 +79,42 @@ router.post('/public', auth.verifyJWT, (req, res) => {
         console.log(err, problem);
         if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
         else if (!problem) handler(false, 'Problem does not exist.', 503)(req, res);
-        else handler(true, 'Problem taken.', 200, { problem })(req, res);
+        else handler(true, 'Problem successfully taken.', 200, { problem })(req, res);
       });
     }
   });
 });
 
-/* info that anyone can see */
+/* restrict access to problem */
+router.param('problem_id', (req, res, next, problem_id) => {
+  auth.verifyJWT(req, res, () => {
+    problemParam(problem_id, req, res, problem => {
+      if (!req.user._id.equals(problem.author._id) && // author
+          problem.competition &&
+          problem.competition.directors.indexOf(req.user._id.toString()) === -1 && // competition director
+          problem.competition.czars.indexOf(req.user._id.toString()) === -1 && // competition czar
+          problem.competition.secure_members.indexOf(req.user._id.toString()) === -1 // competition secure member
+         ) {
+        Contest.findOne({
+          competition: problem.competition._id,
+          test_solvers: req.user._id
+        }, (err, contest) => {
+          if (err) handler(false, 'Failed to load test solvers data.', 503)(req, res);
+          else if (!contest) handler(false, 'Unauthorized access to problem.', 401)(req, res);
+          else {
+            req.problem = problem;
+            next();
+          }
+        });
+      }
+      else {
+        req.problem = problem;
+        next();
+      }
+    });
+  });
+});
+
 router.get('/:problem_id', auth.verifyJWT, (req, res) => {
   problemParam(req.params.problem_id, req, res, problem => {
     handler(true, 'Successfully loaded problem.', 200, { problem })(req, res);
@@ -89,6 +122,20 @@ router.get('/:problem_id', auth.verifyJWT, (req, res) => {
 });
 
 router.put('/:problem_id', auth.verifyJWT, (req, res) => {
+  const { problem_id } = req.params,
+        proposal = _.pick(req.body, ['statement', 'answer']);
+  Problem.findByIdAndUpdate(problem_id, proposal, (err, problem) => {
+    if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
+    else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
+    else {
+      problemParam(problem._id, req, res, problem => {
+        handler(true, 'Problem updated.', 200, { problem })(req, res);
+      });
+    }
+  });
+});
+
+router.delete('/:problem_id', auth.verifyJWT, (req, res) => {
 });
 
 /*******************************************************************************

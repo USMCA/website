@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 
 import Header from './header';

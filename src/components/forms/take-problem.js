@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Input, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -21,7 +21,7 @@ const CompetitionField = ({ input, meta, ...rest }) => (
           { ...rest } />
       );
 
-class TakeProblemForm extends React.Component {
+class TakeProblemForm extends Component {
   onSubmit = ({ competition_id }) => {
     const { takeProblem, problem_id } = this.props;
     if (!competition_id) return;

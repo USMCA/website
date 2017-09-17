@@ -81,6 +81,7 @@ export const CONTEST_POST = 'contest_post', // post a contest
 /* problem proposals */
 export const PROB_FETCH_MINE = 'prob_fetch_mine', // fetch proposals written by user
              PROB_POST = 'prob_post', // post a proposal
+             PROB_PUT = 'prob_put', // modify a proposal
              PROB_GET = 'prob_get', // get a proposal by id
              PROB_UPVOTE = 'prob_upvote', // upvote a problem
              PROB_COMMENT = 'prob_comment', // comment on a problem
