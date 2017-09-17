@@ -62,7 +62,6 @@ router.post('/', auth.verifyJWT, (req, res) => {
 router.get('/:contest_id', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params;
   Contest.findById(contest_id)
-  .populate('czars', 'name email')
   .populate('tests')
   .populate('test_solvers', 'name email')
   .exec((err, contest) => {
@@ -212,15 +211,15 @@ router.post('/test-solve', auth.verifyJWT, (req, res) => {
     } else if (!request && type === REQUEST) {
     } else return handler(false, 'Invalid request.', 400)(req, res);
     Contest.findById(contest_id)
-    .populate('competition', 'directors')
+    .populate('competition', 'directors czars')
     .exec((err, contest) => {
       if (err) handler(false, 'Failed to load contest.', 503)(req, res);
       else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
       else {
-        User.populate(contest, 'competition.directors czars', (err, contest) => {
+        User.populate(contest, 'competition.directors competition.czars', (err, contest) => {
           if (err) handler(false, 'Failed to populate authorities.', 503)(req, res);
           else {
-            const authorities = _.concat(contest.competition.directors, contest.czars);
+            const authorities = _.concat(contest.competition.directors, contest.competition.czars);
             switch(type) {
               case REQUEST:
                 const newRequest = Object.assign(new Request(), {
