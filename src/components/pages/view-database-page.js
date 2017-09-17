@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Row, Col, Input } from "react-materialize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";

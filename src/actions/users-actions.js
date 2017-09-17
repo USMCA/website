@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import $ from 'jquery'; 
+import * as $ from 'jquery'; 
 import auth from '../auth';
 import { memberCompetitions } from './competitions-actions';
 import {

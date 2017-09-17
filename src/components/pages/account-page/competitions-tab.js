@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Button, Table, Input, Modal } from "react-materialize";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -43,6 +43,7 @@ const makeURL = url => {
 
 const DIRECTOR = "director",
       PENDING_DIRECTOR = "pending_director",
+      CZAR = "czar",
       SECURE = "secure_member",
       MEMBER = "member",
       NONMEMBER = "nonmember";
@@ -53,6 +54,7 @@ const competitionMembership = (competition, userId, populated = true) => {
     user => user === userId; // users are ids themselves
   if (_.find(competition.directors, finder))
     return competition.valid ? DIRECTOR : PENDING_DIRECTOR;
+  else if (_.find(competition.czars, finder)) return CZAR;
   else if (_.find(competition.secure_members, finder)) return SECURE;
   else if (_.find(competition.members, finder)) return MEMBER;
   else return NONMEMBER;
@@ -113,7 +115,7 @@ class CompetitionsTab extends React.Component {
             <li>Short name: { competition.short_name }</li>
             <li>Website: { (competition.website) ? <a href={ makeURL(competition.website) } className="teal-text text-darken-3 underline-hover">{ competition.website }</a> : "N/A"}</li>
             <li><h3>Membership Info</h3></li>
-            <li>Your are a: <span className="bold-text">{ membership }</span></li>
+            <li>Your are a: <span className="bold-text">{ permissionsDisplay[membership] }</span></li>
             { membership === DIRECTOR &&  <li><a className="teal-text text-darken-3 underline-hover">Step down as director</a></li> }
             <li><a className="teal-text text-darken-3 underline-hover">Leave competition</a></li>
             {
@@ -144,6 +146,7 @@ class CompetitionsTab extends React.Component {
 
             <tbody>
               { competition.directors.map(memberView) }
+              { competition.czars.map(memberView) }
               { competition.secure_members.map(memberView) }
               { competition.members.map(memberView) }
             </tbody>

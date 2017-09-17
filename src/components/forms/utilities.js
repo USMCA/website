@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Input, Row, Col, Button } from "react-materialize";

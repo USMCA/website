@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 import { requestPayloads, requestStatuses } from './types';
 import { requestTypes } from '../../constants';

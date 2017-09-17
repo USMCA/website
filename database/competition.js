@@ -7,6 +7,7 @@ const competitionSchema = new Schema({
   website: String,
   contests: [ { type: Schema.Types.ObjectId, ref: 'Contest' } ],
   directors: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
+  czars: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   secure_members: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   members: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   announcements: [ { type: Schema.Types.ObjectId, ref: 'Announcement' } ],

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col, Button, Table, Modal, Input } from "react-materialize";
@@ -49,38 +49,6 @@ class ContestPreviewDumb extends React.Component {
         );
       }
     },
-    "czars": {
-      title: () => "Czars",
-      view: ({ data: { content } }) => {
-        if (!content) return <div />;
-        return (
-          <div className="round-container">
-            <Button className="teal darken-3" waves="light">Invite</Button>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th className="center-align">Remove</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {
-                  content.czars.map((czar, key) => (
-                    <tr key={key}>
-                      <td>{czar.name}</td>
-                      <td>{czar.email}</td>
-                      <td className="center-align"><a className="black-text"><i className="fa fa-times" aria-hidden="true" /></a></td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </Table><br />
-          </div>
-        );
-      }
-   },
     "test-solvers": {
       title: () => "Test Solvers",
       view: ({ data: { content } }) => {
