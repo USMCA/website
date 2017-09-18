@@ -157,13 +157,13 @@ router.post('/:contest_id/tests', auth.verifyJWT, (req, res) => {
   const { contest_id } = req.params,
         { name, num_problems } = req.body;
   Contest.findById(contest_id)
-  .populate('competition', 'directors')
+  .populate('competition', 'czars directors')
   .exec((err, contest) => {
     if (err) handler(false, 'Failed to load contest.', 503)(req, res);
     else if (!contest) handler(false, 'Contest does not exist.', 400)(req, res);
     else {
       /* check if user is czar (or director) */
-      if (contest.czars.indexOf(req.user._id.toString()) === -1 &&
+      if (contest.competition.czars.indexOf(req.user._id.toString()) === -1 &&
           contest.competition.directors.indexOf(req.user._id.toString()) === -1) {
         handler(false, 'User does not have czar privileges.', 401)(req, res);
       } else {
