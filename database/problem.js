@@ -10,6 +10,7 @@ const problemSchema = new Schema({
   borrowed: { type: Boolean, required: true, default: false },
   statement: { type: String, required: true },
   answer: String,
+  soln: { type: Schema.Types.ObjectId, ref: 'Solution' },
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   subject: { type: String, required: true },

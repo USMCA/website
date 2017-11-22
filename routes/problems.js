@@ -20,6 +20,7 @@ const problemParam = (problem_id, req, res, callback)  => {
   Problem.findById(problem_id)
   .populate('author', 'name _id')
   .populate('competition', 'short_name _id directors czars secure_members')
+  .populate('soln', 'author body created updated comments upvotes')
   .populate('official_soln', 'author body created updated comments upvotes')
   .populate('alternate_soln', 'author body created updated comments upvotes')
   .populate('comments', 'author body created updated')
@@ -28,7 +29,7 @@ const problemParam = (problem_id, req, res, callback)  => {
     else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
     else {
       Comment.populate(problem, {
-        path: 'official_soln.comments alternate_soln.comments',
+        path: 'soln.comments official_soln.comments alternate_soln.comments',
         select: 'author body created updated'
       }, (err, problem) => {
         if (err) {
@@ -36,7 +37,8 @@ const problemParam = (problem_id, req, res, callback)  => {
           return handler(false, 'Failed to load solution comments.', 503)(req, res);
         } else {
           User.populate(problem, {
-            path: 'official_soln.author official_soln.comments.author ' +
+            path: 'soln.author soln.comments.author ' +
+                  'official_soln.author official_soln.comments.author ' +
                   'alternate_soln.author alternate_soln.comments.author ' +
                   'comments.author',
             select: 'name'
@@ -76,10 +78,10 @@ router.post('/public', auth.verifyJWT, (req, res) => {
     if (err) handler(false, 'Failed to load competition.', 503)(req, res);
     else if (!competition) handler(false, 'Competition does not exist.', 400)(req, res);
     else {
-      Problem.findByIdAndUpdate(problem_id, { 
-        publicDatabase: false, 
-        borrowed: true, 
-        competition: competition_id 
+      Problem.findByIdAndUpdate(problem_id, {
+        publicDatabase: false,
+        borrowed: true,
+        competition: competition_id
       }, (err, problem) => {
         console.log(err, problem);
         if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
@@ -141,6 +143,27 @@ router.get('/:problem_id', auth.verifyJWT, (req, res) => {
   });
 });
 
+// create a solution if not there and call callback either way
+function createSolution(soln, body, problem, error, success) {
+  if (!soln) {
+    soln = Object.assign(new Solution(), {
+      author: problem.author, body
+    });
+    soln.save(err => {
+      if (err) error(err);
+      else {
+        problem.soln = soln;
+        problem.save(err => {
+          if (err) error(err);
+          else success(soln);
+        });
+      }
+    });
+  } else {
+    success(soln);
+  }
+}
+
 router.put('/:problem_id', auth.verifyJWT, (req, res) => {
   const { problem_id } = req.params,
         proposal = _.pick(req.body, ['statement', 'answer']);
@@ -148,13 +171,29 @@ router.put('/:problem_id', auth.verifyJWT, (req, res) => {
     if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
     else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
     else {
-      problemParam(problem._id, req, res, problem => {
-        handler(true, 'Problem updated.', 200, { problem })(req, res);
-      });
+      // update solution
+      const solution = req.body.solution;
+      Solution.findByIdAndUpdate(problem.soln,
+        solution ? { body: solution } : {},
+        (err, soln) => {
+          if (err) handler(false, 'Failed to load and update solution.', 503)(req, res);
+          else {
+            createSolution(soln, solution, problem,
+              err => { handler(false, 'Failed to create solution.', 503)(req, res); },
+              soln => {
+                problemParam(problem._id, req, res, problem => {
+                  handler(true, 'Problem updated.', 200, { problem })(req, res);
+                });
+              }
+            );
+          }
+        }
+      );
     }
   });
 });
 
+// @TODO
 router.delete('/:problem_id', auth.verifyJWT, (req, res) => {
 });
 
@@ -177,7 +216,7 @@ router.post('/test-solve', auth.verifyJWT, (req, res) => {
         problem.alternate_soln.push(testSolveSolution);
         problem.save(err => {
           if (err) handler(false, 'Failed to save solution to problem.', 503)(req, res);
-          else handler(true, 'Successfully posted test solve.', 200, { 
+          else handler(true, 'Successfully posted test solve.', 200, {
             alternate_soln: problem.alternate_soln
           })(req, res);
         });
@@ -214,7 +253,7 @@ router.post('/comment/problem', auth.verifyJWT, (req, res) => {
         problem.comments.push(comment);
         problem.save(err => {
           if (err) handler(false, 'Failed to save comment to problem.', 503)(req, res);
-          else handler(true, 'Successfully posted comment.', 200, { 
+          else handler(true, 'Successfully posted comment.', 200, {
             comments: problem.comments
           })(req, res);
         });
@@ -235,7 +274,7 @@ router.post('/comment/solution', auth.verifyJWT, (req, res) => {
       comment.save(err => {
         if (err) handler(false, 'Failed to save comment.', 503)(req, res);
         else {
-          let soln = _.find(problem.alternate_soln, 
+          let soln = _.find(problem.alternate_soln,
             soln => soln._id.toString() === solution_id
           );
           problem.alternate_soln.pull(solution_id);
@@ -256,7 +295,7 @@ router.post('/comment/solution', auth.verifyJWT, (req, res) => {
                   if (err) {
                     return handler(false, 'Failed to populate comment authors.', 503)(req, res);
                   }
-                  handler(true, 'Successfully posted comment.', 200, { 
+                  handler(true, 'Successfully posted comment.', 200, {
                     alternate_soln
                   })(req, res);
                 });
@@ -280,7 +319,7 @@ router.post('/publicize', auth.verifyJWT, (req, res) => {
       else {
         Test.findOne({ problems: problem }, (err, test) => {
           if (err) handler(false, 'Failed to check for tests that use the problem.', 503)(req, res);
-          else if (test) 
+          else if (test)
             handler(false, `The problem is in use by the test ${test.name}.`, 400)(req, res);
           else {
             problem.publicDatabase = true;
@@ -291,7 +330,7 @@ router.post('/publicize', auth.verifyJWT, (req, res) => {
             });
           }
         });
-      } 
+      }
     }
   });
 });
