@@ -39,7 +39,7 @@ router.get('/', auth.verifyJWT, (req, res) => {
     security.isSecure(req, res, isSecure => {
       handler(true, 'Successfully retrieved user data.', 200, {
         user: Object.assign(user, { isSecure })
-      })(req, res) 
+      })(req, res)
     });
   });
 });
@@ -85,8 +85,8 @@ router.get('/all', (req, res) => {
 
 /* get problems of the user */
 router.get('/problems', auth.verifyJWT, (req, res) => {
-  Problem.find({ author: req.user._id }, null, { 
-    sort: { updated: -1 } 
+  Problem.find({ author: req.user._id }, null, {
+    sort: { updated: -1 }
   }, (err, problems) => {
     if (err) {
       return handler(false, 'Database failed to load user\'s problems.', 503)(req, res);
@@ -100,10 +100,10 @@ router.get('/problems', auth.verifyJWT, (req, res) => {
 
 /* post a new problem */
 router.post('/problems', auth.verifyJWT, (req, res) => {
-  const { 
-    competition_id, 
-    subject, 
-    difficulty, 
+  const {
+    competition_id,
+    subject,
+    difficulty,
     statement,
     answer,
     solution
@@ -124,9 +124,9 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
               publicDatabase: competition._id ? false : true,
               subject,
               difficulty,
-              statement, 
+              statement,
               answer,
-              official_soln: official_soln ? [ official_soln._id ] : []
+              soln: official_soln
             });
       problem.save(err => {
         if (err) {
@@ -155,13 +155,13 @@ router.post('/problems', auth.verifyJWT, (req, res) => {
 /* get competitions of the user */
 router.get('/competitions', auth.verifyJWT, (req, res) => {
   const fields = req.query.info ? null : 'name short_name _id';
-  Competition.find({ 
+  Competition.find({
     $or: [
       { directors: req.user._id },
       { czars: req.user._id },
       { secure_members: req.user._id },
       { members: req.user._id }
-    ] 
+    ]
   }, fields)
   .populate(req.query.info ? 'contests members secure_members czars directors' : null)
   .exec((err, competitions) => {
@@ -176,9 +176,9 @@ router.get('/competitions', auth.verifyJWT, (req, res) => {
 
 /* get competitions of the user for which the user is a director */
 router.get('/director', auth.verifyJWT, (req, res) => {
-  Competition.find({ 
-    directors: req.payload.user_id, 
-    valid: true 
+  Competition.find({
+    directors: req.payload.user_id,
+    valid: true
   }, 'short_name name _id', (err, directorCompetitions) => {
     if (err) {
       console.log(err);
@@ -198,8 +198,8 @@ router.get('/director', auth.verifyJWT, (req, res) => {
 /* test solving info */
 router.get('/test-solving', auth.verifyJWT, (req, res) => {
   /* get all requested */
-  Contest.find({ 
-    active: true, 
+  Contest.find({
+    active: true,
     test_solve_deadline: { $exists: true },
     requested_test_solvers: { $gt: 0 }
   }, (err, contests) => {
@@ -211,7 +211,7 @@ router.get('/test-solving', auth.verifyJWT, (req, res) => {
       .exec((err, myContests) => {
         if (err) handler(false, 'Failed to load contests for my test solving.', 503)(req, res);
         else {
-          Competition.find({ 
+          Competition.find({
             $or: [
               { directors: req.user._id },
               { czars: req.user._id },
@@ -219,10 +219,10 @@ router.get('/test-solving', auth.verifyJWT, (req, res) => {
             ]
           }, (err, competitions) => {
             if (err) handler(false, 'Failed to load secure member competitions.', 503)(req, res);
-            else { 
-              Contest.find({ 
-                active: true, 
-                competition: { $in: competitions } 
+            else {
+              Contest.find({
+                active: true,
+                competition: { $in: competitions }
               })
               .populate('tests')
               .exec((err, memberContests) => {

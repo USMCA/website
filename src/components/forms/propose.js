@@ -28,7 +28,7 @@ class ProposeForm extends Component {
     if (!statement) {
       errorHandler('Please fill out required fields.');
     } else if (edit) {
-      putProposal({ statement, answer });console.log({ statement, answer });
+      putProposal({ statement, answer, solution });
     } else {
       postProposal({
         competition_id, subject, difficulty, statement, answer, solution
@@ -103,7 +103,6 @@ class ProposeForm extends Component {
     <ControlledInput
       s={6} type="textarea" label="Solution (optional)"
       { ...input } { ...rest }
-      disabled={ this.props.edit }
       ref={ elem => { this.solutionField = elem; } } />
   )
 
@@ -186,8 +185,8 @@ ProposeForm.propTypes = {
   resetProposalForm: PropTypes.func.isRequired,
   errorHandler: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  proposal: PropTypes.object, // prefill proposal
-  edit: PropTypes.bool // edit or propose
+  proposal: PropTypes.object, // if populated, prefill proposal with this data
+  edit: PropTypes.bool // indicates whether in edit mode or propose mode
 };
 
 const mapStateToProps = state => ({
@@ -202,8 +201,10 @@ const mapStateToProps = state => ({
             competition_id, subject, difficulty, statement, answer, solution
           })(dispatch);
         },
-        putProposal: ({ statement, answer }) => {
-          putProposal(props.proposal._id, { statement, answer })(dispatch);
+        putProposal: ({ statement, answer, solution }) => {
+          putProposal(props.proposal._id, {
+            statement, answer, solution
+          })(dispatch);
         },
         resetProposalForm: () => {
           dispatch({ type: PROB_POST, payload: { requestStatus: IDLE } });
@@ -223,7 +224,7 @@ const Initialized = props => {
     initialValues: props.proposal ? {
       statement: props.proposal.statement,
       answer: props.proposal.answer,
-      solution: (props.proposal.official_soln[0] || {}).body,
+      solution: (props.proposal.soln || {}).body,
       competition_id: (props.proposal.competition || {})._id,
       subject: props.proposal.subject
     } : null
