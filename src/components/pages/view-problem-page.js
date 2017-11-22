@@ -123,8 +123,8 @@ class ViewProbPage extends Component {
           headerProps = {
             "solutions": problem,
             "test-solves": problem
-          }
-
+          },
+          upvotes = problem ? problem.upvotes : [];
     return (
       <div>
       { (requestStatus === PENDING) && <Spinner /> }
@@ -136,8 +136,8 @@ class ViewProbPage extends Component {
             </div>
             <div style={{marginTop: "36px"}}>
               <ExtendedProblemPreview
-                problem={problem}
-                upvoted={true}
+                problem={ problem }
+                upvoted={ upvotes.indexOf(auth.userId()) > -1 }
                 onUpvote={ () => { upvoteProblem(problem._id); } } />
             </div>
             <Col s={12}>
