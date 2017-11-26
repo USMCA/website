@@ -56,15 +56,24 @@ class ViewProbPage extends Component {
       },
       "solutions": {
         title: (problem) => <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: (problem) => problem.official_soln.length > 0 ? (
-          <ul>
+        view: (problem) => (
+          <div>
+            <h3>Author Solution</h3>
+            <Solution solution={problem.soln} />
+            <h3>Other Accepted Solutions</h3>
             {
-              problem.official_soln.map((soln, key) => (
-                <Solution solution={soln} key={key} />
-              ))
+              problem.official_soln.length > 0 ? (
+              <ul>
+                {
+                  problem.official_soln.map((soln, key) => (
+                    <Solution solution={soln} key={key} />
+                  ))
+                }
+              </ul>
+              ) : ( <p>No other solutions.</p> )
             }
-          </ul>
-        ) : ( <p>No solutions.</p> )
+          </div>
+        )
       },
       "test-solves": {
         title: (problem) => <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,
