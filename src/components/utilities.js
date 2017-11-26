@@ -367,8 +367,6 @@ class ExtendedProblemPreview extends React.Component  {
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
           <span style={{marginRight: "6px"}}><div className={"prob-btn " + (upvoted ? "upvoted" : "unvoted")} onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote{ upvoted && "d"}</a></div></span>
           <span><div className="prob-btn unvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
-          <p style={{fontSize: ".8rem"}}>Rate difficulty:</p>
-          <FlameInput value={0} />
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} problem_id={ problem._id } />
@@ -381,7 +379,7 @@ class ExtendedProblemPreview extends React.Component  {
 class Solution extends React.Component  {
   render() {
     const { solution } = this.props;
-    return solution : (
+    return solution ? (
       <Row className="problem">
         <Col s={12}>
           <span className="small-stat">{ solution.upvotes.length } Upvotes</span>
