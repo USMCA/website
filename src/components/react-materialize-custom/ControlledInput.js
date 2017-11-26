@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import idgen from './idgen';
 import constants from './constants';
 import { Icon } from 'react-materialize';
 
-class Input extends Component {
+class Input extends React.Component {
   constructor (props) {
     super(props);
 

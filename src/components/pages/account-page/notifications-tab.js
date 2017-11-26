@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import _ from "lodash";
@@ -15,7 +15,7 @@ import { userInfo, userPut } from "../../../actions";
 
 const { REQUEST, INVITE } = requestEnum;
 
-class NotificationsTab extends Component {
+class NotificationsTab extends React.Component {
   requestCounter = (userData, requestType) => { 
     if (!userData) return <div />;
     const data = userData.content;

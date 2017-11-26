@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Row, Col, Collection, CollectionItem } from "react-materialize";
 
 const About = () => (

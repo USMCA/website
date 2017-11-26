@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Input, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -20,7 +20,7 @@ import ControlledInput from "../react-materialize-custom/ControlledInput";
 
 const { SUCCESS, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
-class ProposeForm extends Component {
+class ProposeForm extends React.Component {
   onSubmit = ({
     competition_id, subject, difficulty, statement, answer, solution
   }) => {

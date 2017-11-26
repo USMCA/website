@@ -3,6 +3,7 @@
         "outDir": "./public/assets/js",
         "sourceMap": true,
         "allowJs": true,
+        "allowSyntheticDefaultImports": true,
         "noImplicitAny": true,
         "module": "commonjs",
         "target": "es5",

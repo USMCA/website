@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -12,17 +12,17 @@ import auth from '../auth';
 const store = configureStore();
 
 if (auth.isLoggedIn()) {
-  store.dispatch({ 
-    type: AUTH_USER, 
-    payload: { content: {}, requestStatus: requestStatuses.SUCCESS } 
+  store.dispatch({
+    type: AUTH_USER,
+    payload: { content: {}, requestStatus: requestStatuses.SUCCESS }
   });
 }
 initApp()(store.dispatch);
 
-const Root = () => (
+export const Root = () => (
   <Provider store={store}>
     <App />
   </Provider>
-)
+);
 
-export default Root;
+//export default Root;

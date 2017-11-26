@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Row, Col } from "react-materialize";
 
 const NotFoundPage = () => (

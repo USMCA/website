@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 
 import { KaTeXInput } from "./utilities";
 
-class SolutionForm extends Component {
+class SolutionForm extends React.Component {
   onSubmit = ({ solution }) => {
     console.log(solution);
   }

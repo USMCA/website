@@ -5,6 +5,8 @@
   "dependencies": {
     "@types/react": "^16.0.5",
     "@types/react-dom": "^15.5.4",
+    "@types/react-redux": "^5.0.13",
+    "@types/react-router-dom": "^4.2.2",
     "async": "^2.5.0",
     "babel-polyfill": "^6.23.0",
     "bcrypt": "^1.0.2",

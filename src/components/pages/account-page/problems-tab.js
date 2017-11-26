@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ import Spinner from "../../spinner";
 
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
-class ProblemsTab extends Component {
+class ProblemsTab extends React.Component {
   componentWillMount = () => {
     this.props.fetchMyProposals();
   }

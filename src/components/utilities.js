@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -151,7 +151,7 @@ const Comment = ({ comment }) => (
   </span></li>
 )
 
-class CommentList extends Component {
+class CommentList extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showCommentForm: false, showComments: false };
@@ -202,7 +202,7 @@ class CommentList extends Component {
   }
 }
 
-class ProblemPreview extends Component  {
+class ProblemPreview extends React.Component  {
   render() {
     const { problem, publicDatabase, includeClipboard, editable } = this.props;
     return (
@@ -258,7 +258,7 @@ const Flame = ({ color }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path fill={color} d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>;
 }
 
-class FlameInput extends Component  {
+class FlameInput extends React.Component  {
   constructor(props) {
     super(props);
     this.state = {
@@ -343,7 +343,7 @@ const PublicizeButton = props => {
   ); 
 }
 
-class ExtendedProblemPreview extends Component  {
+class ExtendedProblemPreview extends React.Component  {
   render() {
     const { problem, onUpvote, upvoted } = this.props;
     return (
@@ -378,7 +378,7 @@ class ExtendedProblemPreview extends Component  {
   }
 }
 
-class Solution extends Component  {
+class Solution extends React.Component  {
   render() {
     const { solution } = this.props;
     return (
@@ -410,7 +410,7 @@ class Solution extends Component  {
   }
 }
 
-class HorizontalNav extends Component {
+class HorizontalNav extends React.Component {
   constructor(props) {
     super(props);
 
@@ -456,7 +456,7 @@ class HorizontalNav extends Component {
   }
 }
 
-class VerticalNav extends Component {
+class VerticalNav extends React.Component {
   constructor(props) {
     super(props);
 

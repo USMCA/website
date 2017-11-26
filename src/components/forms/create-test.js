@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -19,7 +19,7 @@ const NameInput = ({ input, meta, ...rest }) => (
         <Input m={3} s={12} label="Test Size" type="number" min={0} { ...input } { ...rest } />
       );
 
-class CreateTestForm extends Component { 
+class CreateTestForm extends React.Component { 
   onSubmit = ({ name, number }) => {
     const { contest_id, postTest } = this.props;
     postTest({ name, num_problems: number, contest_id });

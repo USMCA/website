@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Row, Col, Button, Collapsible, CollapsibleItem, Input } from "react-materialize";
 import { connect } from "react-redux";
 import _ from "lodash"
@@ -15,7 +15,7 @@ import Spinner from "../spinner";
 import Error from "../error";
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
-class Vote extends Component {
+class Vote extends React.Component {
   toggle = () => {
     this.upvote.className = "upvoted";
   }
@@ -31,7 +31,7 @@ class Vote extends Component {
   }
 }
 
-class ViewProbPage extends Component {
+class ViewProbPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showDiscussion: false };

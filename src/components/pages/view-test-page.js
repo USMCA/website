@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import * as React from "react";
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { Row, Col, Modal, Input } from "react-materialize";
 import { connect } from "react-redux";
@@ -66,7 +66,7 @@ function removeElementWithIndex(arr, index) {
   return arr;
 }
 
-class TestProblems extends Component {
+class TestProblems extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -112,7 +112,7 @@ class TestProblems extends Component {
   }
 }
 
-class ViewTestPage extends Component {
+class ViewTestPage extends React.Component {
   componentWillMount() {
     const { match, getTest } = this.props;
     getTest(match.params.id);
