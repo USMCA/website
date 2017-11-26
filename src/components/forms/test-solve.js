@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -11,7 +11,7 @@ import { KaTeXInput } from "./utilities";
 
 const { SUBMIT, PENDING, SUBMITTED, IDLE, ERROR } = requestStatuses;
 
-class TestSolveForm extends Component {
+class TestSolveForm extends React.Component {
   onSubmit = ({ solution }) => {
     const { problem_id, testSolve, errorHandler } = this.props;
     if (!solution) {

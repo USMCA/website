@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { ProblemPreview, LoadMore } from "../utilities";
@@ -7,7 +7,7 @@ import moment from "moment";
 
 import { userTS, getTest, joinTestSolve } from "../../actions";
 
-class TestSolvePage extends Component {
+class TestSolvePage extends React.Component {
   componentWillMount() {
     this.props.userTS();
   }

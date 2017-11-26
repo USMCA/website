@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Input, Button } from 'react-materialize';
 import { Field, reduxForm } from 'redux-form';
@@ -20,7 +20,7 @@ const CurrentPasswordField = ({ input, meta, ...rest }) => (
         <Input type="password" placeholder="New Password (confirm)" s={12} { ...input } { ...rest } />
       );
 
-class ChangePasswordForm extends Component {
+class ChangePasswordForm extends React.Component {
   onSubmit = ({ currPass, newPass, newPassConfirm }) => {
     const { errorHandler, changePass } = this.props;
     if (!currPass || !newPass || !newPassConfirm) {

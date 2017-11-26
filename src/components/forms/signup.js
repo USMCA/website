@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Input, Button } from 'react-materialize';
 import { Field, reduxForm } from 'redux-form';
@@ -36,7 +36,7 @@ const NameInput = ({ input, meta, ...rest }) => (
           data={ universities } limit={5} />
       );
 
-class SignupForm extends Component {
+class SignupForm extends React.Component {
   onSubmit = ({ name, email, password, passwordConfirm, university }) => {
     const { errorHandler, signupUser } = this.props;
     if (!name || !email || !password || !passwordConfirm || !university) {

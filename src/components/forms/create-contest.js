@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -28,7 +28,7 @@ const NameInput = ({ input, meta, ...rest }) => (
         <LocationArrayInput { ...input } { ...rest } />
       );
 
-class CreateContestForm extends Component { 
+class CreateContestForm extends React.Component { 
   onSubmit = ({ name, date, locations }) => {
     const { competition_id, postContest, errorHandler } = this.props;
     if (!name || !date || !locations) {

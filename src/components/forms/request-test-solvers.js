@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Input, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -25,7 +25,7 @@ const NumberField = ({ input, meta, ...rest }) => (
           { ...rest } />
       );
 
-class RequestTSForm extends Component {
+class RequestTSForm extends React.Component {
   onSubmit = ({ number }) => {
     const { requestTS, contest_id } = this.props;
     if (!contest_id) return;

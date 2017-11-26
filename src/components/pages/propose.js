@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Row, Col, Input, Button } from "react-materialize";
 import { getProposal } from "../../actions";
 import { connect } from "react-redux";
 
 import ProposeForm from "../forms/propose";
 
-class ProposePage extends Component {
+class ProposePage extends React.Component {
   componentWillMount() {
     const { match, getProposal } = this.props;
     if (match.params && match.params.id) getProposal(match.params.id);

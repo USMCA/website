@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Modal, Button } from "react-materialize";
 import { connect } from "react-redux";
@@ -151,7 +151,7 @@ const Comment = ({ comment }) => (
   </span></li>
 )
 
-class CommentList extends Component {
+class CommentList extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showCommentForm: false, showComments: false };
@@ -202,7 +202,7 @@ class CommentList extends Component {
   }
 }
 
-class ProblemPreview extends Component  {
+class ProblemPreview extends React.Component  {
   render() {
     const { problem, publicDatabase, includeClipboard, editable } = this.props;
     return (
@@ -258,7 +258,7 @@ const Flame = ({ color }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 163.27 234" height="20px"><path fill={color} d="M508,203s14,3,14,25-8,37-28,57-38,44-39,72,15,52,46,68,31,11,31,11,0-9-18-29-17-42-14-55,12-21,16-25,16-10,16-10-2,16,6,28,17,10,25,22,10,26,4,41-23,29-23,29,37-12,52-28,26-40,21-72-22-51-22-51-1,14-8,24-21,18-21,18,18-29,3-71S534,206,508,203Z" transform="translate(-454.96 -203)"/></svg>;
 }
 
-class FlameInput extends Component  {
+class FlameInput extends React.Component  {
   constructor(props) {
     super(props);
     this.state = {
@@ -309,13 +309,13 @@ const PublicizeModalDumb = props => {
     <Modal
       header="Confirm Publicizing Problem"
       trigger={ <a className="underline-hover">Publicize</a> }>
-      { requestStatus === SUCCESS ? <p>Success!</p> : 
+      { requestStatus === SUCCESS ? <p>Success!</p> :
         <p>Are you sure you want to move this problem to the public database?</p>
       }
       <Error error={ requestStatus === ERROR } message={ message } />
       <RightButtonPanel>
-        <Button 
-          waves="light" className="teal darken-2"  
+        <Button
+          waves="light" className="teal darken-2"
           onClick={ () => publicize(problem_id) }>Confirm</Button>
       </RightButtonPanel>
     </Modal>
@@ -339,11 +339,11 @@ const PublicizeButton = props => {
   return (
     <div className="prob-btn unvoted">
       <i className="fa fa-unlock" /> <PublicizeModal problem_id={ problem_id } />
-    </div> 
-  ); 
+    </div>
+  );
 }
 
-class ExtendedProblemPreview extends Component  {
+class ExtendedProblemPreview extends React.Component  {
   render() {
     const { problem, onUpvote, upvoted } = this.props;
     return (
@@ -367,8 +367,6 @@ class ExtendedProblemPreview extends Component  {
           <span className="small-stat"><i>{ datify(problem.created, problem.updated) }</i></span><br /><br />
           <span style={{marginRight: "6px"}}><div className={"prob-btn " + (upvoted ? "upvoted" : "unvoted")} onClick={ onUpvote }><i className="fa fa-thumbs-up" aria-hidden="true" /><a className="underline-hover">Upvote{ upvoted && "d"}</a></div></span>
           <span><div className="prob-btn unvoted"><i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ problem._id }>Copy ID</a></div></span><br />
-          <p style={{fontSize: ".8rem"}}>Rate difficulty:</p>
-          <FlameInput value={0} />
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={problem.comments} problem_id={ problem._id } />
@@ -378,10 +376,10 @@ class ExtendedProblemPreview extends Component  {
   }
 }
 
-class Solution extends Component  {
+class Solution extends React.Component  {
   render() {
     const { solution } = this.props;
-    return (
+    return solution ? (
       <Row className="problem">
         <Col s={12}>
           <span className="small-stat">{ solution.upvotes.length } Upvotes</span>
@@ -406,11 +404,11 @@ class Solution extends Component  {
           <CommentList comments={solution.comments} solution_id={ solution._id } />
         </Col>
       </Row>
-    );
+    ) : ( <p>No solution provided.</p>);
   }
 }
 
-class HorizontalNav extends Component {
+class HorizontalNav extends React.Component {
   constructor(props) {
     super(props);
 
@@ -456,7 +454,7 @@ class HorizontalNav extends Component {
   }
 }
 
-class VerticalNav extends Component {
+class VerticalNav extends React.Component {
   constructor(props) {
     super(props);
 

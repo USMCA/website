@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import constants from './constants';
 import { Col, Icon } from 'react-materialize';
 
-class Autocomplete extends Component {
+class Autocomplete extends React.Component {
   constructor (props) {
     super(props);
 

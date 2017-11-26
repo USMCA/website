@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Row, Col, Button, Collapsible, CollapsibleItem, Input } from "react-materialize";
 import { connect } from "react-redux";
 import _ from "lodash"
@@ -15,7 +15,7 @@ import Spinner from "../spinner";
 import Error from "../error";
 const { SUCCESS, PENDING, SUBMITTED, ERROR, IDLE } = requestStatuses;
 
-class Vote extends Component {
+class Vote extends React.Component {
   toggle = () => {
     this.upvote.className = "upvoted";
   }
@@ -31,7 +31,7 @@ class Vote extends Component {
   }
 }
 
-class ViewProbPage extends Component {
+class ViewProbPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showDiscussion: false };
@@ -56,15 +56,28 @@ class ViewProbPage extends Component {
       },
       "solutions": {
         title: (problem) => <div>Solutions<Counter count={ problem.official_soln.length } /></div>,
-        view: (problem) => problem.official_soln.length > 0 ? (
-          <ul>
+        view: (problem) => (
+          <div>
+            <h3>Author Solution</h3>
             {
-              problem.official_soln.map((soln, key) => (
-                <Solution solution={soln} key={key} />
-              ))
+              problem.soln ? (
+                <Solution solution={ problem.soln } />
+              ): ( <p>No author solution.</p> )
             }
-          </ul>
-        ) : ( <p>No solutions.</p> )
+            <h3>Other Accepted Solutions</h3>
+            {
+              problem.official_soln.length > 0 ? (
+              <ul>
+                {
+                  problem.official_soln.map((soln, key) => (
+                    <Solution solution={soln} key={key} />
+                  ))
+                }
+              </ul>
+              ) : ( <p>No other solutions.</p> )
+            }
+          </div>
+        )
       },
       "test-solves": {
         title: (problem) => <div>Test Solves<Counter count={ problem.alternate_soln.length } /></div>,

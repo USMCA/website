@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Input, Button } from 'react-materialize';
 import { Field, reduxForm } from 'redux-form';
@@ -17,7 +17,7 @@ const EmailInput = ({ input, meta, ...rest }) => (
         <Input type="password" placeholder="Password" s={12} { ...input } { ...rest } />
       );
 
-class LoginForm extends Component {
+class LoginForm extends React.Component {
   componentWillMount = () => {
     /* go to home if logged in */
     if (this.props.authenticated.content) this.props.history.push('/');

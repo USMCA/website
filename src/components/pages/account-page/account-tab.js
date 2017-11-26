@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col, Input, Modal, Button } from "react-materialize";
@@ -6,7 +6,7 @@ import { Row, Col, Input, Modal, Button } from "react-materialize";
 import { RightButtonPanel } from "../../utilities";
 import ChangePasswordForm from "../../forms/change-password";
 
-class AccountTab extends Component {
+class AccountTab extends React.Component {
   render() {
     const { user, admins } = this.props;
     if (!user.content || !admins.content) return <div></div>;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import { Button, Table, Input, Modal } from "react-materialize";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -68,7 +68,7 @@ const locationsString = locations => {
   );
 }
 
-class CompetitionsTab extends Component {
+class CompetitionsTab extends React.Component {
   componentWillMount() {
     this.props.memberCompetitions();
   }
