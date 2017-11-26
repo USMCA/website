@@ -309,13 +309,13 @@ const PublicizeModalDumb = props => {
     <Modal
       header="Confirm Publicizing Problem"
       trigger={ <a className="underline-hover">Publicize</a> }>
-      { requestStatus === SUCCESS ? <p>Success!</p> : 
+      { requestStatus === SUCCESS ? <p>Success!</p> :
         <p>Are you sure you want to move this problem to the public database?</p>
       }
       <Error error={ requestStatus === ERROR } message={ message } />
       <RightButtonPanel>
-        <Button 
-          waves="light" className="teal darken-2"  
+        <Button
+          waves="light" className="teal darken-2"
           onClick={ () => publicize(problem_id) }>Confirm</Button>
       </RightButtonPanel>
     </Modal>
@@ -339,8 +339,8 @@ const PublicizeButton = props => {
   return (
     <div className="prob-btn unvoted">
       <i className="fa fa-unlock" /> <PublicizeModal problem_id={ problem_id } />
-    </div> 
-  ); 
+    </div>
+  );
 }
 
 class ExtendedProblemPreview extends React.Component  {
@@ -381,7 +381,7 @@ class ExtendedProblemPreview extends React.Component  {
 class Solution extends React.Component  {
   render() {
     const { solution } = this.props;
-    return (
+    return solution : (
       <Row className="problem">
         <Col s={12}>
           <span className="small-stat">{ solution.upvotes.length } Upvotes</span>
@@ -406,7 +406,7 @@ class Solution extends React.Component  {
           <CommentList comments={solution.comments} solution_id={ solution._id } />
         </Col>
       </Row>
-    );
+    ) : ( <p>No solution provided.</p>);
   }
 }
 

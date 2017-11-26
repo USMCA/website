@@ -59,7 +59,11 @@ class ViewProbPage extends React.Component {
         view: (problem) => (
           <div>
             <h3>Author Solution</h3>
-            <Solution solution={problem.soln} />
+            {
+              problem.soln ? (
+                <Solution solution={ problem.soln } />
+              ): ( <p>No author solution.</p> )
+            }
             <h3>Other Accepted Solutions</h3>
             {
               problem.official_soln.length > 0 ? (
