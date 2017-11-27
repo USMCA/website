@@ -143,27 +143,6 @@ router.get('/:problem_id', auth.verifyJWT, (req, res) => {
   });
 });
 
-// create a solution if not there and call callback either way
-function createSolution(soln, body, problem, error, success) {
-  if (!soln) {
-    soln = Object.assign(new Solution(), {
-      author: problem.author, body
-    });
-    soln.save(err => {
-      if (err) error(err);
-      else {
-        problem.soln = soln;
-        problem.save(err => {
-          if (err) error(err);
-          else success(soln);
-        });
-      }
-    });
-  } else {
-    success(soln);
-  }
-}
-
 //@TODO handle other fields
 router.put('/:problem_id', auth.verifyJWT, (req, res) => {
   const { problem_id } = req.params,
@@ -179,14 +158,9 @@ router.put('/:problem_id', auth.verifyJWT, (req, res) => {
         (err, soln) => {
           if (err) handler(false, 'Failed to load and update solution.', 503)(req, res);
           else {
-            createSolution(soln, solution, problem,
-              err => { handler(false, 'Failed to create solution.', 503)(req, res); },
-              soln => {
-                problemParam(problem._id, req, res, problem => {
-                  handler(true, 'Problem updated.', 200, { problem })(req, res);
-                });
-              }
-            );
+            problemParam(problem._id, req, res, problem => {
+              handler(true, 'Problem updated.', 200, { problem })(req, res);
+            });
           }
         }
       );
