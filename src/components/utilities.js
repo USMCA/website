@@ -268,10 +268,14 @@ class FlameInput extends React.Component  {
   }
 
   change(i) {
+    console.log(this.props);
     if(this.state.value == i+1)
       this.setState({value: 0});
     else
       this.setState({value: i+1});
+    if (this.props && this.props.onChange) {
+      this.props.onChange(i+1);
+    }
   }
 
   shade(t) {

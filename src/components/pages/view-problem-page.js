@@ -46,7 +46,7 @@ class ViewProbPage extends React.Component {
             <li>Author: { problem.author.name }</li>
             <li>Subject: { problem.subject }</li>
             <li>Competition: { problem.publicDatabase ? <span className="bold-text">Public Database</span> : problem.competition.short_name }</li>
-            <li>Difficulty: { problem.author.difficulty || 'N/A' }</li>
+            <li>Difficulty: { problem.difficulty || 'N/A' }</li>
           </ul>
         )
       },

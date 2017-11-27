@@ -82,7 +82,10 @@ class ProposeForm extends React.Component {
   )
 
   difficultyField = ({ input, meta, ...rest }) => (
-    <div><p style={{color: "#9e9e9e", fontSize: ".8rem"}}>Difficulty</p><FlameInput value={0} /></div>
+    <div>
+      <p style={{color: "#9e9e9e", fontSize: ".8rem"}}>Difficulty</p>
+      <FlameInput value={0} { ...input } { ...rest } />
+    </div>
   )
 
   statementInput = ({ input, meta, ...rest }) => (
@@ -226,7 +229,8 @@ const Initialized = props => {
       answer: props.proposal.answer,
       solution: (props.proposal.soln || {}).body,
       competition_id: (props.proposal.competition || {})._id,
-      subject: props.proposal.subject
+      subject: props.proposal.subject,
+      difficulty: props.proposal.difficulty || 0
     } : null
   })(ProposeForm);
   return <Component { ...props } />;
