@@ -72,7 +72,7 @@ class Input extends React.Component {
     };
     const value = types[e.target.type] || types['default'];
     if (onChange) { onChange(e, value); }
-   
+
     this.setState({ value });
   }
 
@@ -271,7 +271,7 @@ Input.propTypes = {
   /**
    * Value used to set a initial value
    */
-  value: PropTypes.string
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
 };
 
 Input.defaultProps = { type: 'text' };

@@ -3,8 +3,8 @@ const router = require('express').Router(),
       async = require('async'),
       auth = require('../config/auth'),
       handler = require('../utils/handler'),
-      { 
-        sendRequests, 
+      {
+        sendRequests,
         removeRequests,
         sendNotifications,
         replyRequest
@@ -26,14 +26,14 @@ router.post('/', auth.verifyJWT, (req, res) => {
   switch(type) {
     case REQUEST:
       /* see if contest with same name exists */
-      Competition.findOne({ 
+      Competition.findOne({
         name: { $regex: new RegExp('^' + competition.name.toLowerCase(), 'i') }
       }, (err, existingCompetition) => {
         if (err) {
           handler(false, 'Database failed to load competitions.', 503)(req, res);
         } else if (existingCompetition) {
           return existingCompetition.valid ?
-            handler(false, 'A competition with that name already exists.', 400)(req, res) : 
+            handler(false, 'A competition with that name already exists.', 400)(req, res) :
             handler(false, 'A competition with that name is already being requested.', 400)(req, res);
         } else {
           /* create competition */
@@ -276,7 +276,7 @@ router.post('/join', auth.verifyJWT, (req, res) => {
                   admin_author: false,
                   author: request.competition._id,
                   title: 'Competition membership request approved',
-                  body: `Your request to join the competition ${request.competition.name} has been approved. You are now a member of the competition and can propose problems to its database.` 
+                  body: `Your request to join the competition ${request.competition.name} has been approved. You are now a member of the competition and can propose problems to its database.`
                 });
                 /* send notification to user and remove request from directors */
                 replyRequest(competition.directors, request, notification, req, res, () => {
@@ -302,7 +302,7 @@ router.post('/join', auth.verifyJWT, (req, res) => {
               admin_author: false,
               author: request.competition._id,
               title: 'Competition membership request rejected',
-              body: `Your request to join the competition ${request.competition.name} has been rejected. Contact the directors of the competition for details.` 
+              body: `Your request to join the competition ${request.competition.name} has been rejected. Contact the directors of the competition for details.`
             });
             /* send notification to user and remove request from directors */
             replyRequest(competition.directors, request, notification, req, res, () => {
@@ -318,7 +318,7 @@ router.post('/join', auth.verifyJWT, (req, res) => {
 });
 
 router.get('/database', auth.verifyJWT, (req, res) => {
-  const { id } = req.query;
+  const { id, subject, difficulty } = req.query;
   Competition.findById(id, (err, competition) => {
     if (err) {
       console.log(err);
@@ -330,7 +330,18 @@ router.get('/database', auth.verifyJWT, (req, res) => {
         !(competition.secure_members.indexOf(req.user._id.toString()) > -1)) {
       handler(false, 'Only directors, czars, and secure members can see the database.', 401)(req, res);
     } else {
-      Problem.find({ competition: competition._id }, (err, problems) => {
+      let query = { competition: competition._id };
+      if (subject) {
+        if (subject != 'Other') query.subject = subject;
+        else {
+          query.subject = {
+            //@TODO make this non hard coded
+            $nin: ['Algebra', 'Combinatorics', 'Computer Science', 'Geometry', 'Number Theory']
+          };
+        }
+      }
+      if (difficulty) query.difficulty = { $in: _.map(difficulty, i => parseInt(i)) }
+      Problem.find(query, (err, problems) => {
         if (err) {
           handler(false, 'Failed to load database problems.', 503)(req, res);
         } else {

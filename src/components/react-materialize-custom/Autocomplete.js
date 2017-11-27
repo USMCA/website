@@ -57,7 +57,6 @@ class Autocomplete extends React.Component {
 
   _onChange (evt) {
     const { onChange } = this.props;
-    console.log(onChange);
     if (onChange) onChange(evt, evt.target.value);
     this.setState({ value: evt.target.value });
   }
