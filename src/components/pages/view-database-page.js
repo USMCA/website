@@ -5,77 +5,7 @@ import { Link } from "react-router-dom";
 
 import { ProblemPreview } from "../utilities";
 import { fetchDatabase } from "../../actions";
-
-class DatabasePage extends React.Component {
-  componentWillMount() {
-    const { match, fetchDatabase } = this.props;
-    fetchDatabase(match.params.id);
-  }
-
-  render() {
-    const { database } = this.props;
-    if (!database.content || !database.content.problems) return <div />;
-    const { problems, competition } = database.content;
-    return (
-      <Row className="container">
-        <Col s={12}>
-          <h2 className="teal-text text-darken-4">{ competition.short_name } Database</h2>
-          <Row>
-            <form className="col s12">
-              <Row>
-                <Input disabled l={3} m={6} s={12} type="select" label="Subject" multiple>
-                    <option value="">Choose your option</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </Input>
-                <Input disabled l={3} m={6} s={12} type="select" label="Contest" multiple>
-                    <option value="" disabled>Choose your option</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </Input>
-                <Input disabled l={3} m={6} s={12} type="select" label="Sort by" multiple>
-                    <option value="">Choose your option</option>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                </Input>
-                <Input disabled l={3} m={6} s={12} type="select" label="Difficulty" multiple>
-                    <option value="">Choose your option</option>
-                    <option value="1">Easy</option>
-                    <option value="2">Medium</option>
-                    <option value="3">Hard</option>
-                </Input>
-                <Col s={12}>
-                  <ul className="inline-list">
-                    <li>
-                      <Input disabled type="checkbox" label="original problems" defaultChecked="checked" />
-                    </li>
-                    <li>
-                      <Input disabled type="checkbox" label="borrowed problems" />
-                    </li>
-                  </ul>
-                </Col>
-              </Row>
-            </form>
-          </Row>
-          <h3>Results</h3>
-          {
-            problems.map((proposal, key) => (
-              <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
-                <ProblemPreview problem={proposal} includeClipboard={true}/>
-              </div>)
-            )
-          }
-          <div style={{padding: "24px 0"}}>
-            <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
-          </div>
-        </Col>
-      </Row>
-    );
-  }
-}
+import QueryDBForm from "../forms/query-db";
 
 const mapStateToProps = state => ({
   database: state.problems.database
@@ -85,5 +15,56 @@ const mapDispatchToProps = dispatch => ({
     fetchDatabase(id)(dispatch);
   }
 });
+
+const TitleDumb = ({ database }) => {
+  if (!database.content || !database.content.problems) return <div />;
+  const { competition } = database.content;
+
+  return (
+    <h2 className="teal-text text-darken-4">{ competition.short_name } Database</h2>
+  );
+}
+const Title = connect(mapStateToProps)(TitleDumb);
+
+const ResultsDumb = ({ database }) => {
+  if (!database.content || !database.content.problems) return <div />;
+  const { problems } = database.content;
+  return (
+    <Col s={12}>
+      <h3>Results</h3>
+      {
+        problems.map((proposal, key) => (
+          <div style={{borderBottom: "1px solid #cfd8dc", paddingTop: "12px"}} key={key}>
+            <ProblemPreview problem={proposal} includeClipboard={true}/>
+          </div>)
+        )
+      }
+      <div style={{padding: "24px 0"}}>
+        <a className="load-more teal-text text-darken-3 underline-hover">Load more...</a>
+      </div>
+    </Col>
+  );
+}
+const Results= connect(mapStateToProps)(ResultsDumb);
+
+class DatabasePage extends React.Component {
+  componentWillMount() {
+    const { match, fetchDatabase } = this.props;
+    fetchDatabase(match.params.id);
+  }
+
+  render() {
+    const { match } = this.props;
+    return (
+      <Row className="container">
+        <Col s={12}>
+          <Title />
+          <QueryDBForm competition_id={ match.params.id } />
+          <Results />
+        </Col>
+      </Row>
+    );
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatabasePage);

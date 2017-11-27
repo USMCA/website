@@ -14,7 +14,7 @@ const problemSchema = new Schema({
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   subject: { type: String, required: true },
-  difficulty: { type: Number, min: 0, max: 6 },
+  difficulty: { type: Number, min: 0, max: 6, default: 0 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
   created: { type: Date, required: true },
