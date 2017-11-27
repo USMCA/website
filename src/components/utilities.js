@@ -208,7 +208,7 @@ class ProblemPreview extends React.Component  {
     return (
       <Row className="problem">
         <Col offset={ includeClipboard && "s2" } s={ includeClipboard ? 10 : 12 }>
-          <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
+          <span className="small-stat">{ problem.upvotes.length } Upvotes &bull; { problem.alternate_soln.length } Solves</span>
           { editable && (
               <ul className="problem-options">
                 <li><Link to={ `/edit-problem/${problem._id}` } className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></Link></li>
@@ -355,7 +355,7 @@ class ExtendedProblemPreview extends React.Component  {
     return (
       <Row className="problem">
         <Col s={12}>
-          <span className="small-stat">{ problem.views.length } Views &bull; { problem.alternate_soln.length } Solves &bull; { problem.upvotes.length } Upvotes</span>
+          <span className="small-stat">{ problem.upvotes.length } Upvotes &bull; { problem.alternate_soln.length } Solves</span>
           <ul className="problem-options">
             <li><Link to={ `/edit-problem/${problem._id}` } className="grey-text"><i className="fa fa-pencil" aria-hidden="true" /></Link></li>
             <li><a className="grey-text"><i className="fa fa-trash" aria-hidden="true"/></a></li>

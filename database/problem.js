@@ -16,7 +16,6 @@ const problemSchema = new Schema({
   subject: { type: String, required: true },
   difficulty: { type: Number, min: 1, max: 5 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
-  views: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
   created: { type: Date, required: true },
   updated: { type: Date, required: true }
