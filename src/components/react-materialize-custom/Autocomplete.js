@@ -9,7 +9,7 @@ class Autocomplete extends React.Component {
     super(props);
 
     this.state = {
-      value: props.defaultValue || ''
+      value: props.defaultValue || props.value || ''
     };
 
     this.renderIcon = this.renderIcon.bind(this);
@@ -88,6 +88,10 @@ class Autocomplete extends React.Component {
       classes[size + sizes[size]] = sizes[size];
     });
 
+    let labelClasses = {
+      active: this.state.value
+    };
+
     return (
       <Col offset={offset} className={cx('input-field', className, classes)} {...props}>
         {icon && this.renderIcon(icon, iconClassName)}
@@ -100,7 +104,7 @@ class Autocomplete extends React.Component {
           value={this.state.value}
           disabled={ disabled }
         />
-        <label htmlFor={_id}>{title}</label>
+        <label className={cx(labelClasses)} htmlFor={_id}>{title}</label>
         {this.renderDropdown(data, minLength, limit)}
       </Col>
     );

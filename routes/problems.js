@@ -164,9 +164,10 @@ function createSolution(soln, body, problem, error, success) {
   }
 }
 
+//@TODO handle other fields
 router.put('/:problem_id', auth.verifyJWT, (req, res) => {
   const { problem_id } = req.params,
-        proposal = _.pick(req.body, ['statement', 'answer']);
+        proposal = _.pick(req.body, ['subject', 'statement', 'answer']);
   Problem.findByIdAndUpdate(problem_id, proposal, (err, problem) => {
     if (err) handler(false, 'Failed to load and update problem.', 503)(req, res);
     else if (!problem) handler(false, 'Problem does not exist.', 400)(req, res);
