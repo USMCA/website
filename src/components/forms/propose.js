@@ -28,7 +28,7 @@ class ProposeForm extends React.Component {
     if (!statement) {
       errorHandler('Please fill out required fields.');
     } else if (edit) {
-      putProposal({ statement, answer, solution });
+      putProposal({ subject, statement, answer, solution });
     } else {
       postProposal({
         competition_id, subject, difficulty, statement, answer, solution
@@ -78,7 +78,7 @@ class ProposeForm extends React.Component {
   )
 
   subjectField = ({ input, meta, ...rest }) => (
-    <SubjectsInput s={4} { ...input } { ...rest } disabled={ this.props.edit } />
+    <SubjectsInput s={4} { ...input } { ...rest } />
   )
 
   difficultyField = ({ input, meta, ...rest }) => (
@@ -201,9 +201,9 @@ const mapStateToProps = state => ({
             competition_id, subject, difficulty, statement, answer, solution
           })(dispatch);
         },
-        putProposal: ({ statement, answer, solution }) => {
+        putProposal: ({ subject, statement, answer, solution }) => {
           putProposal(props.proposal._id, {
-            statement, answer, solution
+            subject, statement, answer, solution
           })(dispatch);
         },
         resetProposalForm: () => {
