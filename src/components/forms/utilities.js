@@ -15,7 +15,7 @@ import { requestStatuses } from "../../actions/types";
 import Spinner from "../spinner";
 import Error from "../error";
 import Autocomplete from "../react-materialize-custom/Autocomplete";
-import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect"; 
+import AutocompleteSelect from "../react-materialize-custom/AutocompleteSelect";
 import DoubleAutocompleteSelect from "../react-materialize-custom/DoubleAutocompleteSelect";
 import ControlledInput from "../react-materialize-custom/ControlledInput";
 
@@ -290,7 +290,8 @@ const subjects = {
   "Combinatorics": null,
   "Computer Science": null,
   "Geometry": null,
-  "Number Theory": null
+  "Number Theory": null,
+  "Other": null
 }
 
 const SubjectsInput = props => {
@@ -378,7 +379,7 @@ class UsersAutocompleteInputDumb extends React.Component {
   }
 
   render() {
-    const { 
+    const {
       allUsersInfo,
       allUsersData: { requestStatus, message, content: users },
       input,
@@ -391,8 +392,8 @@ class UsersAutocompleteInputDumb extends React.Component {
     }), {});
     //@TODO also display user name
     return (
-      <DoubleAutocompleteSelect 
-        title="User Email" data={ data } 
+      <DoubleAutocompleteSelect
+        title="User Email" data={ data }
         { ...input } { ...rest } />
     );
   }
