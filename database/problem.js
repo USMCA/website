@@ -13,7 +13,7 @@ const problemSchema = new Schema({
   soln: { type: Schema.Types.ObjectId, ref: 'Solution' },
   official_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
   alternate_soln: [ { type: Schema.Types.ObjectId, ref: 'Solution' } ],
-  subject: { type: String, required: true },
+  subject: { type: String, required: false },
   difficulty: { type: Number, min: 0, max: 6, default: 0 },
   upvotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
   comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],

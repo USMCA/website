@@ -341,7 +341,7 @@ router.get('/database', auth.verifyJWT, (req, res) => {
         }
       }
       if (difficulty) query.difficulty = { $in: _.map(difficulty, i => parseInt(i)) }
-      Problem.find(query, (err, problems) => {
+      Problem.find(query).sort({ updated: -1 }).exec((err, problems) => {
         if (err) {
           handler(false, 'Failed to load database problems.', 503)(req, res);
         } else {
