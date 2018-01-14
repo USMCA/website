@@ -402,9 +402,14 @@ class Solution extends React.Component  {
           </div>
         </Col>
         <Col m={3} s={12} className="problem-stats">
-          <span><div className="prob-btn upvote upvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
+          <span><div className="prob-btn upvote unvoted"><i className="fa fa-thumbs-up" aria-hidden="true"></i><a className="underline-hover">Upvote</a></div></span><br />
           <span className="bold-text">{ solution.author.name }</span><br />
           <span className="small-stat"><i>{ datify(solution.created, solution.updated) }</i></span>
+          <span>
+            <div className="prob-btn upvote unvoted">
+              <i className="fa fa-clipboard" aria-hidden="true" /> <a className="underline-hover" ref={ clipboardRef } data-clipboard-text={ solution.body }>Copy TeX</a>
+            </div>
+          </span>
         </Col>
         <Col m={9} s={12} className="comments">
           <CommentList comments={solution.comments} solution_id={ solution._id } />
